@@ -9,8 +9,9 @@ import {
 } from 'react-native';
 import { X } from 'lucide-react-native';
 import { getTheme, Theme, UI_ACCENT } from '../../../theme/colors';
-import { useAppDispatch, useAppSelector } from '../../../app/hooks';
-import { createTechnique, fetchTechniques } from '../../techniques/techniquesSlice';
+import { FONT_SIZE, FONT_WEIGHT } from '../../../theme/typography';
+import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
+import { createTechnique, fetchTechniques } from '../../../redux/techniquesSlice';
 
 interface Props {
   selectedIds: string[];
@@ -138,8 +139,8 @@ function createStyles(theme: Theme) {
     },
     chipText: {
       color: theme.textPrimary,
-      fontSize: 13,
-      fontWeight: '600',
+      fontSize: FONT_SIZE.label,
+      fontWeight: FONT_WEIGHT.semibold,
     },
     input: {
       backgroundColor: theme.surface,
@@ -149,7 +150,7 @@ function createStyles(theme: Theme) {
       paddingHorizontal: 16,
       paddingVertical: 14,
       color: theme.textPrimary,
-      fontSize: 15,
+      fontSize: FONT_SIZE.base,
     },
     dropdown: {
       backgroundColor: theme.surface,
@@ -167,12 +168,12 @@ function createStyles(theme: Theme) {
     },
     dropdownText: {
       color: theme.textPrimary,
-      fontSize: 14,
+      fontSize: FONT_SIZE.body,
     },
     createText: {
       color: UI_ACCENT,
-      fontSize: 14,
-      fontWeight: '600',
+      fontSize: FONT_SIZE.body,
+      fontWeight: FONT_WEIGHT.semibold,
     },
   });
 }

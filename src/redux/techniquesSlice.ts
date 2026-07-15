@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { supabase } from '../../lib/supabase';
-import type { RootState } from '../../app/store';
-import type { NewTechnique, Technique } from './types';
+import { supabase } from '../lib/supabase';
+import type { RootState } from './store';
+import type { NewTechnique, Technique } from '../features/techniques/types';
 
 const TECHNIQUE_COLUMNS = 'id, name, position, notes, resource_url, drill_count';
 
@@ -84,6 +84,29 @@ export const deleteTechnique = createAsyncThunk(
   },
 );
 
+export const importFundamentals = createAsyncThunk(
+  'techniques/importFundamentals',
+  async (
+    seeds: { name: string; position: string; notes: string }[],
+    { getState },
+  ) => {
+    const userId = (getState() as RootState).auth.session?.user.id;
+    if (!userId) throw new Error('Not authenticated');
+
+    const rows = seeds.map(seed => ({
+      ...seed,
+      resource_url: null,
+      user_id: userId,
+    }));
+    const { data, error } = await supabase
+      .from('techniques')
+      .insert(rows)
+      .select(TECHNIQUE_COLUMNS);
+    if (error) throw error;
+    return data as Technique[];
+  },
+);
+
 const techniquesSlice = createSlice({
   name: 'techniques',
   initialState,
@@ -118,6 +141,12 @@ const techniquesSlice = createSlice({
       })
       .addCase(deleteTechnique.rejected, (state, action) => {
         state.error = action.error.message ?? 'Failed to delete technique';
+      })
+      .addCase(importFundamentals.fulfilled, (state, action) => {
+        state.items.push(...action.payload);
+      })
+      .addCase(importFundamentals.rejected, (state, action) => {
+        state.error = action.error.message ?? 'Failed to import fundamentals';
       })
       .addMatcher(
         (a): a is ReturnType<typeof updateTechnique.fulfilled> | ReturnType<typeof incrementDrillCount.fulfilled> =>

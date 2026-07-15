@@ -1,24 +1,73 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
+  LayoutAnimation,
+  Platform,
   Pressable,
-  SectionList,
+  ScrollView,
   StyleSheet,
   Text,
+  UIManager,
   useColorScheme,
   View,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { Plus, Repeat } from 'lucide-react-native';
+import {
+  ChevronDown,
+  ChevronUp,
+  Plus,
+  Repeat,
+  Trash2,
+} from 'lucide-react-native';
 import { getTheme, Theme, UI_ACCENT, UI_ACCENT_TEXT } from '../../../theme/colors';
-import { useAppDispatch, useAppSelector } from '../../../app/hooks';
-import { fetchTechniques, incrementDrillCount } from '../techniquesSlice';
-import { POSITION_OPTIONS } from '../types';
+import { FONT_SIZE, FONT_WEIGHT } from '../../../theme/typography';
+import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
+import {
+  deleteTechnique,
+  fetchTechniques,
+  importFundamentals,
+  incrementDrillCount,
+} from '../../../redux/techniquesSlice';
+import { FUNDAMENTALS_SEED } from '../fundamentalsSeed';
+import { POSITION_PRESETS } from '../types';
 import type { TechniquesStackParamList } from '../../../navigation/types';
 import type { Technique } from '../types';
 
 type Nav = NativeStackNavigationProp<TechniquesStackParamList, 'TechniqueLibrary'>;
+
+if (
+  Platform.OS === 'android' &&
+  UIManager.setLayoutAnimationEnabledExperimental
+) {
+  UIManager.setLayoutAnimationEnabledExperimental(true);
+}
+
+interface PositionGroup {
+  position: string;
+  techniques: Technique[];
+}
+
+function groupByPosition(items: Technique[]): PositionGroup[] {
+  const map = new Map<string, Technique[]>();
+  for (const t of items) {
+    const key = t.position || 'Uncategorized';
+    const group = map.get(key) ?? [];
+    group.push(t);
+    map.set(key, group);
+  }
+
+  const keys = Array.from(map.keys()).sort((a, b) => {
+    const ai = POSITION_PRESETS.indexOf(a);
+    const bi = POSITION_PRESETS.indexOf(b);
+    if (ai !== -1 && bi !== -1) return ai - bi;
+    if (ai !== -1) return -1;
+    if (bi !== -1) return 1;
+    return a.localeCompare(b);
+  });
+
+  return keys.map(position => ({ position, techniques: map.get(position)! }));
+}
 
 function TechniqueLibraryScreen() {
   const scheme = useColorScheme();
@@ -27,6 +76,7 @@ function TechniqueLibraryScreen() {
   const navigation = useNavigation<Nav>();
   const dispatch = useAppDispatch();
   const { items, status } = useAppSelector(state => state.techniques);
+  const [collapsed, setCollapsed] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     if (status === 'idle') {
@@ -34,17 +84,39 @@ function TechniqueLibraryScreen() {
     }
   }, [dispatch, status]);
 
-  const sections = useMemo(
-    () =>
-      POSITION_OPTIONS.map(option => ({
-        title: option.label,
-        data: items.filter(t => t.position === option.value),
-      })).filter(section => section.data.length > 0),
-    [items],
-  );
+  const groups = useMemo(() => groupByPosition(items), [items]);
+  const [importing, setImporting] = useState(false);
 
-  const renderItem = ({ item }: { item: Technique }) => (
+  const handleImportFundamentals = async () => {
+    setImporting(true);
+    await dispatch(
+      importFundamentals(
+        FUNDAMENTALS_SEED.map(seed => ({
+          name: seed.name,
+          position: seed.position,
+          notes: seed.description,
+        })),
+      ),
+    );
+    setImporting(false);
+  };
+
+  const toggleGroup = (position: string) => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    setCollapsed(prev => {
+      const next = new Set(prev);
+      if (next.has(position)) {
+        next.delete(position);
+      } else {
+        next.add(position);
+      }
+      return next;
+    });
+  };
+
+  const renderTechnique = (item: Technique) => (
     <Pressable
+      key={item.id}
       style={styles.row}
       onPress={() =>
         navigation.navigate('TechniqueForm', { techniqueId: item.id })
@@ -53,12 +125,20 @@ function TechniqueLibraryScreen() {
         <Text style={styles.rowTitle}>{item.name}</Text>
         <Text style={styles.rowMeta}>{item.drill_count} drills logged</Text>
       </View>
-      <Pressable
-        hitSlop={8}
-        style={styles.drillButton}
-        onPress={() => dispatch(incrementDrillCount(item.id))}>
-        <Repeat color={UI_ACCENT} size={18} />
-      </Pressable>
+      <View style={styles.rowActions}>
+        <Pressable
+          hitSlop={8}
+          style={styles.drillButton}
+          onPress={() => dispatch(incrementDrillCount(item.id))}>
+          <Repeat color={UI_ACCENT} size={18} />
+        </Pressable>
+        <Pressable
+          hitSlop={8}
+          style={styles.deleteIconButton}
+          onPress={() => dispatch(deleteTechnique(item.id))}>
+          <Trash2 color={theme.danger} size={18} />
+        </Pressable>
+      </View>
     </Pressable>
   );
 
@@ -82,18 +162,48 @@ function TechniqueLibraryScreen() {
           <Text style={styles.emptyText}>
             No techniques logged yet — tap + to add one.
           </Text>
+          <Pressable
+            style={[styles.importButton, importing && styles.importButtonDisabled]}
+            disabled={importing}
+            onPress={handleImportFundamentals}>
+            <Text style={styles.importButtonText}>
+              {importing ? 'Importing…' : 'Import Fundamentals'}
+            </Text>
+          </Pressable>
+          <Text style={styles.importHint}>
+            Adds {FUNDAMENTALS_SEED.length} beginner-friendly techniques to
+            get you started — you can edit, drill, or delete any of them.
+          </Text>
         </View>
       ) : (
-        <SectionList
-          sections={sections}
-          keyExtractor={item => item.id}
-          renderItem={renderItem}
-          renderSectionHeader={({ section }) => (
-            <Text style={styles.sectionHeader}>{section.title}</Text>
-          )}
+        <ScrollView
           contentContainerStyle={styles.listContent}
-          stickySectionHeadersEnabled={false}
-        />
+          showsVerticalScrollIndicator={false}>
+          {groups.map(group => {
+            const isCollapsed = collapsed.has(group.position);
+            return (
+              <View key={group.position} style={styles.section}>
+                <Pressable
+                  style={styles.sectionHeader}
+                  onPress={() => toggleGroup(group.position)}>
+                  <Text style={styles.sectionHeaderText}>
+                    {group.position} ({group.techniques.length})
+                  </Text>
+                  {isCollapsed ? (
+                    <ChevronDown color={theme.textSecondary} size={18} />
+                  ) : (
+                    <ChevronUp color={theme.textSecondary} size={18} />
+                  )}
+                </Pressable>
+                {!isCollapsed ? (
+                  <View style={styles.sectionBody}>
+                    {group.techniques.map(renderTechnique)}
+                  </View>
+                ) : null}
+              </View>
+            );
+          })}
+        </ScrollView>
       )}
     </View>
   );
@@ -115,8 +225,8 @@ function createStyles(theme: Theme) {
     },
     title: {
       color: theme.textPrimary,
-      fontSize: 24,
-      fontWeight: '800',
+      fontSize: FONT_SIZE.title,
+      fontWeight: FONT_WEIGHT.extrabold,
     },
     addButton: {
       backgroundColor: UI_ACCENT,
@@ -134,21 +244,58 @@ function createStyles(theme: Theme) {
     },
     emptyText: {
       color: theme.textSecondary,
-      fontSize: 14,
+      fontSize: FONT_SIZE.body,
       textAlign: 'center',
+      marginBottom: 20,
+    },
+    importButton: {
+      backgroundColor: UI_ACCENT,
+      borderRadius: 14,
+      paddingVertical: 14,
+      paddingHorizontal: 24,
+      alignItems: 'center',
+    },
+    importButtonDisabled: {
+      opacity: 0.6,
+    },
+    importButtonText: {
+      color: UI_ACCENT_TEXT,
+      fontWeight: FONT_WEIGHT.bold,
+      fontSize: FONT_SIZE.base,
+    },
+    importHint: {
+      color: theme.textSecondary,
+      fontSize: FONT_SIZE.sm,
+      textAlign: 'center',
+      marginTop: 12,
+      paddingHorizontal: 16,
     },
     listContent: {
       paddingHorizontal: 20,
       paddingBottom: 24,
     },
+    section: {
+      marginBottom: 12,
+    },
     sectionHeader: {
-      color: theme.textSecondary,
-      fontSize: 12,
-      fontWeight: '700',
-      textTransform: 'uppercase',
-      letterSpacing: 0.5,
-      marginTop: 16,
-      marginBottom: 8,
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      backgroundColor: theme.surfaceAlt,
+      borderWidth: 1,
+      borderColor: theme.border,
+      borderRadius: 12,
+      paddingHorizontal: 16,
+      paddingVertical: 12,
+    },
+    sectionHeaderText: {
+      color: theme.textPrimary,
+      fontSize: FONT_SIZE.body,
+      fontWeight: FONT_WEIGHT.bold,
+    },
+    sectionBody: {
+      gap: 10,
+      marginTop: 10,
     },
     row: {
       flexDirection: 'row',
@@ -159,22 +306,34 @@ function createStyles(theme: Theme) {
       borderColor: theme.border,
       borderRadius: 14,
       padding: 16,
-      marginBottom: 10,
     },
     rowMain: {
       gap: 4,
     },
     rowTitle: {
       color: theme.textPrimary,
-      fontSize: 15,
-      fontWeight: '600',
+      fontSize: FONT_SIZE.base,
+      fontWeight: FONT_WEIGHT.semibold,
     },
     rowMeta: {
       color: theme.textSecondary,
-      fontSize: 13,
+      fontSize: FONT_SIZE.label,
+    },
+    rowActions: {
+      flexDirection: 'row',
+      gap: 8,
     },
     drillButton: {
-      padding: 6,
+      padding: 8,
+      borderRadius: 10,
+      borderWidth: 1,
+      borderColor: UI_ACCENT,
+    },
+    deleteIconButton: {
+      padding: 8,
+      borderRadius: 10,
+      borderWidth: 1,
+      borderColor: theme.danger,
     },
   });
 }

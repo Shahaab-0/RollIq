@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { supabase } from '../../../lib/supabase';
-import { useAppDispatch } from '../../../app/hooks';
-import { restoreSession, sessionChanged } from '../authSlice';
+import { useAppDispatch } from '../../../redux/hooks';
+import { restoreSession, sessionChanged } from '../../../redux/authSlice';
 
 // Restores any persisted session on launch, then keeps Redux in sync with
 // Supabase's own auth state (sign in/out, token refresh) for the app's lifetime.

@@ -1,12 +1,6 @@
-export type Position =
-  | 'guard'
-  | 'mount'
-  | 'side_control'
-  | 'back_control'
-  | 'standing'
-  | 'submissions'
-  | 'escapes'
-  | 'transitions';
+// Free text, not a fixed enum — the presets below are just quick-select
+// suggestions; users can type any position name of their own.
+export type Position = string;
 
 export interface Technique {
   id: string;
@@ -19,13 +13,13 @@ export interface Technique {
 
 export type NewTechnique = Omit<Technique, 'id' | 'drill_count'>;
 
-export const POSITION_OPTIONS: { value: Position; label: string }[] = [
-  { value: 'guard', label: 'Guard' },
-  { value: 'mount', label: 'Mount' },
-  { value: 'side_control', label: 'Side Control' },
-  { value: 'back_control', label: 'Back Control' },
-  { value: 'standing', label: 'Standing' },
-  { value: 'submissions', label: 'Submissions' },
-  { value: 'escapes', label: 'Escapes' },
-  { value: 'transitions', label: 'Transitions' },
+export const POSITION_PRESETS: string[] = [
+  'Guard',
+  'Mount',
+  'Side Control',
+  'Back Control',
+  'Standing',
+  'Submissions',
+  'Escapes',
+  'Transitions',
 ];

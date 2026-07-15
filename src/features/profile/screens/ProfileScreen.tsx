@@ -12,19 +12,23 @@ import {
   useColorScheme,
   View,
 } from 'react-native';
-import { BELT_COLORS, getTheme, Theme, UI_ACCENT, UI_ACCENT_TEXT } from '../../../theme/colors';
-import { useAppDispatch, useAppSelector } from '../../../app/hooks';
-import { signOut } from '../../auth/authSlice';
-import { fetchProfile, updateProfile } from '../profileSlice';
-import type { Belt } from '../types';
-
-const BELT_OPTIONS: { value: Belt; label: string }[] = [
-  { value: 'white', label: 'White' },
-  { value: 'blue', label: 'Blue' },
-  { value: 'purple', label: 'Purple' },
-  { value: 'brown', label: 'Brown' },
-  { value: 'black', label: 'Black' },
-];
+import {
+  BELT_COLORS,
+  getTheme,
+  Theme,
+  UI_ACCENT,
+  UI_ACCENT_MUTED,
+  UI_ACCENT_TEXT,
+} from '../../../theme/colors';
+import { FONT_SIZE, FONT_WEIGHT } from '../../../theme/typography';
+import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
+import { signOut } from '../../../redux/authSlice';
+import { fetchProfile, updateProfile } from '../../../redux/profileSlice';
+import { logProgressMilestone } from '../../../redux/beltPromotionsSlice';
+import { toLocalDateString } from '../../../lib/dateFormat';
+import BeltHistorySection from '../components/BeltHistorySection';
+import BeltDatePromptModal from '../components/BeltDatePromptModal';
+import { BELT_OPTIONS, type Belt } from '../types';
 
 const STRIPE_OPTIONS = [0, 1, 2, 3, 4];
 
@@ -42,6 +46,13 @@ function ProfileScreen() {
   const [homeGym, setHomeGym] = useState('');
   const [saving, setSaving] = useState(false);
 
+  const [pendingBeltChange, setPendingBeltChange] = useState<Belt | null>(
+    null,
+  );
+  const [pendingBeltDate, setPendingBeltDate] = useState(
+    toLocalDateString(new Date()),
+  );
+
   useEffect(() => {
     if (status === 'idle') {
       dispatch(fetchProfile());
@@ -58,6 +69,9 @@ function ProfileScreen() {
   }, [profile]);
 
   const handleSave = async () => {
+    const previousBelt = profile?.current_belt;
+    const previousStripes = profile?.current_stripes ?? 0;
+
     setSaving(true);
     const result = await dispatch(
       updateProfile({
@@ -70,7 +84,63 @@ function ProfileScreen() {
     setSaving(false);
     if (result.type !== updateProfile.fulfilled.type) {
       Alert.alert('Something went wrong', 'Could not save your profile.');
+      return;
     }
+
+    const beltChanged = previousBelt !== undefined && previousBelt !== belt;
+    const stripesGained = previousBelt === belt && stripes > previousStripes;
+
+    if (beltChanged) {
+      // Ask when the promotion actually happened rather than assuming
+      // today — the profile might just be getting updated to reflect a
+      // promotion from weeks ago, and the timeline should use that date.
+      setPendingBeltDate(toLocalDateString(new Date()));
+      setPendingBeltChange(belt);
+    } else if (stripesGained) {
+      const milestoneResult = await dispatch(
+        logProgressMilestone({ belt, stripes }),
+      );
+      const beltLabel =
+        BELT_OPTIONS.find(o => o.value === belt)?.label ?? belt;
+      if (milestoneResult.type === logProgressMilestone.fulfilled.type) {
+        Alert.alert(
+          'Nice progress! 🎉',
+          `Stripe ${stripes} earned on your ${beltLabel} Belt. Every stripe counts!`,
+        );
+      } else {
+        Alert.alert(
+          'Saved, but…',
+          'Your stripe was saved, but logging it to the timeline failed. You can try again next time you save.',
+        );
+      }
+    }
+  };
+
+  const handleConfirmBeltDate = async () => {
+    if (!pendingBeltChange) return;
+    const result = await dispatch(
+      logProgressMilestone({
+        belt: pendingBeltChange,
+        stripes: 0,
+        promotedOn: pendingBeltDate,
+      }),
+    );
+    if (result.type !== logProgressMilestone.fulfilled.type) {
+      Alert.alert(
+        'Something went wrong',
+        "Could not log this promotion — your belt is still saved, but the timeline won't reflect it yet. Try again from Belt History.",
+      );
+      setPendingBeltChange(null);
+      return;
+    }
+    const beltLabel =
+      BELT_OPTIONS.find(o => o.value === pendingBeltChange)?.label ??
+      pendingBeltChange;
+    setPendingBeltChange(null);
+    Alert.alert(
+      'Congratulations! 🥋',
+      `You've been promoted to ${beltLabel} Belt! Huge milestone on your journey — keep it up.`,
+    );
   };
 
   if (status === 'loading' && !profile) {
@@ -148,6 +218,13 @@ function ProfileScreen() {
           placeholderTextColor={theme.textSecondary}
         />
 
+        <BeltHistorySection
+          onPromotionAdded={addedBelt => {
+            setBelt(addedBelt);
+            setStripes(0);
+          }}
+        />
+
         <Pressable
           style={[styles.saveButton, saving && styles.saveButtonDisabled]}
           disabled={saving}
@@ -161,6 +238,19 @@ function ProfileScreen() {
           <Text style={styles.signOutButtonText}>Sign Out</Text>
         </Pressable>
       </ScrollView>
+
+      <BeltDatePromptModal
+        visible={pendingBeltChange !== null}
+        beltLabel={
+          pendingBeltChange
+            ? BELT_OPTIONS.find(o => o.value === pendingBeltChange)?.label ?? ''
+            : ''
+        }
+        date={pendingBeltDate}
+        onChangeDate={setPendingBeltDate}
+        onConfirm={handleConfirmBeltDate}
+        onSkip={() => setPendingBeltChange(null)}
+      />
     </KeyboardAvoidingView>
   );
 }
@@ -182,18 +272,18 @@ function createStyles(theme: Theme) {
     },
     title: {
       color: theme.textPrimary,
-      fontSize: 24,
-      fontWeight: '800',
+      fontSize: FONT_SIZE.title,
+      fontWeight: FONT_WEIGHT.extrabold,
     },
     email: {
       color: theme.textSecondary,
-      fontSize: 14,
+      fontSize: FONT_SIZE.body,
       marginBottom: 12,
     },
     label: {
       color: theme.textSecondary,
-      fontSize: 13,
-      fontWeight: '600',
+      fontSize: FONT_SIZE.label,
+      fontWeight: FONT_WEIGHT.semibold,
       marginTop: 12,
       marginBottom: 4,
     },
@@ -205,7 +295,7 @@ function createStyles(theme: Theme) {
       paddingHorizontal: 16,
       paddingVertical: 14,
       color: theme.textPrimary,
-      fontSize: 15,
+      fontSize: FONT_SIZE.base,
     },
     chipRow: {
       flexDirection: 'row',
@@ -216,14 +306,14 @@ function createStyles(theme: Theme) {
       paddingHorizontal: 14,
       paddingVertical: 10,
       borderRadius: 20,
-      backgroundColor: theme.surface,
+      backgroundColor: UI_ACCENT_MUTED,
       borderWidth: 1,
-      borderColor: theme.border,
+      borderColor: 'transparent',
     },
     chipText: {
       color: theme.textSecondary,
-      fontSize: 13,
-      fontWeight: '600',
+      fontSize: FONT_SIZE.label,
+      fontWeight: FONT_WEIGHT.semibold,
     },
     chipTextActive: {
       color: UI_ACCENT_TEXT,
@@ -234,9 +324,9 @@ function createStyles(theme: Theme) {
       borderRadius: 20,
       alignItems: 'center',
       justifyContent: 'center',
-      backgroundColor: theme.surface,
+      backgroundColor: UI_ACCENT_MUTED,
       borderWidth: 1,
-      borderColor: theme.border,
+      borderColor: 'transparent',
     },
     stripeDotActive: {
       backgroundColor: UI_ACCENT,
@@ -254,21 +344,21 @@ function createStyles(theme: Theme) {
     },
     saveButtonText: {
       color: UI_ACCENT_TEXT,
-      fontWeight: '700',
-      fontSize: 15,
+      fontWeight: FONT_WEIGHT.bold,
+      fontSize: FONT_SIZE.base,
     },
     signOutButton: {
       borderWidth: 1.5,
-      borderColor: theme.danger,
+      borderColor: UI_ACCENT,
       borderRadius: 14,
       paddingVertical: 16,
       alignItems: 'center',
       marginTop: 12,
     },
     signOutButtonText: {
-      color: theme.danger,
-      fontWeight: '700',
-      fontSize: 15,
+      color: UI_ACCENT,
+      fontWeight: FONT_WEIGHT.bold,
+      fontSize: FONT_SIZE.base,
     },
   });
 }

@@ -1,9 +1,10 @@
 import { configureStore } from '@reduxjs/toolkit';
-import authReducer from '../features/auth/authSlice';
-import profileReducer from '../features/profile/profileSlice';
-import sessionsReducer from '../features/trainingLog/sessionsSlice';
-import techniquesReducer from '../features/techniques/techniquesSlice';
-import rollsReducer from '../features/rolls/rollsSlice';
+import authReducer from './authSlice';
+import profileReducer from './profileSlice';
+import sessionsReducer from './sessionsSlice';
+import techniquesReducer from './techniquesSlice';
+import rollsReducer from './rollsSlice';
+import beltPromotionsReducer from './beltPromotionsSlice';
 
 export const store = configureStore({
   reducer: {
@@ -12,6 +13,7 @@ export const store = configureStore({
     sessions: sessionsReducer,
     techniques: techniquesReducer,
     rolls: rollsReducer,
+    beltPromotions: beltPromotionsReducer,
   },
 });
 

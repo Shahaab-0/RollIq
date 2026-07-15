@@ -7,7 +7,7 @@ import {
   View,
 } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
-import { useAppSelector } from '../app/hooks';
+import { useAppSelector } from '../redux/hooks';
 import { useAuthListener } from '../features/auth/hooks/useAuthListener';
 import { getTheme, Theme, UI_ACCENT } from '../theme/colors';
 import AuthStack from './AuthStack';

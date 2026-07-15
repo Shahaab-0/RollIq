@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import type { Session } from '@supabase/supabase-js';
-import { supabase } from '../../lib/supabase';
-import type { AuthCredentials, AuthStatus } from './types';
+import { supabase } from '../lib/supabase';
+import type { AuthCredentials, AuthStatus } from '../features/auth/types';
 
 interface AuthState {
   status: AuthStatus;

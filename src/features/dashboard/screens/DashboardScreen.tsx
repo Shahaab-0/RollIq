@@ -12,28 +12,19 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import type { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { Plus } from 'lucide-react-native';
-import { BELT_COLORS, getTheme, Theme, UI_ACCENT_TEXT } from '../../../theme/colors';
-import { useAppSelector } from '../../../app/hooks';
+import {
+  BELT_COLORS,
+  getTheme,
+  Theme,
+  UI_ACCENT,
+  UI_ACCENT_TEXT,
+} from '../../../theme/colors';
+import { FONT_SIZE, FONT_WEIGHT } from '../../../theme/typography';
+import { useAppSelector } from '../../../redux/hooks';
 import { useDashboardStats } from '../hooks/useDashboardStats';
+import ProfileHeader from '../components/ProfileHeader';
+import BeltTimelineCard from '../components/BeltTimelineCard';
 import type { AppTabsParamList } from '../../../navigation/types';
-
-const BELT_LABELS: Record<keyof typeof BELT_COLORS, string> = {
-  white: 'White Belt',
-  blue: 'Blue Belt',
-  purple: 'Purple Belt',
-  brown: 'Brown Belt',
-  black: 'Black Belt',
-};
-
-function initialsFor(name: string | null | undefined): string {
-  if (!name) return '?';
-  return name
-    .trim()
-    .split(/\s+/)
-    .slice(0, 2)
-    .map(part => part[0]?.toUpperCase())
-    .join('');
-}
 
 function StatCard({
   label,
@@ -69,28 +60,17 @@ function DashboardScreen() {
       </View>
     );
   }
-
   return (
     <View style={[styles.screen, { paddingTop: insets.top }]}>
       <ScrollView
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}>
-        <View style={styles.header}>
-          <View style={[styles.avatar, { borderColor: accent }]}>
-            <Text style={styles.avatarText}>
-              {initialsFor(profile?.display_name)}
-            </Text>
-          </View>
-          <View style={styles.headerText}>
-            <Text style={styles.name}>{profile?.display_name ?? 'Your name'}</Text>
-            <View style={styles.beltRow}>
-              <View style={[styles.beltDot, { backgroundColor: accent }]} />
-              <Text style={styles.beltLabel}>
-                {BELT_LABELS[belt]} · {profile?.current_stripes ?? 0} stripes
-              </Text>
-            </View>
-          </View>
-        </View>
+        <ProfileHeader
+          displayName={profile?.display_name}
+          belt={belt}
+          stripes={profile?.current_stripes ?? 0}
+          accent={accent}
+        />
 
         {stats.error ? <Text style={styles.errorText}>{stats.error}</Text> : null}
 
@@ -123,16 +103,20 @@ function DashboardScreen() {
 
         <View style={styles.actionsRow}>
           <Pressable
-            style={[styles.actionButton, { backgroundColor: accent }]}
-            onPress={() => navigation.navigate('Log')}>
+            style={[styles.actionButton, { backgroundColor: UI_ACCENT }]}
+            onPress={() => navigation.navigate('Log', { screen: 'TrainingLog' })}>
             <Plus color={UI_ACCENT_TEXT} size={18} strokeWidth={2.5} />
             <Text style={styles.actionButtonTextPrimary}>Log Session</Text>
           </Pressable>
           <Pressable
-            style={[styles.actionButton, styles.actionButtonOutline, { borderColor: accent }]}
-            onPress={() => navigation.navigate('Rolls')}>
-            <Plus color={accent} size={18} strokeWidth={2.5} />
-            <Text style={[styles.actionButtonTextSecondary, { color: accent }]}>
+            style={[
+              styles.actionButton,
+              styles.actionButtonOutline,
+              { borderColor: UI_ACCENT },
+            ]}
+            onPress={() => navigation.navigate('Rolls', { screen: 'RollTracker' })}>
+            <Plus color={UI_ACCENT} size={18} strokeWidth={2.5} />
+            <Text style={[styles.actionButtonTextSecondary, { color: UI_ACCENT }]}>
               Log Roll
             </Text>
           </Pressable>
@@ -156,11 +140,18 @@ function DashboardScreen() {
             </Text>
           ) : (
             stats.recentActivity.map((item, i) => (
-              <React.Fragment key={item.text + item.when}>
-                <View style={styles.activityRow}>
+              <React.Fragment key={item.id}>
+                <Pressable
+                  style={styles.activityRow}
+                  onPress={() =>
+                    navigation.navigate('Log', {
+                      screen: 'LogSessionForm',
+                      params: { sessionId: item.id },
+                    })
+                  }>
                   <Text style={styles.activityText}>{item.text}</Text>
                   <Text style={styles.activityMeta}>{item.when}</Text>
-                </View>
+                </Pressable>
                 {i < stats.recentActivity.length - 1 && (
                   <View style={styles.activityDivider} />
                 )}
@@ -168,6 +159,8 @@ function DashboardScreen() {
             ))
           )}
         </View>
+
+        <BeltTimelineCard />
       </ScrollView>
     </View>
   );
@@ -185,53 +178,12 @@ function createStyles(theme: Theme) {
     },
     errorText: {
       color: theme.danger,
-      fontSize: 13,
+      fontSize: FONT_SIZE.label,
     },
     scrollContent: {
       padding: 20,
       paddingBottom: 24,
       gap: 16,
-    },
-    header: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: 12,
-    },
-    avatar: {
-      width: 52,
-      height: 52,
-      borderRadius: 26,
-      borderWidth: 2,
-      backgroundColor: theme.surface,
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    avatarText: {
-      color: theme.textPrimary,
-      fontWeight: '700',
-      fontSize: 16,
-    },
-    headerText: {
-      gap: 4,
-    },
-    name: {
-      color: theme.textPrimary,
-      fontSize: 20,
-      fontWeight: '700',
-    },
-    beltRow: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: 6,
-    },
-    beltDot: {
-      width: 8,
-      height: 8,
-      borderRadius: 4,
-    },
-    beltLabel: {
-      color: theme.textSecondary,
-      fontSize: 13,
     },
     card: {
       backgroundColor: theme.surface,
@@ -247,22 +199,22 @@ function createStyles(theme: Theme) {
     },
     streakValue: {
       color: theme.textPrimary,
-      fontSize: 32,
-      fontWeight: '800',
+      fontSize: FONT_SIZE.streak,
+      fontWeight: FONT_WEIGHT.extrabold,
     },
     streakLabel: {
       color: theme.textSecondary,
-      fontSize: 13,
+      fontSize: FONT_SIZE.label,
       marginTop: 2,
     },
     streakBest: {
       color: theme.textSecondary,
-      fontSize: 13,
+      fontSize: FONT_SIZE.label,
     },
     cardTitle: {
       color: theme.textPrimary,
-      fontSize: 15,
-      fontWeight: '700',
+      fontSize: FONT_SIZE.base,
+      fontWeight: FONT_WEIGHT.bold,
       marginBottom: 12,
     },
     weekRow: {
@@ -285,7 +237,7 @@ function createStyles(theme: Theme) {
     },
     dayLabel: {
       color: theme.textSecondary,
-      fontSize: 12,
+      fontSize: FONT_SIZE.sm,
     },
     actionsRow: {
       flexDirection: 'row',
@@ -306,12 +258,12 @@ function createStyles(theme: Theme) {
     },
     actionButtonTextPrimary: {
       color: UI_ACCENT_TEXT,
-      fontWeight: '700',
-      fontSize: 15,
+      fontWeight: FONT_WEIGHT.bold,
+      fontSize: FONT_SIZE.base,
     },
     actionButtonTextSecondary: {
-      fontWeight: '700',
-      fontSize: 15,
+      fontWeight: FONT_WEIGHT.bold,
+      fontSize: FONT_SIZE.base,
     },
     statsRow: {
       flexDirection: 'row',
@@ -329,12 +281,12 @@ function createStyles(theme: Theme) {
     },
     statValue: {
       color: theme.textPrimary,
-      fontSize: 18,
-      fontWeight: '700',
+      fontSize: FONT_SIZE.xl,
+      fontWeight: FONT_WEIGHT.bold,
     },
     statLabel: {
       color: theme.textSecondary,
-      fontSize: 11,
+      fontSize: FONT_SIZE.xs,
       textAlign: 'center',
     },
     activityRow: {
@@ -344,11 +296,11 @@ function createStyles(theme: Theme) {
     },
     activityText: {
       color: theme.textPrimary,
-      fontSize: 14,
+      fontSize: FONT_SIZE.body,
     },
     activityMeta: {
       color: theme.textSecondary,
-      fontSize: 13,
+      fontSize: FONT_SIZE.label,
     },
     activityDivider: {
       height: 1,

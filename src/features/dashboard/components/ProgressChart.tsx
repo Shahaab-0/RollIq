@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import { StyleSheet, Text, useColorScheme, View } from 'react-native';
 import { getTheme, Theme } from '../../../theme/colors';
+import { FONT_SIZE, FONT_WEIGHT } from '../../../theme/typography';
 
 interface Point {
   label: string;
@@ -62,8 +63,8 @@ function createStyles(theme: Theme) {
     },
     title: {
       color: theme.textPrimary,
-      fontSize: 14,
-      fontWeight: '700',
+      fontSize: FONT_SIZE.body,
+      fontWeight: FONT_WEIGHT.bold,
     },
     chartRow: {
       flexDirection: 'row',
@@ -77,7 +78,7 @@ function createStyles(theme: Theme) {
     },
     valueLabel: {
       color: theme.textSecondary,
-      fontSize: 11,
+      fontSize: FONT_SIZE.xs,
     },
     barTrack: {
       height: CHART_HEIGHT,
@@ -90,7 +91,7 @@ function createStyles(theme: Theme) {
     },
     xLabel: {
       color: theme.textSecondary,
-      fontSize: 10,
+      fontSize: FONT_SIZE.tiny,
     },
   });
 }

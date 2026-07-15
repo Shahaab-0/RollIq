@@ -9,8 +9,15 @@ export const BELT_COLORS = {
 };
 
 // Generic UI accent (buttons, active tab, chips) — kept distinct from every
-// belt color above so it never gets mistaken for a purple-belt reference.
-export const UI_ACCENT = '#14B8A6';
+// belt color above so it never gets mistaken for a belt reference. Cyan,
+// not teal/purple/blue/amber, cool and energetic without overlapping the
+// blue-belt hue.
+export const UI_ACCENT = '#06B6D4';
+
+// Low-opacity accent tint for *inactive* selectable controls (chips, rating
+// dots) — gives them a cool, clearly-interactive look instead of flat gray,
+// without competing with the solid UI_ACCENT fill used once selected.
+export const UI_ACCENT_MUTED = '#06B6D429';
 
 // Text/icon color for content rendered on top of UI_ACCENT (or a belt
 // color) — stays dark regardless of light/dark theme, since it's read

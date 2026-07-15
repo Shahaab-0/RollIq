@@ -12,8 +12,9 @@ import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Plus, Trash2 } from 'lucide-react-native';
 import { getTheme, Theme, UI_ACCENT, UI_ACCENT_TEXT } from '../../../theme/colors';
-import { useAppDispatch, useAppSelector } from '../../../app/hooks';
-import { deleteRoll, fetchRolls } from '../rollsSlice';
+import { FONT_SIZE, FONT_WEIGHT } from '../../../theme/typography';
+import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
+import { deleteRoll, fetchRolls } from '../../../redux/rollsSlice';
 import type { RollsStackParamList } from '../../../navigation/types';
 import type { Roll } from '../types';
 
@@ -69,7 +70,10 @@ function RollTrackerScreen() {
           {formatDate(item.created_at)}
         </Text>
       </View>
-      <Pressable hitSlop={8} onPress={() => dispatch(deleteRoll(item.id))}>
+      <Pressable
+        hitSlop={8}
+        style={styles.deleteIconButton}
+        onPress={() => dispatch(deleteRoll(item.id))}>
         <Trash2 color={theme.danger} size={18} />
       </Pressable>
     </Pressable>
@@ -138,8 +142,8 @@ function createStyles(theme: Theme) {
     },
     title: {
       color: theme.textPrimary,
-      fontSize: 24,
-      fontWeight: '800',
+      fontSize: FONT_SIZE.title,
+      fontWeight: FONT_WEIGHT.extrabold,
     },
     addButton: {
       backgroundColor: UI_ACCENT,
@@ -158,7 +162,7 @@ function createStyles(theme: Theme) {
     },
     emptyText: {
       color: theme.textSecondary,
-      fontSize: 14,
+      fontSize: FONT_SIZE.body,
       textAlign: 'center',
     },
     listContent: {
@@ -177,8 +181,8 @@ function createStyles(theme: Theme) {
     },
     tapCardTitle: {
       color: theme.textPrimary,
-      fontSize: 15,
-      fontWeight: '700',
+      fontSize: FONT_SIZE.base,
+      fontWeight: FONT_WEIGHT.bold,
       marginBottom: 4,
     },
     tapRow: {
@@ -187,12 +191,12 @@ function createStyles(theme: Theme) {
     },
     tapName: {
       color: theme.textSecondary,
-      fontSize: 14,
+      fontSize: FONT_SIZE.body,
     },
     tapCount: {
       color: theme.danger,
-      fontSize: 14,
-      fontWeight: '700',
+      fontSize: FONT_SIZE.body,
+      fontWeight: FONT_WEIGHT.bold,
     },
     row: {
       flexDirection: 'row',
@@ -211,12 +215,18 @@ function createStyles(theme: Theme) {
     },
     rowTitle: {
       color: theme.textPrimary,
-      fontSize: 15,
-      fontWeight: '600',
+      fontSize: FONT_SIZE.base,
+      fontWeight: FONT_WEIGHT.semibold,
     },
     rowMeta: {
       color: theme.textSecondary,
-      fontSize: 13,
+      fontSize: FONT_SIZE.label,
+    },
+    deleteIconButton: {
+      padding: 8,
+      borderRadius: 10,
+      borderWidth: 1,
+      borderColor: theme.danger,
     },
   });
 }

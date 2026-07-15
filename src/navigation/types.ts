@@ -1,14 +1,8 @@
+import type { NavigatorScreenParams } from '@react-navigation/native';
+
 export type AuthStackParamList = {
   SignIn: undefined;
   SignUp: undefined;
-};
-
-export type AppTabsParamList = {
-  Home: undefined;
-  Log: undefined;
-  Techniques: undefined;
-  Rolls: undefined;
-  Profile: undefined;
 };
 
 export type LogStackParamList = {
@@ -24,4 +18,12 @@ export type TechniquesStackParamList = {
 export type RollsStackParamList = {
   RollTracker: undefined;
   LogRollForm: { rollId?: string } | undefined;
+};
+
+export type AppTabsParamList = {
+  Home: undefined;
+  Log: NavigatorScreenParams<LogStackParamList>;
+  Techniques: NavigatorScreenParams<TechniquesStackParamList>;
+  Rolls: NavigatorScreenParams<RollsStackParamList>;
+  Profile: undefined;
 };

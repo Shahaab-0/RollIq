@@ -11,8 +11,9 @@ import {
 } from 'react-native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { getTheme, Theme, UI_ACCENT, UI_ACCENT_TEXT } from '../../../theme/colors';
-import { useAppDispatch, useAppSelector } from '../../../app/hooks';
-import { signUp } from '../authSlice';
+import { FONT_SIZE, FONT_WEIGHT } from '../../../theme/typography';
+import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
+import { signUp } from '../../../redux/authSlice';
 import type { AuthStackParamList } from '../../../navigation/types';
 
 type Props = NativeStackScreenProps<AuthStackParamList, 'SignUp'>;
@@ -90,12 +91,12 @@ function createStyles(theme: Theme) {
     },
     title: {
       color: theme.textPrimary,
-      fontSize: 28,
-      fontWeight: '800',
+      fontSize: FONT_SIZE.display,
+      fontWeight: FONT_WEIGHT.extrabold,
     },
     subtitle: {
       color: theme.textSecondary,
-      fontSize: 15,
+      fontSize: FONT_SIZE.base,
       marginBottom: 12,
     },
     input: {
@@ -106,11 +107,11 @@ function createStyles(theme: Theme) {
       paddingHorizontal: 16,
       paddingVertical: 14,
       color: theme.textPrimary,
-      fontSize: 15,
+      fontSize: FONT_SIZE.base,
     },
     errorText: {
       color: theme.danger,
-      fontSize: 13,
+      fontSize: FONT_SIZE.label,
     },
     button: {
       backgroundColor: UI_ACCENT,
@@ -124,8 +125,8 @@ function createStyles(theme: Theme) {
     },
     buttonText: {
       color: UI_ACCENT_TEXT,
-      fontWeight: '700',
-      fontSize: 15,
+      fontWeight: FONT_WEIGHT.bold,
+      fontSize: FONT_SIZE.base,
     },
     linkButton: {
       alignItems: 'center',
@@ -133,11 +134,11 @@ function createStyles(theme: Theme) {
     },
     linkText: {
       color: theme.textSecondary,
-      fontSize: 14,
+      fontSize: FONT_SIZE.body,
     },
     linkTextAccent: {
       color: UI_ACCENT,
-      fontWeight: '700',
+      fontWeight: FONT_WEIGHT.bold,
     },
   });
 }

@@ -15,25 +15,38 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RouteProp } from '@react-navigation/native';
 import { ChevronLeft } from 'lucide-react-native';
+import DateTimePicker, {
+  DateTimePickerAndroid,
+} from '@react-native-community/datetimepicker';
 import { getTheme, Theme, UI_ACCENT, UI_ACCENT_TEXT } from '../../../theme/colors';
-import { useAppDispatch, useAppSelector } from '../../../app/hooks';
-import { createSession, deleteSession, updateSession } from '../sessionsSlice';
+import { FONT_SIZE, FONT_WEIGHT } from '../../../theme/typography';
+import { toLocalDateString } from '../../../lib/dateFormat';
+import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
+import { createSession, deleteSession, updateSession } from '../../../redux/sessionsSlice';
 import {
   fetchTechniqueIdsForSession,
   saveSessionTechniques,
 } from '../sessionTechniques';
 import TechniquePicker from '../components/TechniquePicker';
-import { SESSION_TYPE_OPTIONS, SessionType } from '../types';
+import SessionTypeFields from '../components/SessionTypeFields';
+import SessionProgressFields from '../components/SessionProgressFields';
+import { SessionType } from '../types';
 import type { LogStackParamList } from '../../../navigation/types';
 
 type Nav = NativeStackNavigationProp<LogStackParamList, 'LogSessionForm'>;
 type Route = RouteProp<LogStackParamList, 'LogSessionForm'>;
 
 function todayString(): string {
-  const d = new Date();
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(
-    d.getDate(),
-  ).padStart(2, '0')}`;
+  return toLocalDateString(new Date());
+}
+
+function formatDisplayDate(dateStr: string): string {
+  return new Date(`${dateStr}T00:00:00`).toLocaleDateString(undefined, {
+    weekday: 'short',
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  });
 }
 
 function LogSessionFormScreen() {
@@ -52,6 +65,7 @@ function LogSessionFormScreen() {
   );
 
   const [date, setDate] = useState(existing?.date ?? todayString());
+  const dateObj = useMemo(() => new Date(`${date}T00:00:00`), [date]);
   const [gi, setGi] = useState(existing?.gi ?? true);
   const [sessionType, setSessionType] = useState<SessionType>(
     existing?.session_type ?? 'fundamentals',
@@ -85,13 +99,7 @@ function LogSessionFormScreen() {
     }
   }, [existing]);
 
-  const isValidDate = /^\d{4}-\d{2}-\d{2}$/.test(date);
-
   const handleSave = async () => {
-    if (!isValidDate) {
-      Alert.alert('Invalid date', 'Please use the format YYYY-MM-DD.');
-      return;
-    }
     setSaving(true);
     const changes = {
       date,
@@ -157,59 +165,45 @@ function LogSessionFormScreen() {
 
       <ScrollView contentContainerStyle={styles.content}>
         <Text style={styles.label}>Date</Text>
-        <View style={styles.dateRow}>
-          <TextInput
-            style={[styles.input, styles.dateInput]}
-            value={date}
-            onChangeText={setDate}
-            placeholder="YYYY-MM-DD"
-            placeholderTextColor={theme.textSecondary}
-          />
+        {Platform.OS === 'ios' ? (
+          <View style={styles.iosDateRow}>
+            <DateTimePicker
+              value={dateObj}
+              mode="date"
+              display="compact"
+              themeVariant={theme.scheme}
+              accentColor={UI_ACCENT}
+              maximumDate={new Date()}
+              onChange={(_event, selected) => {
+                if (selected) setDate(toLocalDateString(selected));
+              }}
+            />
+          </View>
+        ) : (
           <Pressable
-            style={styles.todayButton}
-            onPress={() => setDate(todayString())}>
-            <Text style={styles.todayButtonText}>Today</Text>
-          </Pressable>
-        </View>
-
-        <Text style={styles.label}>Type</Text>
-        <View style={styles.chipRow}>
-          <Pressable
-            style={[styles.chip, gi && styles.chipActive]}
-            onPress={() => setGi(true)}>
-            <Text style={[styles.chipText, gi && styles.chipTextActive]}>
-              Gi
+            style={styles.input}
+            onPress={() =>
+              DateTimePickerAndroid.open({
+                value: dateObj,
+                mode: 'date',
+                maximumDate: new Date(),
+                onChange: (_event, selected) => {
+                  if (selected) setDate(toLocalDateString(selected));
+                },
+              })
+            }>
+            <Text style={styles.androidDateText}>
+              {formatDisplayDate(date)}
             </Text>
           </Pressable>
-          <Pressable
-            style={[styles.chip, !gi && styles.chipActive]}
-            onPress={() => setGi(false)}>
-            <Text style={[styles.chipText, !gi && styles.chipTextActive]}>
-              No-Gi
-            </Text>
-          </Pressable>
-        </View>
+        )}
 
-        <Text style={styles.label}>Session type</Text>
-        <View style={styles.chipRow}>
-          {SESSION_TYPE_OPTIONS.map(option => (
-            <Pressable
-              key={option.value}
-              style={[
-                styles.chip,
-                sessionType === option.value && styles.chipActive,
-              ]}
-              onPress={() => setSessionType(option.value)}>
-              <Text
-                style={[
-                  styles.chipText,
-                  sessionType === option.value && styles.chipTextActive,
-                ]}>
-                {option.label}
-              </Text>
-            </Pressable>
-          ))}
-        </View>
+        <SessionTypeFields
+          gi={gi}
+          onChangeGi={setGi}
+          sessionType={sessionType}
+          onChangeSessionType={setSessionType}
+        />
 
         <Text style={styles.label}>Duration (minutes)</Text>
         <TextInput
@@ -224,56 +218,16 @@ function LogSessionFormScreen() {
         <Text style={styles.label}>Techniques covered</Text>
         <TechniquePicker selectedIds={techniqueIds} onChange={setTechniqueIds} />
 
-        <Text style={styles.label}>Rolling rounds</Text>
-        <View style={styles.dateRow}>
-          <TextInput
-            style={[styles.input, styles.dateInput]}
-            value={roundsCount}
-            onChangeText={setRoundsCount}
-            keyboardType="number-pad"
-            placeholder="Rounds (e.g. 5)"
-            placeholderTextColor={theme.textSecondary}
-          />
-          <TextInput
-            style={[styles.input, styles.dateInput]}
-            value={roundMinutes}
-            onChangeText={setRoundMinutes}
-            keyboardType="number-pad"
-            placeholder="Min/round (e.g. 6)"
-            placeholderTextColor={theme.textSecondary}
-          />
-        </View>
-
-        <Text style={styles.label}>Submissions landed</Text>
-        <TextInput
-          style={styles.input}
-          value={submissionsLandedCount}
-          onChangeText={setSubmissionsLandedCount}
-          keyboardType="number-pad"
-          placeholder="0"
-          placeholderTextColor={theme.textSecondary}
+        <SessionProgressFields
+          roundsCount={roundsCount}
+          onChangeRoundsCount={setRoundsCount}
+          roundMinutes={roundMinutes}
+          onChangeRoundMinutes={setRoundMinutes}
+          submissionsLandedCount={submissionsLandedCount}
+          onChangeSubmissionsLandedCount={setSubmissionsLandedCount}
+          productivityRating={productivityRating}
+          onChangeProductivityRating={setProductivityRating}
         />
-
-        <Text style={styles.label}>Productivity</Text>
-        <View style={styles.chipRow}>
-          {[1, 2, 3, 4, 5].map(level => (
-            <Pressable
-              key={level}
-              style={[
-                styles.ratingDot,
-                productivityRating === level && styles.ratingDotActive,
-              ]}
-              onPress={() => setProductivityRating(level)}>
-              <Text
-                style={[
-                  styles.chipText,
-                  productivityRating === level && styles.chipTextActive,
-                ]}>
-                {level}
-              </Text>
-            </Pressable>
-          ))}
-        </View>
 
         <Text style={styles.label}>Instructor</Text>
         <TextInput
@@ -329,8 +283,8 @@ function createStyles(theme: Theme) {
     },
     headerTitle: {
       color: theme.textPrimary,
-      fontSize: 17,
-      fontWeight: '700',
+      fontSize: FONT_SIZE.lg,
+      fontWeight: FONT_WEIGHT.bold,
     },
     headerSpacer: {
       width: 24,
@@ -342,8 +296,8 @@ function createStyles(theme: Theme) {
     },
     label: {
       color: theme.textSecondary,
-      fontSize: 13,
-      fontWeight: '600',
+      fontSize: FONT_SIZE.label,
+      fontWeight: FONT_WEIGHT.semibold,
       marginTop: 12,
       marginBottom: 4,
     },
@@ -355,70 +309,18 @@ function createStyles(theme: Theme) {
       paddingHorizontal: 16,
       paddingVertical: 14,
       color: theme.textPrimary,
-      fontSize: 15,
+      fontSize: FONT_SIZE.base,
     },
     notesInput: {
       minHeight: 90,
       textAlignVertical: 'top',
     },
-    dateRow: {
-      flexDirection: 'row',
-      gap: 8,
+    iosDateRow: {
+      alignItems: 'flex-start',
     },
-    dateInput: {
-      flex: 1,
-    },
-    todayButton: {
-      justifyContent: 'center',
-      paddingHorizontal: 16,
-      borderRadius: 12,
-      backgroundColor: theme.surfaceAlt,
-      borderWidth: 1,
-      borderColor: theme.border,
-    },
-    todayButtonText: {
+    androidDateText: {
       color: theme.textPrimary,
-      fontWeight: '600',
-      fontSize: 13,
-    },
-    chipRow: {
-      flexDirection: 'row',
-      flexWrap: 'wrap',
-      gap: 8,
-    },
-    chip: {
-      paddingHorizontal: 14,
-      paddingVertical: 10,
-      borderRadius: 20,
-      backgroundColor: theme.surface,
-      borderWidth: 1,
-      borderColor: theme.border,
-    },
-    chipActive: {
-      backgroundColor: UI_ACCENT,
-      borderColor: UI_ACCENT,
-    },
-    chipText: {
-      color: theme.textSecondary,
-      fontSize: 13,
-      fontWeight: '600',
-    },
-    chipTextActive: {
-      color: UI_ACCENT_TEXT,
-    },
-    ratingDot: {
-      width: 40,
-      height: 40,
-      borderRadius: 20,
-      alignItems: 'center',
-      justifyContent: 'center',
-      backgroundColor: theme.surface,
-      borderWidth: 1,
-      borderColor: theme.border,
-    },
-    ratingDotActive: {
-      backgroundColor: UI_ACCENT,
-      borderColor: UI_ACCENT,
+      fontSize: FONT_SIZE.base,
     },
     saveButton: {
       backgroundColor: UI_ACCENT,
@@ -432,18 +334,21 @@ function createStyles(theme: Theme) {
     },
     saveButtonText: {
       color: UI_ACCENT_TEXT,
-      fontWeight: '700',
-      fontSize: 15,
+      fontWeight: FONT_WEIGHT.bold,
+      fontSize: FONT_SIZE.base,
     },
     deleteButton: {
+      borderWidth: 1.5,
+      borderColor: theme.danger,
+      borderRadius: 14,
+      paddingVertical: 16,
       alignItems: 'center',
-      paddingVertical: 14,
-      marginTop: 8,
+      marginTop: 12,
     },
     deleteButtonText: {
       color: theme.danger,
-      fontWeight: '600',
-      fontSize: 14,
+      fontWeight: FONT_WEIGHT.bold,
+      fontSize: FONT_SIZE.base,
     },
   });
 }

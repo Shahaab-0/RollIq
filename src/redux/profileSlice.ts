@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { supabase } from '../../lib/supabase';
-import type { Profile } from './types';
+import { supabase } from '../lib/supabase';
+import type { Profile } from '../features/profile/types';
 
 interface ProfileState {
   data: Profile | null;
@@ -14,13 +14,31 @@ const initialState: ProfileState = {
   error: null,
 };
 
+const PROFILE_COLUMNS = 'id, display_name, current_belt, current_stripes, home_gym';
+
 export const fetchProfile = createAsyncThunk('profile/fetch', async () => {
   const { data, error } = await supabase
     .from('profiles')
-    .select('id, display_name, current_belt, current_stripes, home_gym')
-    .single();
+    .select(PROFILE_COLUMNS)
+    .maybeSingle();
   if (error) throw error;
-  return data as Profile;
+  if (data) return data as Profile;
+
+  // No row yet — happens for accounts created before the auto-create
+  // trigger existed (or any other edge case). Create it now instead of
+  // leaving the app permanently stuck with no profile to edit/save.
+  const { data: userData, error: userError } = await supabase.auth.getUser();
+  if (userError) throw userError;
+  const userId = userData.user?.id;
+  if (!userId) throw new Error('Not authenticated');
+
+  const { data: created, error: insertError } = await supabase
+    .from('profiles')
+    .insert({ id: userId })
+    .select(PROFILE_COLUMNS)
+    .single();
+  if (insertError) throw insertError;
+  return created as Profile;
 });
 
 export const updateProfile = createAsyncThunk(
@@ -34,7 +52,7 @@ export const updateProfile = createAsyncThunk(
       .from('profiles')
       .update(changes)
       .eq('id', id)
-      .select('id, display_name, current_belt, current_stripes, home_gym')
+      .select(PROFILE_COLUMNS)
       .single();
     if (error) throw error;
     return data as Profile;

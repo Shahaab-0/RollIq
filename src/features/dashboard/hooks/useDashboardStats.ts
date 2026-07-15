@@ -1,7 +1,9 @@
 import { useCallback, useEffect, useState } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
 import { supabase } from '../../../lib/supabase';
-import { useAppDispatch, useAppSelector } from '../../../app/hooks';
-import { fetchProfile } from '../../profile/profileSlice';
+import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
+import { fetchProfile } from '../../../redux/profileSlice';
+import { formatDisplayDate } from '../../../lib/dateFormat';
 
 const SESSION_TYPE_LABELS: Record<string, string> = {
   fundamentals: 'Fundamentals',
@@ -12,7 +14,9 @@ const SESSION_TYPE_LABELS: Record<string, string> = {
 };
 
 interface SessionRow {
+  id: string;
   date: string;
+  created_at: string;
   duration_minutes: number | null;
   gi: boolean;
   session_type: string;
@@ -46,7 +50,7 @@ interface DashboardStats {
   matHours: number;
   classesThisYear: number;
   subSuccessPct: number | null;
-  recentActivity: { text: string; when: string }[];
+  recentActivity: { id: string; text: string; when: string }[];
   progress: {
     rounds: ProgressPoint[];
     productivity: ProgressPoint[];
@@ -129,10 +133,18 @@ function formatRelativeDay(dateStr: string): string {
   );
   if (dateStr === today) return 'Today';
   if (dateStr === yesterday) return 'Yesterday';
-  return new Date(`${dateStr}T00:00:00`).toLocaleDateString(undefined, {
-    month: 'short',
-    day: 'numeric',
-  });
+
+  const daysAgo = Math.round(
+    (new Date(`${today}T00:00:00`).getTime() -
+      new Date(`${dateStr}T00:00:00`).getTime()) /
+      (1000 * 60 * 60 * 24),
+  );
+  if (daysAgo < 7) {
+    return new Date(`${dateStr}T00:00:00`).toLocaleDateString(undefined, {
+      weekday: 'long',
+    });
+  }
+  return formatDisplayDate(dateStr);
 }
 
 export function useDashboardStats() {
@@ -159,9 +171,10 @@ export function useDashboardStats() {
         supabase
           .from('sessions')
           .select(
-            'date, duration_minutes, gi, session_type, rounds_count, productivity_rating, submissions_landed_count',
+            'id, date, created_at, duration_minutes, gi, session_type, rounds_count, productivity_rating, submissions_landed_count',
           )
-          .order('date', { ascending: false }),
+          .order('date', { ascending: false })
+          .order('created_at', { ascending: false }),
         supabase
           .from('rolls')
           .select('submissions_landed, submissions_received'),
@@ -195,6 +208,7 @@ export function useDashboardStats() {
       const total = landed + received;
 
       const recentActivity = sessions.slice(0, 2).map(s => ({
+        id: s.id,
         text: `${s.gi ? 'Gi' : 'No-Gi'} · ${
           SESSION_TYPE_LABELS[s.session_type] ?? s.session_type
         }`,
@@ -234,9 +248,14 @@ export function useDashboardStats() {
     }
   }, [dispatch, profileStatus]);
 
-  useEffect(() => {
-    load();
-  }, [load]);
+  // Bottom-tab screens stay mounted when you switch tabs, so a plain
+  // mount-only effect never reruns when you come back to Home after
+  // logging a session/roll elsewhere — refetch on every focus instead.
+  useFocusEffect(
+    useCallback(() => {
+      load();
+    }, [load]),
+  );
 
   return { ...stats, refresh: load };
 }

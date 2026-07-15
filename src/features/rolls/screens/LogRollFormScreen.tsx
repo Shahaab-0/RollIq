@@ -15,9 +15,16 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RouteProp } from '@react-navigation/native';
 import { ChevronLeft } from 'lucide-react-native';
-import { getTheme, Theme, UI_ACCENT, UI_ACCENT_TEXT } from '../../../theme/colors';
-import { useAppDispatch, useAppSelector } from '../../../app/hooks';
-import { createRoll, deleteRoll, updateRoll } from '../rollsSlice';
+import {
+  getTheme,
+  Theme,
+  UI_ACCENT,
+  UI_ACCENT_MUTED,
+  UI_ACCENT_TEXT,
+} from '../../../theme/colors';
+import { FONT_SIZE, FONT_WEIGHT } from '../../../theme/typography';
+import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
+import { createRoll, deleteRoll, updateRoll } from '../../../redux/rollsSlice';
 import TagInput from '../../../components/TagInput';
 import type { RollsStackParamList } from '../../../navigation/types';
 
@@ -209,8 +216,8 @@ function createStyles(theme: Theme) {
     },
     headerTitle: {
       color: theme.textPrimary,
-      fontSize: 17,
-      fontWeight: '700',
+      fontSize: FONT_SIZE.lg,
+      fontWeight: FONT_WEIGHT.bold,
     },
     headerSpacer: {
       width: 24,
@@ -222,8 +229,8 @@ function createStyles(theme: Theme) {
     },
     label: {
       color: theme.textSecondary,
-      fontSize: 13,
-      fontWeight: '600',
+      fontSize: FONT_SIZE.label,
+      fontWeight: FONT_WEIGHT.semibold,
       marginTop: 12,
       marginBottom: 4,
     },
@@ -235,7 +242,7 @@ function createStyles(theme: Theme) {
       paddingHorizontal: 16,
       paddingVertical: 14,
       color: theme.textPrimary,
-      fontSize: 15,
+      fontSize: FONT_SIZE.base,
     },
     notesInput: {
       minHeight: 90,
@@ -251,9 +258,9 @@ function createStyles(theme: Theme) {
       borderRadius: 20,
       alignItems: 'center',
       justifyContent: 'center',
-      backgroundColor: theme.surface,
+      backgroundColor: UI_ACCENT_MUTED,
       borderWidth: 1,
-      borderColor: theme.border,
+      borderColor: 'transparent',
     },
     effortDotActive: {
       backgroundColor: UI_ACCENT,
@@ -261,7 +268,7 @@ function createStyles(theme: Theme) {
     },
     effortText: {
       color: theme.textSecondary,
-      fontWeight: '700',
+      fontWeight: FONT_WEIGHT.bold,
     },
     effortTextActive: {
       color: UI_ACCENT_TEXT,
@@ -278,18 +285,21 @@ function createStyles(theme: Theme) {
     },
     saveButtonText: {
       color: UI_ACCENT_TEXT,
-      fontWeight: '700',
-      fontSize: 15,
+      fontWeight: FONT_WEIGHT.bold,
+      fontSize: FONT_SIZE.base,
     },
     deleteButton: {
+      borderWidth: 1.5,
+      borderColor: theme.danger,
+      borderRadius: 14,
+      paddingVertical: 16,
       alignItems: 'center',
-      paddingVertical: 14,
-      marginTop: 8,
+      marginTop: 12,
     },
     deleteButtonText: {
       color: theme.danger,
-      fontWeight: '600',
-      fontSize: 14,
+      fontWeight: FONT_WEIGHT.bold,
+      fontSize: FONT_SIZE.base,
     },
   });
 }

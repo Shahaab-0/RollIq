@@ -15,15 +15,22 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RouteProp } from '@react-navigation/native';
 import { ChevronLeft, Repeat } from 'lucide-react-native';
-import { getTheme, Theme, UI_ACCENT, UI_ACCENT_TEXT } from '../../../theme/colors';
-import { useAppDispatch, useAppSelector } from '../../../app/hooks';
+import {
+  getTheme,
+  Theme,
+  UI_ACCENT,
+  UI_ACCENT_MUTED,
+  UI_ACCENT_TEXT,
+} from '../../../theme/colors';
+import { FONT_SIZE, FONT_WEIGHT } from '../../../theme/typography';
+import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
 import {
   createTechnique,
   deleteTechnique,
   incrementDrillCount,
   updateTechnique,
-} from '../techniquesSlice';
-import { Position, POSITION_OPTIONS } from '../types';
+} from '../../../redux/techniquesSlice';
+import { POSITION_PRESETS } from '../types';
 import type { TechniquesStackParamList } from '../../../navigation/types';
 
 type Nav = NativeStackNavigationProp<TechniquesStackParamList, 'TechniqueForm'>;
@@ -45,9 +52,7 @@ function TechniqueFormScreen() {
   );
 
   const [name, setName] = useState(existing?.name ?? '');
-  const [position, setPosition] = useState<Position>(
-    existing?.position ?? 'guard',
-  );
+  const [position, setPosition] = useState(existing?.position ?? '');
   const [notes, setNotes] = useState(existing?.notes ?? '');
   const [resourceUrl, setResourceUrl] = useState(existing?.resource_url ?? '');
   const [saving, setSaving] = useState(false);
@@ -57,10 +62,14 @@ function TechniqueFormScreen() {
       Alert.alert('Name required', 'Give this technique a name.');
       return;
     }
+    if (!position.trim()) {
+      Alert.alert('Position required', 'Pick a preset or type your own.');
+      return;
+    }
     setSaving(true);
     const changes = {
       name: name.trim(),
-      position,
+      position: position.trim(),
       notes: notes || null,
       resource_url: resourceUrl || null,
     };
@@ -133,24 +142,28 @@ function TechniqueFormScreen() {
 
         <Text style={styles.label}>Position</Text>
         <View style={styles.chipRow}>
-          {POSITION_OPTIONS.map(option => (
+          {POSITION_PRESETS.map(preset => (
             <Pressable
-              key={option.value}
-              style={[
-                styles.chip,
-                position === option.value && styles.chipActive,
-              ]}
-              onPress={() => setPosition(option.value)}>
+              key={preset}
+              style={[styles.chip, position === preset && styles.chipActive]}
+              onPress={() => setPosition(preset)}>
               <Text
                 style={[
                   styles.chipText,
-                  position === option.value && styles.chipTextActive,
+                  position === preset && styles.chipTextActive,
                 ]}>
-                {option.label}
+                {preset}
               </Text>
             </Pressable>
           ))}
         </View>
+        <TextInput
+          style={styles.input}
+          value={position}
+          onChangeText={setPosition}
+          placeholder="Or type your own (e.g. 50/50, De La Riva)"
+          placeholderTextColor={theme.textSecondary}
+        />
 
         <Text style={styles.label}>Resource link</Text>
         <TextInput
@@ -207,8 +220,8 @@ function createStyles(theme: Theme) {
     },
     headerTitle: {
       color: theme.textPrimary,
-      fontSize: 17,
-      fontWeight: '700',
+      fontSize: FONT_SIZE.lg,
+      fontWeight: FONT_WEIGHT.bold,
     },
     headerSpacer: {
       width: 24,
@@ -231,8 +244,8 @@ function createStyles(theme: Theme) {
     },
     drillCount: {
       color: theme.textPrimary,
-      fontSize: 14,
-      fontWeight: '600',
+      fontSize: FONT_SIZE.body,
+      fontWeight: FONT_WEIGHT.semibold,
     },
     drillButton: {
       flexDirection: 'row',
@@ -246,13 +259,13 @@ function createStyles(theme: Theme) {
     },
     drillButtonText: {
       color: UI_ACCENT,
-      fontWeight: '700',
-      fontSize: 13,
+      fontWeight: FONT_WEIGHT.bold,
+      fontSize: FONT_SIZE.label,
     },
     label: {
       color: theme.textSecondary,
-      fontSize: 13,
-      fontWeight: '600',
+      fontSize: FONT_SIZE.label,
+      fontWeight: FONT_WEIGHT.semibold,
       marginTop: 12,
       marginBottom: 4,
     },
@@ -264,7 +277,7 @@ function createStyles(theme: Theme) {
       paddingHorizontal: 16,
       paddingVertical: 14,
       color: theme.textPrimary,
-      fontSize: 15,
+      fontSize: FONT_SIZE.base,
     },
     notesInput: {
       minHeight: 90,
@@ -279,9 +292,9 @@ function createStyles(theme: Theme) {
       paddingHorizontal: 14,
       paddingVertical: 10,
       borderRadius: 20,
-      backgroundColor: theme.surface,
+      backgroundColor: UI_ACCENT_MUTED,
       borderWidth: 1,
-      borderColor: theme.border,
+      borderColor: 'transparent',
     },
     chipActive: {
       backgroundColor: UI_ACCENT,
@@ -289,8 +302,8 @@ function createStyles(theme: Theme) {
     },
     chipText: {
       color: theme.textSecondary,
-      fontSize: 13,
-      fontWeight: '600',
+      fontSize: FONT_SIZE.label,
+      fontWeight: FONT_WEIGHT.semibold,
     },
     chipTextActive: {
       color: UI_ACCENT_TEXT,
@@ -307,18 +320,21 @@ function createStyles(theme: Theme) {
     },
     saveButtonText: {
       color: UI_ACCENT_TEXT,
-      fontWeight: '700',
-      fontSize: 15,
+      fontWeight: FONT_WEIGHT.bold,
+      fontSize: FONT_SIZE.base,
     },
     deleteButton: {
+      borderWidth: 1.5,
+      borderColor: theme.danger,
+      borderRadius: 14,
+      paddingVertical: 16,
       alignItems: 'center',
-      paddingVertical: 14,
-      marginTop: 8,
+      marginTop: 12,
     },
     deleteButtonText: {
       color: theme.danger,
-      fontWeight: '600',
-      fontSize: 14,
+      fontWeight: FONT_WEIGHT.bold,
+      fontSize: FONT_SIZE.base,
     },
   });
 }

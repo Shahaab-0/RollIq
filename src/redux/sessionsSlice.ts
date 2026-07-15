@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { supabase } from '../../lib/supabase';
-import type { RootState } from '../../app/store';
-import type { NewSession, Session } from './types';
+import { supabase } from '../lib/supabase';
+import type { RootState } from './store';
+import type { NewSession, Session } from '../features/trainingLog/types';
 
 const SESSION_COLUMNS =
   'id, date, gi, duration_minutes, session_type, instructor, notes, rounds_count, round_minutes, productivity_rating, submissions_landed_count';

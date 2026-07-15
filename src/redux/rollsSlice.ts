@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { supabase } from '../../lib/supabase';
-import type { RootState } from '../../app/store';
-import type { NewRoll, Roll } from './types';
+import { supabase } from '../lib/supabase';
+import type { RootState } from './store';
+import type { NewRoll, Roll } from '../features/rolls/types';
 
 const ROLL_COLUMNS =
   'id, session_id, partner_name, submissions_landed, submissions_received, escapes, effort_rating, notes, created_at';
