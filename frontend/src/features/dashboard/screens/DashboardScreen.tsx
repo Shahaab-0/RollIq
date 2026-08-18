@@ -10,7 +10,9 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
+import type { CompositeNavigationProp } from '@react-navigation/native';
 import type { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Plus } from 'lucide-react-native';
 import {
   BELT_COLORS,
@@ -20,11 +22,20 @@ import {
   UI_ACCENT_TEXT,
 } from '../../../theme/colors';
 import { FONT_SIZE, FONT_WEIGHT } from '../../../theme/typography';
-import { useAppSelector } from '../../../redux/hooks';
+import { useProfile } from '../../profile/hooks/useProfile';
 import { useDashboardStats } from '../hooks/useDashboardStats';
 import ProfileHeader from '../components/ProfileHeader';
 import BeltTimelineCard from '../components/BeltTimelineCard';
-import type { AppTabsParamList } from '../../../navigation/types';
+import GymTilesRow from '../../gyms/components/GymTilesRow';
+import type { AppTabsParamList, HomeStackParamList } from '../../../navigation/types';
+
+// Dashboard lives inside HomeStack (nested under the "Home" tab) but also
+// navigates across tabs (e.g. "Log Session" -> the Log tab) -- the
+// composite type is what lets both kinds of .navigate() calls type-check.
+type Nav = CompositeNavigationProp<
+  NativeStackNavigationProp<HomeStackParamList, 'Dashboard'>,
+  BottomTabNavigationProp<AppTabsParamList>
+>;
 
 function StatCard({
   label,
@@ -44,10 +55,9 @@ function DashboardScreen() {
   const scheme = useColorScheme();
   const theme = useMemo(() => getTheme(scheme), [scheme]);
   const styles = useMemo(() => createStyles(theme), [theme]);
-  const navigation =
-    useNavigation<BottomTabNavigationProp<AppTabsParamList>>();
+  const navigation = useNavigation<Nav>();
 
-  const profile = useAppSelector(state => state.profile.data);
+  const { data: profile } = useProfile();
   const stats = useDashboardStats();
 
   const belt = profile?.current_belt ?? 'white';
@@ -82,6 +92,8 @@ function DashboardScreen() {
           <Text style={styles.streakBest}>Best: {stats.bestStreak} days</Text>
         </View>
 
+        <GymTilesRow />
+
         <View style={styles.card}>
           <Text style={styles.cardTitle}>This week</Text>
           <View style={styles.weekRow}>
@@ -107,18 +119,6 @@ function DashboardScreen() {
             onPress={() => navigation.navigate('Log', { screen: 'TrainingLog' })}>
             <Plus color={UI_ACCENT_TEXT} size={18} strokeWidth={2.5} />
             <Text style={styles.actionButtonTextPrimary}>Log Session</Text>
-          </Pressable>
-          <Pressable
-            style={[
-              styles.actionButton,
-              styles.actionButtonOutline,
-              { borderColor: UI_ACCENT },
-            ]}
-            onPress={() => navigation.navigate('Rolls', { screen: 'RollTracker' })}>
-            <Plus color={UI_ACCENT} size={18} strokeWidth={2.5} />
-            <Text style={[styles.actionButtonTextSecondary, { color: UI_ACCENT }]}>
-              Log Roll
-            </Text>
           </Pressable>
         </View>
 

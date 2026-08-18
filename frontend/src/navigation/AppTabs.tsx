@@ -7,11 +7,13 @@ import {
   CircleUserRound,
   House,
   Swords,
+  Video,
 } from 'lucide-react-native';
-import DashboardScreen from '../features/dashboard/screens/DashboardScreen';
 import ProfileScreen from '../features/profile/screens/ProfileScreen';
+import HomeStack from './HomeStack';
 import LogStack from './LogStack';
 import TechniquesStack from './TechniquesStack';
+import InstructionalsStack from './InstructionalsStack';
 import RollsStack from './RollsStack';
 import { getTheme, UI_ACCENT } from '../theme/colors';
 import type { AppTabsParamList } from './types';
@@ -22,6 +24,7 @@ const TAB_ICONS: Record<keyof AppTabsParamList, typeof House> = {
   Home: House,
   Log: ClipboardList,
   Techniques: BookOpen,
+  Instructionals: Video,
   Rolls: Swords,
   Profile: CircleUserRound,
 };
@@ -52,9 +55,10 @@ function AppTabs() {
         tabBarIcon: ({ color, size }) =>
           renderTabIcon(route.name as keyof AppTabsParamList, color, size),
       })}>
-      <Tab.Screen name="Home" component={DashboardScreen} />
+      <Tab.Screen name="Home" component={HomeStack} />
       <Tab.Screen name="Log" component={LogStack} />
       <Tab.Screen name="Techniques" component={TechniquesStack} />
+      <Tab.Screen name="Instructionals" component={InstructionalsStack} />
       <Tab.Screen name="Rolls" component={RollsStack} />
       <Tab.Screen name="Profile" component={ProfileScreen} />
     </Tab.Navigator>
