@@ -1,0 +1,11 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/rolliq
+    username: rolliq
+    password: rolliq
+
+# Dev-only default so `./mvnw spring-boot:run` works with zero setup.
+# Override with a real secret via JWT_SECRET before this ever runs anywhere
+# but a developer's own machine.
+jwt:
+  secret: ${JWT_SECRET:dev-only-insecure-secret-key-change-me-before-any-real-deployment-please-thanks}

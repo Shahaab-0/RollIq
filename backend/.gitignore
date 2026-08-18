@@ -1,0 +1,8 @@
+target/
+.mvn/wrapper/maven-wrapper.jar
+*.class
+.idea
+*.iml
+
+# Real secrets for docker-compose.prod.yml -- only .env.example is committed.
+.env
