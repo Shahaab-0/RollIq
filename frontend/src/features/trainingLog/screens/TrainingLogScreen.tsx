@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import {
   ActivityIndicator,
   FlatList,
@@ -10,11 +10,12 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { Plus, Trash2 } from 'lucide-react-native';
-import { getTheme, Theme, UI_ACCENT, UI_ACCENT_TEXT } from '../../../theme/colors';
+import { Trash2 } from 'lucide-react-native';
+import { getTheme, Theme, UI_ACCENT } from '../../../theme/colors';
 import { FONT_SIZE, FONT_WEIGHT } from '../../../theme/typography';
-import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
-import { deleteSession, fetchSessions } from '../../../redux/sessionsSlice';
+import FloatingAddButton from '../../../components/FloatingAddButton';
+import ErrorState from '../../../components/ErrorState';
+import { useDeleteSession, useSessions } from '../hooks/useSessions';
 import { SESSION_TYPE_OPTIONS } from '../types';
 import type { LogStackParamList } from '../../../navigation/types';
 import type { Session } from '../types';
@@ -38,14 +39,8 @@ function TrainingLogScreen() {
   const theme = useMemo(() => getTheme(scheme), [scheme]);
   const styles = useMemo(() => createStyles(theme), [theme]);
   const navigation = useNavigation<Nav>();
-  const dispatch = useAppDispatch();
-  const { items, status } = useAppSelector(state => state.sessions);
-
-  useEffect(() => {
-    if (status === 'idle') {
-      dispatch(fetchSessions());
-    }
-  }, [dispatch, status]);
+  const { data: items = [], isLoading, isError } = useSessions();
+  const deleteSession = useDeleteSession();
 
   const renderItem = ({ item }: { item: Session }) => (
     <Pressable
@@ -70,7 +65,7 @@ function TrainingLogScreen() {
       <Pressable
         hitSlop={8}
         style={styles.deleteIconButton}
-        onPress={() => dispatch(deleteSession(item.id))}>
+        onPress={() => deleteSession.mutate(item.id)}>
         <Trash2 color={theme.danger} size={18} />
       </Pressable>
     </Pressable>
@@ -80,17 +75,14 @@ function TrainingLogScreen() {
     <View style={styles.screen}>
       <View style={styles.header}>
         <Text style={styles.title}>Training Log</Text>
-        <Pressable
-          style={styles.addButton}
-          onPress={() => navigation.navigate('LogSessionForm', undefined)}>
-          <Plus color={UI_ACCENT_TEXT} size={20} strokeWidth={2.5} />
-        </Pressable>
       </View>
 
-      {status === 'loading' && items.length === 0 ? (
+      {isLoading && items.length === 0 ? (
         <View style={styles.centered}>
           <ActivityIndicator color={UI_ACCENT} />
         </View>
+      ) : isError ? (
+        <ErrorState />
       ) : items.length === 0 ? (
         <View style={styles.centered}>
           <Text style={styles.emptyText}>
@@ -105,6 +97,8 @@ function TrainingLogScreen() {
           contentContainerStyle={styles.listContent}
         />
       )}
+
+      <FloatingAddButton onPress={() => navigation.navigate('LogSessionForm', undefined)} />
     </View>
   );
 }
@@ -116,9 +110,6 @@ function createStyles(theme: Theme) {
       backgroundColor: theme.background,
     },
     header: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'space-between',
       paddingHorizontal: 20,
       paddingTop: 60,
       paddingBottom: 16,
@@ -127,14 +118,6 @@ function createStyles(theme: Theme) {
       color: theme.textPrimary,
       fontSize: FONT_SIZE.title,
       fontWeight: FONT_WEIGHT.extrabold,
-    },
-    addButton: {
-      backgroundColor: UI_ACCENT,
-      borderRadius: 20,
-      width: 40,
-      height: 40,
-      alignItems: 'center',
-      justifyContent: 'center',
     },
     centered: {
       flex: 1,
@@ -150,7 +133,7 @@ function createStyles(theme: Theme) {
     listContent: {
       paddingHorizontal: 20,
       gap: 10,
-      paddingBottom: 24,
+      paddingBottom: 100,
     },
     row: {
       flexDirection: 'row',

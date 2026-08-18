@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import {
   ActivityIndicator,
   FlatList,
@@ -10,11 +10,12 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { Plus, Trash2 } from 'lucide-react-native';
-import { getTheme, Theme, UI_ACCENT, UI_ACCENT_TEXT } from '../../../theme/colors';
+import { Trash2 } from 'lucide-react-native';
+import { getTheme, Theme, UI_ACCENT } from '../../../theme/colors';
 import { FONT_SIZE, FONT_WEIGHT } from '../../../theme/typography';
-import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
-import { deleteRoll, fetchRolls } from '../../../redux/rollsSlice';
+import FloatingAddButton from '../../../components/FloatingAddButton';
+import ErrorState from '../../../components/ErrorState';
+import { useDeleteRoll, useRolls } from '../hooks/useRolls';
 import type { RollsStackParamList } from '../../../navigation/types';
 import type { Roll } from '../types';
 
@@ -45,14 +46,8 @@ function RollTrackerScreen() {
   const theme = useMemo(() => getTheme(scheme), [scheme]);
   const styles = useMemo(() => createStyles(theme), [theme]);
   const navigation = useNavigation<Nav>();
-  const dispatch = useAppDispatch();
-  const { items, status } = useAppSelector(state => state.rolls);
-
-  useEffect(() => {
-    if (status === 'idle') {
-      dispatch(fetchRolls());
-    }
-  }, [dispatch, status]);
+  const { data: items = [], isLoading, isError } = useRolls();
+  const deleteRoll = useDeleteRoll();
 
   const taps = useMemo(() => topTaps(items), [items]);
 
@@ -73,7 +68,7 @@ function RollTrackerScreen() {
       <Pressable
         hitSlop={8}
         style={styles.deleteIconButton}
-        onPress={() => dispatch(deleteRoll(item.id))}>
+        onPress={() => deleteRoll.mutate(item.id)}>
         <Trash2 color={theme.danger} size={18} />
       </Pressable>
     </Pressable>
@@ -83,17 +78,14 @@ function RollTrackerScreen() {
     <View style={styles.screen}>
       <View style={styles.header}>
         <Text style={styles.title}>Roll Tracker</Text>
-        <Pressable
-          style={styles.addButton}
-          onPress={() => navigation.navigate('LogRollForm', undefined)}>
-          <Plus color={UI_ACCENT_TEXT} size={20} strokeWidth={2.5} />
-        </Pressable>
       </View>
 
-      {status === 'loading' && items.length === 0 ? (
+      {isLoading && items.length === 0 ? (
         <View style={styles.centered}>
           <ActivityIndicator color={UI_ACCENT} />
         </View>
+      ) : isError ? (
+        <ErrorState />
       ) : (
         <FlatList
           data={items}
@@ -122,6 +114,8 @@ function RollTrackerScreen() {
           }
         />
       )}
+
+      <FloatingAddButton onPress={() => navigation.navigate('LogRollForm', undefined)} />
     </View>
   );
 }
@@ -133,9 +127,6 @@ function createStyles(theme: Theme) {
       backgroundColor: theme.background,
     },
     header: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'space-between',
       paddingHorizontal: 20,
       paddingTop: 60,
       paddingBottom: 16,
@@ -144,14 +135,6 @@ function createStyles(theme: Theme) {
       color: theme.textPrimary,
       fontSize: FONT_SIZE.title,
       fontWeight: FONT_WEIGHT.extrabold,
-    },
-    addButton: {
-      backgroundColor: UI_ACCENT,
-      borderRadius: 20,
-      width: 40,
-      height: 40,
-      alignItems: 'center',
-      justifyContent: 'center',
     },
     centered: {
       flex: 1,
@@ -167,7 +150,7 @@ function createStyles(theme: Theme) {
     },
     listContent: {
       paddingHorizontal: 20,
-      paddingBottom: 24,
+      paddingBottom: 100,
       gap: 10,
     },
     tapCard: {

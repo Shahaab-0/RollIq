@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   ActivityIndicator,
   LayoutAnimation,
@@ -13,22 +13,17 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import {
-  ChevronDown,
-  ChevronUp,
-  Plus,
-  Repeat,
-  Trash2,
-} from 'lucide-react-native';
+import { ChevronDown, ChevronUp, Repeat, Trash2 } from 'lucide-react-native';
 import { getTheme, Theme, UI_ACCENT, UI_ACCENT_TEXT } from '../../../theme/colors';
 import { FONT_SIZE, FONT_WEIGHT } from '../../../theme/typography';
-import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
+import FloatingAddButton from '../../../components/FloatingAddButton';
+import ErrorState from '../../../components/ErrorState';
 import {
-  deleteTechnique,
-  fetchTechniques,
-  importFundamentals,
-  incrementDrillCount,
-} from '../../../redux/techniquesSlice';
+  useDeleteTechnique,
+  useImportFundamentals,
+  useIncrementDrillCount,
+  useTechniques,
+} from '../hooks/useTechniques';
 import { FUNDAMENTALS_SEED } from '../fundamentalsSeed';
 import { POSITION_PRESETS } from '../types';
 import type { TechniquesStackParamList } from '../../../navigation/types';
@@ -74,29 +69,23 @@ function TechniqueLibraryScreen() {
   const theme = useMemo(() => getTheme(scheme), [scheme]);
   const styles = useMemo(() => createStyles(theme), [theme]);
   const navigation = useNavigation<Nav>();
-  const dispatch = useAppDispatch();
-  const { items, status } = useAppSelector(state => state.techniques);
+  const { data: items = [], isLoading, isError } = useTechniques();
+  const deleteTechnique = useDeleteTechnique();
+  const incrementDrillCount = useIncrementDrillCount();
+  const importFundamentals = useImportFundamentals();
   const [collapsed, setCollapsed] = useState<Set<string>>(new Set());
-
-  useEffect(() => {
-    if (status === 'idle') {
-      dispatch(fetchTechniques());
-    }
-  }, [dispatch, status]);
 
   const groups = useMemo(() => groupByPosition(items), [items]);
   const [importing, setImporting] = useState(false);
 
   const handleImportFundamentals = async () => {
     setImporting(true);
-    await dispatch(
-      importFundamentals(
-        FUNDAMENTALS_SEED.map(seed => ({
-          name: seed.name,
-          position: seed.position,
-          notes: seed.description,
-        })),
-      ),
+    await importFundamentals.mutateAsync(
+      FUNDAMENTALS_SEED.map(seed => ({
+        name: seed.name,
+        position: seed.position,
+        notes: seed.description,
+      })),
     );
     setImporting(false);
   };
@@ -129,13 +118,13 @@ function TechniqueLibraryScreen() {
         <Pressable
           hitSlop={8}
           style={styles.drillButton}
-          onPress={() => dispatch(incrementDrillCount(item.id))}>
+          onPress={() => incrementDrillCount.mutate(item.id)}>
           <Repeat color={UI_ACCENT} size={18} />
         </Pressable>
         <Pressable
           hitSlop={8}
           style={styles.deleteIconButton}
-          onPress={() => dispatch(deleteTechnique(item.id))}>
+          onPress={() => deleteTechnique.mutate(item.id)}>
           <Trash2 color={theme.danger} size={18} />
         </Pressable>
       </View>
@@ -146,17 +135,14 @@ function TechniqueLibraryScreen() {
     <View style={styles.screen}>
       <View style={styles.header}>
         <Text style={styles.title}>Technique Journal</Text>
-        <Pressable
-          style={styles.addButton}
-          onPress={() => navigation.navigate('TechniqueForm', undefined)}>
-          <Plus color={UI_ACCENT_TEXT} size={20} strokeWidth={2.5} />
-        </Pressable>
       </View>
 
-      {status === 'loading' && items.length === 0 ? (
+      {isLoading && items.length === 0 ? (
         <View style={styles.centered}>
           <ActivityIndicator color={UI_ACCENT} />
         </View>
+      ) : isError ? (
+        <ErrorState />
       ) : items.length === 0 ? (
         <View style={styles.centered}>
           <Text style={styles.emptyText}>
@@ -205,6 +191,8 @@ function TechniqueLibraryScreen() {
           })}
         </ScrollView>
       )}
+
+      <FloatingAddButton onPress={() => navigation.navigate('TechniqueForm', undefined)} />
     </View>
   );
 }
@@ -216,9 +204,6 @@ function createStyles(theme: Theme) {
       backgroundColor: theme.background,
     },
     header: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'space-between',
       paddingHorizontal: 20,
       paddingTop: 60,
       paddingBottom: 16,
@@ -227,14 +212,6 @@ function createStyles(theme: Theme) {
       color: theme.textPrimary,
       fontSize: FONT_SIZE.title,
       fontWeight: FONT_WEIGHT.extrabold,
-    },
-    addButton: {
-      backgroundColor: UI_ACCENT,
-      borderRadius: 20,
-      width: 40,
-      height: 40,
-      alignItems: 'center',
-      justifyContent: 'center',
     },
     centered: {
       flex: 1,
@@ -272,7 +249,7 @@ function createStyles(theme: Theme) {
     },
     listContent: {
       paddingHorizontal: 20,
-      paddingBottom: 24,
+      paddingBottom: 100,
     },
     section: {
       marginBottom: 12,
