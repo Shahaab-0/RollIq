@@ -1,0 +1,35 @@
+# Production compose file for the Oracle VM. Local dev keeps using the plain
+# docker-compose.yml (Postgres only, app run via `./mvnw spring-boot:run`) --
+# this one runs both Postgres and the built app image together, each
+# `restart: unless-stopped` so they come back up after a VM reboot.
+#
+# Secrets come from a gitignored `.env` file sitting next to this file on the
+# server -- see .env.example for the template. Never commit a real .env.
+
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: rolliq
+      POSTGRES_USER: ${DATABASE_USERNAME}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+    volumes:
+      - rolliq-postgres-data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  api:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      DATABASE_URL: jdbc:postgresql://postgres:5432/rolliq
+      DATABASE_USERNAME: ${DATABASE_USERNAME}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+    depends_on:
+      - postgres
+    restart: unless-stopped
+
+volumes:
+  rolliq-postgres-data:

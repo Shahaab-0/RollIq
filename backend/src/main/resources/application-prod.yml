@@ -1,0 +1,11 @@
+spring:
+  datasource:
+    url: ${DATABASE_URL}
+    username: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
+
+# No insecure fallback here (unlike application-dev.yml) -- the app refuses to
+# start rather than silently running on the well-known dev secret if whoever
+# deploys this forgets to set JWT_SECRET.
+jwt:
+  secret: ${JWT_SECRET}
