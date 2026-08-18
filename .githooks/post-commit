@@ -1,0 +1,60 @@
+#!/usr/bin/env bash
+# Runs a 3-lens Claude Code review (Product Owner / Code Reviewer / UI-UX
+# Reviewer) of the commit that was just made. Runs in the background so
+# `git commit` itself is never delayed -- results land in .claude-reviews/,
+# not printed inline. Read-only: Claude only gets Read/Grep/Glob, it never
+# edits anything or runs arbitrary shell commands.
+#
+# Installed via: git config core.hooksPath .githooks
+# (this makes hooks part of the repo instead of living in the untracked
+# .git/hooks/ directory, so they survive a fresh clone)
+
+set -euo pipefail
+
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+REVIEW_DIR="$REPO_ROOT/.claude-reviews"
+mkdir -p "$REVIEW_DIR"
+
+COMMIT_SHA="$(git rev-parse --short HEAD)"
+COMMIT_MSG="$(git log -1 --pretty=%B)"
+DIFF_STAT="$(git show HEAD --stat --format='')"
+DIFF="$(git show HEAD --unified=3 --format='')"
+
+# Skip merge commits / empty diffs -- nothing to review.
+if [ -z "$(echo "$DIFF" | grep -E '^[+-]' | grep -vE '^(\+\+\+|---)' || true)" ]; then
+  exit 0
+fi
+
+OUTPUT_FILE="$REVIEW_DIR/${COMMIT_SHA}.md"
+LOG_FILE="$REVIEW_DIR/${COMMIT_SHA}.log"
+
+PROMPT="Review the commit ${COMMIT_SHA} (\"${COMMIT_MSG}\") in this repository from three distinct lenses, each as its own markdown section:
+
+## Product Owner
+Does this change make sense for the product right now? Any concerns about scope, priorities, or user-facing implications? Read CLAUDE.md at the repo root for context on the app's current state and conventions first.
+
+## Code Review
+Correctness, security, adherence to this repo's CLAUDE.md conventions, error handling, test coverage for what changed. Cite real file:line references. Read the actual current files, not just the diff text below, for full context.
+
+## UI/UX Review
+Only include this section if the commit touches frontend/src/. Check consistency with the established design system (theme/colors.ts, theme/typography.ts, button conventions, component patterns) and usability of what changed.
+
+Be concise and concrete. Skip a section entirely if it has nothing substantive to say (e.g. no UI/UX section for a backend-only commit) rather than padding it. This is a solo-developer, low-traffic app -- calibrate severity accordingly, don't manufacture concerns to fill space.
+
+--- diff stat ---
+${DIFF_STAT}
+
+--- full diff ---
+${DIFF}"
+
+nohup claude -p "$PROMPT" \
+  --allowedTools "Read,Grep,Glob" \
+  --output-format text \
+  > "$OUTPUT_FILE" 2> "$LOG_FILE" &
+disown
+
+if command -v osascript &> /dev/null; then
+  osascript -e "display notification \"Commit ${COMMIT_SHA} review running in background\" with title \"Claude Code Review\"" &> /dev/null &
+fi
+
+echo "Claude 3-lens review started for ${COMMIT_SHA} -> ${OUTPUT_FILE#$REPO_ROOT/}"

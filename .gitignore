@@ -1,0 +1,12 @@
+# OSX
+.DS_Store
+
+# IDE
+.idea
+
+# This is a monorepo -- frontend/ and backend/ each own their own
+# .gitignore for the patterns specific to their toolchain.
+
+# Local output from .githooks/post-commit's automated review -- not
+# something to commit, just a per-machine artifact.
+.claude-reviews/
