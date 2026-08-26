@@ -63,6 +63,10 @@ function DashboardScreen() {
 
   const belt = profile?.current_belt ?? 'white';
   const accent = BELT_COLORS[belt];
+  // Memoized alongside styles rather than built as a literal style object
+  // inline in JSX (CLAUDE.md's no-inline-styles rule) -- belt color varies
+  // per user, so it can't live in the theme-only createStyles() call above.
+  const dayDotFilledStyle = useMemo(() => ({ backgroundColor: accent }), [accent]);
 
   if (stats.loading && !stats.recentActivity.length) {
     return (
@@ -95,12 +99,7 @@ function DashboardScreen() {
             {stats.week.map(day => (
               <View key={day.key} style={styles.dayColumn}>
                 <View
-                  style={[
-                    styles.dayDot,
-                    day.trained
-                      ? { backgroundColor: accent }
-                      : styles.dayDotEmpty,
-                  ]}
+                  style={[styles.dayDot, day.trained ? dayDotFilledStyle : styles.dayDotEmpty]}
                 />
                 <Text style={styles.dayLabel}>{day.label}</Text>
               </View>
@@ -112,7 +111,7 @@ function DashboardScreen() {
 
         <View style={styles.actionsRow}>
           <Pressable
-            style={[styles.actionButton, { backgroundColor: UI_ACCENT }]}
+            style={styles.actionButton}
             onPress={() => navigation.navigate('Log', { screen: 'TrainingLog' })}>
             <Plus color={UI_ACCENT_TEXT} size={18} strokeWidth={2.5} />
             <Text style={styles.actionButtonTextPrimary}>Log Session</Text>
@@ -268,6 +267,7 @@ function createStyles(theme: Theme) {
     actionButton: {
       flex: 1,
       flexDirection: 'row',
+      backgroundColor: UI_ACCENT,
       paddingVertical: 16,
       borderRadius: 14,
       alignItems: 'center',
