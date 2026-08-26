@@ -1,0 +1,117 @@
+'use client';
+
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { useCreateRoll, useDeleteRoll, useRolls, useUpdateRoll } from '../hooks/useRolls';
+import Button from '@/components/ui/Button';
+import Input from '@/components/ui/Input';
+import Textarea from '@/components/ui/Textarea';
+import Chip from '@/components/ui/Chip';
+import TagInput from '@/components/ui/TagInput';
+
+export default function RollForm({ rollId }: Readonly<{ rollId?: string }>) {
+  const router = useRouter();
+  const { data: rolls = [] } = useRolls();
+  const existing = rollId ? rolls.find(r => r.id === rollId) : undefined;
+  const createRoll = useCreateRoll();
+  const updateRoll = useUpdateRoll();
+  const deleteRoll = useDeleteRoll();
+
+  const [partnerName, setPartnerName] = useState(existing?.partner_name ?? '');
+  const [submissionsLanded, setSubmissionsLanded] = useState<string[]>(existing?.submissions_landed ?? []);
+  const [submissionsReceived, setSubmissionsReceived] = useState<string[]>(
+    existing?.submissions_received ?? [],
+  );
+  const [escapes, setEscapes] = useState(existing?.escapes?.toString() ?? '0');
+  const [effortRating, setEffortRating] = useState(existing?.effort_rating ?? null as number | null);
+  const [notes, setNotes] = useState(existing?.notes ?? '');
+  const [saving, setSaving] = useState(false);
+
+  const handleSave = async () => {
+    setSaving(true);
+    const changes = {
+      partner_name: partnerName.trim() || null,
+      submissions_landed: submissionsLanded,
+      submissions_received: submissionsReceived,
+      escapes: parseInt(escapes, 10) || 0,
+      effort_rating: effortRating,
+      notes: notes.trim() || null,
+      session_id: existing?.session_id ?? null,
+    };
+    try {
+      if (existing) {
+        await updateRoll.mutateAsync({ id: existing.id, changes });
+      } else {
+        await createRoll.mutateAsync(changes);
+      }
+      router.push('/rolls');
+    } catch {
+      // toast already shown by the mutation itself
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!existing) return;
+    if (!confirm('Delete this roll? This cannot be undone.')) return;
+    try {
+      await deleteRoll.mutateAsync(existing.id);
+      router.push('/rolls');
+    } catch {
+      // toast already shown by the mutation itself
+    }
+  };
+
+  return (
+    <div className="flex w-full max-w-2xl flex-col gap-4">
+      <h1 className="text-2xl font-extrabold text-text-primary">{existing ? 'Edit Roll' : 'Log Roll'}</h1>
+
+      <div>
+        <label className="mb-1 block text-xs font-semibold text-text-secondary">Partner</label>
+        <Input value={partnerName} onChange={e => setPartnerName(e.target.value)} placeholder="Optional" />
+      </div>
+
+      <div>
+        <label className="mb-1 block text-xs font-semibold text-text-secondary">Submissions landed</label>
+        <TagInput values={submissionsLanded} onChange={setSubmissionsLanded} placeholder="Type and press Enter" />
+      </div>
+
+      <div>
+        <label className="mb-1 block text-xs font-semibold text-text-secondary">Submissions received</label>
+        <TagInput values={submissionsReceived} onChange={setSubmissionsReceived} placeholder="Type and press Enter" />
+      </div>
+
+      <div>
+        <label className="mb-1 block text-xs font-semibold text-text-secondary">Escapes</label>
+        <Input type="number" min={0} value={escapes} onChange={e => setEscapes(e.target.value)} />
+      </div>
+
+      <div>
+        <label className="mb-1 block text-xs font-semibold text-text-secondary">Effort (1-5)</label>
+        <div className="flex gap-2">
+          {[1, 2, 3, 4, 5].map(n => (
+            <Chip key={n} active={effortRating === n} onClick={() => setEffortRating(effortRating === n ? null : n)}>
+              {n}
+            </Chip>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <label className="mb-1 block text-xs font-semibold text-text-secondary">Notes</label>
+        <Textarea rows={4} value={notes} onChange={e => setNotes(e.target.value)} placeholder="Optional" />
+      </div>
+
+      <Button disabled={saving} onClick={handleSave} className="mt-2">
+        {saving ? 'Saving…' : existing ? 'Save Changes' : 'Log Roll'}
+      </Button>
+
+      {existing ? (
+        <Button variant="danger" onClick={handleDelete}>
+          Delete Roll
+        </Button>
+      ) : null}
+    </div>
+  );
+}
