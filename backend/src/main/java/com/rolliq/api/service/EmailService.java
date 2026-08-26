@@ -17,7 +17,11 @@ public class EmailService {
     private final String fromAddress;
 
     // Exposed so integration tests (and local dev without MAIL_HOST set) can
-    // retrieve the code that would have been emailed, instead of parsing logs.
+    // retrieve the code that would have been emailed, instead of parsing
+    // logs. Only ever populated on the no-mailSender branch below (see
+    // sendPasswordResetCode) -- with a real JavaMailSender configured in
+    // production, nothing writes to this map, so it can't grow unbounded
+    // over the process lifetime.
     private final Map<String, String> lastCodeByEmail = new ConcurrentHashMap<>();
 
     public EmailService(
@@ -28,9 +32,8 @@ public class EmailService {
     }
 
     public void sendPasswordResetCode(String toEmail, String code) {
-        lastCodeByEmail.put(toEmail, code);
-
         if (mailSender.isEmpty()) {
+            lastCodeByEmail.put(toEmail, code);
             log.info(
                     "MAIL_HOST not configured -- would have emailed {} this reset code: {}",
                     toEmail,

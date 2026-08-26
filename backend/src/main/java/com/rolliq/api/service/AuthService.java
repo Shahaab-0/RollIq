@@ -30,6 +30,7 @@ public class AuthService {
 
     private static final SecureRandom SECURE_RANDOM = new SecureRandom();
     private static final long RESET_CODE_TTL_MINUTES = 15;
+    private static final int MAX_RESET_CODE_ATTEMPTS = 5;
 
     private final UserRepository userRepository;
     private final ProfileRepository profileRepository;
@@ -129,11 +130,20 @@ public class AuthService {
                 .orElseThrow(() -> ApiException.badRequest("Invalid or expired code"));
 
         PasswordResetCode resetCode = passwordResetCodeRepository
-                .findFirstByUserIdAndCodeHashAndUsedAtIsNullOrderByCreatedAtDesc(
-                        user.getId(), hash(code))
+                .findFirstByUserIdAndUsedAtIsNullOrderByCreatedAtDesc(user.getId())
                 .orElseThrow(() -> ApiException.badRequest("Invalid or expired code"));
 
-        if (resetCode.getExpiresAt().isBefore(Instant.now())) {
+        if (resetCode.getExpiresAt().isBefore(Instant.now())
+                || resetCode.getAttempts() >= MAX_RESET_CODE_ATTEMPTS) {
+            throw ApiException.badRequest("Invalid or expired code");
+        }
+
+        // A 6-digit code has only a million possibilities and a 15-minute
+        // TTL -- without this counter it's directly brute-forceable within
+        // its own window. A wrong guess costs an attempt against the
+        // outstanding code even though it doesn't match anything yet.
+        if (!resetCode.getCodeHash().equals(hash(code))) {
+            passwordResetCodeRepository.incrementAttempts(resetCode.getId());
             throw ApiException.badRequest("Invalid or expired code");
         }
 

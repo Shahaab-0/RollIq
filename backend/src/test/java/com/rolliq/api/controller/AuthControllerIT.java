@@ -195,6 +195,41 @@ class AuthControllerIT extends AbstractIntegrationTest {
     }
 
     @Test
+    void resetPasswordLocksOutAfterTooManyWrongGuesses() throws Exception {
+        signUpAndGetAccessToken("locked-out@example.com");
+        mockMvc.perform(post("/api/v1/auth/forgot-password")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(Map.of("email", "locked-out@example.com"))));
+
+        String realCode = emailService.lastCodeFor("locked-out@example.com");
+        assertThat(realCode).isNotNull();
+        // "000000" is never the real code here since generateResetCode()
+        // draws uniformly from 000000-999999 and a same-digit code is a
+        // 1-in-a-million coincidence -- stable enough for a test.
+        String wrongCode = "000000".equals(realCode) ? "111111" : "000000";
+
+        for (int i = 0; i < 5; i++) {
+            mockMvc.perform(post("/api/v1/auth/reset-password")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(Map.of(
+                                    "email", "locked-out@example.com",
+                                    "code", wrongCode,
+                                    "new_password", "brand-new-password"))))
+                    .andExpect(status().isBadRequest());
+        }
+
+        // The real code is now rejected too -- the outstanding code was
+        // locked out after 5 wrong guesses, not just that one guess.
+        mockMvc.perform(post("/api/v1/auth/reset-password")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(Map.of(
+                                "email", "locked-out@example.com",
+                                "code", realCode,
+                                "new_password", "brand-new-password"))))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
     void deleteAccountRequiresAuthenticationAndRemovesTheAccount() throws Exception {
         mockMvc.perform(delete("/api/v1/account")).andExpect(status().isUnauthorized());
 

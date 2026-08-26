@@ -86,6 +86,48 @@ class CompetitionControllerIT extends AbstractIntegrationTest {
     }
 
     @Test
+    void updatingACompetitionReturnsItsRealMatchStatsNotZeros() throws Exception {
+        String token = signUpAndGetAccessToken("comp3@example.com");
+
+        String created = mockMvc
+                .perform(post("/api/v1/competitions")
+                        .header("Authorization", bearer(token))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(Map.of(
+                                "name", "Local Open",
+                                "competition_date", "2026-05-01",
+                                "weight_category", "Lightweight"))))
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+        String competitionId = objectMapper.readTree(created).get("id").asText();
+
+        for (String result : new String[] {"win", "win", "loss"}) {
+            mockMvc.perform(post("/api/v1/competitions/" + competitionId + "/matches")
+                    .header("Authorization", bearer(token))
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(Map.of(
+                            "opponent_name", "Opponent",
+                            "result", result,
+                            "match_order", 1))));
+        }
+
+        // The PATCH response itself must carry the real aggregate stats --
+        // not hardcoded zeros -- since callers (the web/mobile apps) update
+        // their cache straight from the mutation result.
+        mockMvc.perform(patch("/api/v1/competitions/" + competitionId)
+                        .header("Authorization", bearer(token))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(Map.of("location", "Kissimmee, FL"))))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.location").value("Kissimmee, FL"))
+                .andExpect(jsonPath("$.match_count").value(3))
+                .andExpect(jsonPath("$.wins").value(2))
+                .andExpect(jsonPath("$.losses").value(1))
+                .andExpect(jsonPath("$.draws").value(0));
+    }
+
+    @Test
     void aUserCannotSeeAnotherUsersCompetitions() throws Exception {
         String tokenA = signUpAndGetAccessToken("comp-a@example.com");
         String tokenB = signUpAndGetAccessToken("comp-b@example.com");

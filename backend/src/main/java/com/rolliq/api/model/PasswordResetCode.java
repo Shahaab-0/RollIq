@@ -35,6 +35,9 @@ public class PasswordResetCode {
     @Column(name = "used_at")
     private Instant usedAt;
 
+    @Column(name = "attempts", nullable = false)
+    private int attempts = 0;
+
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
 

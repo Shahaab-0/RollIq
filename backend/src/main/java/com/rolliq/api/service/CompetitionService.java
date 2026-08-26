@@ -50,11 +50,10 @@ public class CompetitionService {
         if (request.beltDivision() != null) competition.setBeltDivision(request.beltDivision());
         if (request.location() != null) competition.setLocation(request.location());
         if (request.notes() != null) competition.setNotes(request.notes());
-        Competition saved = competitionRepository.save(competition);
-        // Match counts aren't affected by editing the competition's own
-        // fields, but this response doesn't have them in hand -- callers
-        // that need the up-to-date record re-fetch via list().
-        return toResponse(saved, 0, 0, 0, 0);
+        competitionRepository.save(competition);
+        return toResponse(competitionRepository
+                .findSummaryByIdAndUserId(id, userId)
+                .orElseThrow(() -> ApiException.notFound("Competition not found")));
     }
 
     @Transactional
