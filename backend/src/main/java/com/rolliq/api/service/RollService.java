@@ -1,10 +1,12 @@
 package com.rolliq.api.service;
 
 import com.rolliq.api.dto.roll.CreateRollRequest;
+import com.rolliq.api.dto.roll.PartnerHistoryResponse;
 import com.rolliq.api.dto.roll.RollResponse;
 import com.rolliq.api.dto.roll.UpdateRollRequest;
 import com.rolliq.api.exception.ApiException;
 import com.rolliq.api.model.Roll;
+import com.rolliq.api.repository.PartnerHistorySummary;
 import com.rolliq.api.repository.RollRepository;
 import com.rolliq.api.repository.TrainingSessionRepository;
 import java.util.ArrayList;
@@ -24,6 +26,12 @@ public class RollService {
     public List<RollResponse> list(UUID userId) {
         return rollRepository.findByUserIdOrderByCreatedAtDesc(userId).stream()
                 .map(this::toResponse)
+                .toList();
+    }
+
+    public List<PartnerHistoryResponse> partnerHistory(UUID userId) {
+        return rollRepository.findPartnerHistory(userId).stream()
+                .map(this::toPartnerHistoryResponse)
                 .toList();
     }
 
@@ -85,6 +93,14 @@ public class RollService {
         if (sessionRepository.findByIdAndUserId(sessionId, userId).isEmpty()) {
             throw ApiException.badRequest("Session does not belong to this user");
         }
+    }
+
+    private PartnerHistoryResponse toPartnerHistoryResponse(PartnerHistorySummary summary) {
+        return new PartnerHistoryResponse(
+                summary.getPartnerName(),
+                summary.getRollCount(),
+                summary.getLandedTotal(),
+                summary.getReceivedTotal());
     }
 
     private RollResponse toResponse(Roll roll) {

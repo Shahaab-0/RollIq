@@ -67,6 +67,7 @@ public class TechniqueService {
                     technique.setName(seed.name());
                     technique.setPosition(seed.position());
                     technique.setNotes(seed.notes());
+                    technique.setResourceUrl(seed.resourceUrl());
                     return technique;
                 })
                 .toList();

@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -42,5 +43,34 @@ class RollControllerIT extends AbstractIntegrationTest {
 
         mockMvc.perform(delete("/api/v1/rolls/" + id).header("Authorization", bearer(token)))
                 .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void partnerHistoryAggregatesAcrossRollsWithTheSamePartnerCaseInsensitively() throws Exception {
+        String token = signUpAndGetAccessToken("roll-partner@example.com");
+
+        mockMvc.perform(post("/api/v1/rolls")
+                .header("Authorization", bearer(token))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(Map.of(
+                        "partner_name", "Alex",
+                        "submissions_landed", List.of("armbar", "triangle")))));
+        mockMvc.perform(post("/api/v1/rolls")
+                .header("Authorization", bearer(token))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(Map.of(
+                        "partner_name", "alex ",
+                        "submissions_received", List.of("kimura")))));
+        mockMvc.perform(post("/api/v1/rolls")
+                .header("Authorization", bearer(token))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(Map.of("partner_name", "Jordan"))));
+
+        mockMvc.perform(get("/api/v1/rolls/partners").header("Authorization", bearer(token)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(2))
+                .andExpect(jsonPath("$[?(@.partner_name =~ /(?i)alex.*/)].roll_count").value(2))
+                .andExpect(jsonPath("$[?(@.partner_name =~ /(?i)alex.*/)].landed_total").value(2))
+                .andExpect(jsonPath("$[?(@.partner_name =~ /(?i)alex.*/)].received_total").value(1));
     }
 }

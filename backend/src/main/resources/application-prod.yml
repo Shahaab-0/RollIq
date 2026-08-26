@@ -9,3 +9,10 @@ spring:
 # deploys this forgets to set JWT_SECRET.
 jwt:
   secret: ${JWT_SECRET}
+
+# The Sentry SDK itself no-ops when dsn is blank -- unlike Firebase/mail,
+# no @ConditionalOnProperty gate is needed for this one to degrade gracefully.
+sentry:
+  dsn: ${SENTRY_DSN:}
+  environment: production
+  traces-sample-rate: 0.2

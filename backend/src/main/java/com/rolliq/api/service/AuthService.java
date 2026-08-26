@@ -2,9 +2,11 @@ package com.rolliq.api.service;
 
 import com.rolliq.api.dto.auth.AuthResponse;
 import com.rolliq.api.exception.ApiException;
+import com.rolliq.api.model.PasswordResetCode;
 import com.rolliq.api.model.Profile;
 import com.rolliq.api.model.RefreshToken;
 import com.rolliq.api.model.User;
+import com.rolliq.api.repository.PasswordResetCodeRepository;
 import com.rolliq.api.repository.ProfileRepository;
 import com.rolliq.api.repository.RefreshTokenRepository;
 import com.rolliq.api.repository.UserRepository;
@@ -27,12 +29,15 @@ import org.springframework.transaction.annotation.Transactional;
 public class AuthService {
 
     private static final SecureRandom SECURE_RANDOM = new SecureRandom();
+    private static final long RESET_CODE_TTL_MINUTES = 15;
 
     private final UserRepository userRepository;
     private final ProfileRepository profileRepository;
     private final RefreshTokenRepository refreshTokenRepository;
+    private final PasswordResetCodeRepository passwordResetCodeRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
+    private final EmailService emailService;
 
     @Value("${jwt.refresh-token-ttl-days}")
     private long refreshTokenTtlDays;
@@ -97,6 +102,62 @@ public class AuthService {
                 .findById(userId)
                 .orElseThrow(() -> ApiException.unauthorized("Not authenticated"));
         return new AuthResponse.UserSummary(user.getId(), user.getEmail());
+    }
+
+    // Always succeeds from the caller's point of view whether or not the
+    // email exists -- returning a different response for an unknown email
+    // would let anyone enumerate registered accounts.
+    @Transactional
+    public void forgotPassword(String email) {
+        userRepository.findByEmail(email).ifPresent(user -> {
+            String code = generateResetCode();
+
+            PasswordResetCode resetCode = new PasswordResetCode();
+            resetCode.setUserId(user.getId());
+            resetCode.setCodeHash(hash(code));
+            resetCode.setExpiresAt(Instant.now().plus(RESET_CODE_TTL_MINUTES, ChronoUnit.MINUTES));
+            passwordResetCodeRepository.save(resetCode);
+
+            emailService.sendPasswordResetCode(email, code);
+        });
+    }
+
+    @Transactional
+    public void resetPassword(String email, String code, String newPassword) {
+        User user = userRepository
+                .findByEmail(email)
+                .orElseThrow(() -> ApiException.badRequest("Invalid or expired code"));
+
+        PasswordResetCode resetCode = passwordResetCodeRepository
+                .findFirstByUserIdAndCodeHashAndUsedAtIsNullOrderByCreatedAtDesc(
+                        user.getId(), hash(code))
+                .orElseThrow(() -> ApiException.badRequest("Invalid or expired code"));
+
+        if (resetCode.getExpiresAt().isBefore(Instant.now())) {
+            throw ApiException.badRequest("Invalid or expired code");
+        }
+
+        resetCode.setUsedAt(Instant.now());
+        passwordResetCodeRepository.save(resetCode);
+
+        user.setPasswordHash(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+
+        // Force re-login everywhere -- a password reset is exactly the
+        // moment a session might have been compromised.
+        refreshTokenRepository.revokeAllForUser(user.getId());
+    }
+
+    @Transactional
+    public void deleteAccount(UUID userId) {
+        // Every owned table references users with "on delete cascade" (see
+        // V1__init.sql and every migration since) -- deleting the user row
+        // is enough to remove everything they own.
+        userRepository.deleteById(userId);
+    }
+
+    private static String generateResetCode() {
+        return String.format("%06d", SECURE_RANDOM.nextInt(1_000_000));
     }
 
     private AuthResponse issueTokens(User user) {

@@ -8,6 +8,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.UUID;
 import lombok.Getter;
@@ -45,6 +46,11 @@ public class GymScheduleEntry {
 
     @Column(name = "created_by")
     private UUID createdBy;
+
+    // Dedupe marker for the upcoming-class-reminder push job -- prevents
+    // sending the same day's reminder twice across polling runs.
+    @Column(name = "last_reminded_on")
+    private LocalDate lastRemindedOn;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;

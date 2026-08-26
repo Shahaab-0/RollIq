@@ -1,6 +1,7 @@
 package com.rolliq.api.controller;
 
 import com.rolliq.api.dto.roll.CreateRollRequest;
+import com.rolliq.api.dto.roll.PartnerHistoryResponse;
 import com.rolliq.api.dto.roll.RollResponse;
 import com.rolliq.api.dto.roll.UpdateRollRequest;
 import com.rolliq.api.security.CurrentUser;
@@ -30,6 +31,11 @@ public class RollController {
     @GetMapping
     public List<RollResponse> list() {
         return rollService.list(currentUser.id());
+    }
+
+    @GetMapping("/partners")
+    public List<PartnerHistoryResponse> partnerHistory() {
+        return rollService.partnerHistory(currentUser.id());
     }
 
     @PostMapping

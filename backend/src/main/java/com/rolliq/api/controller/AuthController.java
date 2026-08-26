@@ -1,7 +1,9 @@
 package com.rolliq.api.controller;
 
 import com.rolliq.api.dto.auth.AuthResponse;
+import com.rolliq.api.dto.auth.ForgotPasswordRequest;
 import com.rolliq.api.dto.auth.RefreshRequest;
+import com.rolliq.api.dto.auth.ResetPasswordRequest;
 import com.rolliq.api.dto.auth.SignInRequest;
 import com.rolliq.api.dto.auth.SignUpRequest;
 import com.rolliq.api.security.CurrentUser;
@@ -49,5 +51,17 @@ public class AuthController {
     @GetMapping("/me")
     public AuthResponse.UserSummary me() {
         return authService.me(currentUser.id());
+    }
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<Void> forgotPassword(@Valid @RequestBody ForgotPasswordRequest request) {
+        authService.forgotPassword(request.email());
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<Void> resetPassword(@Valid @RequestBody ResetPasswordRequest request) {
+        authService.resetPassword(request.email(), request.code(), request.newPassword());
+        return ResponseEntity.ok().build();
     }
 }

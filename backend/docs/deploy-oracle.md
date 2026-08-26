@@ -133,6 +133,45 @@ This rebuilds the `api` image and restarts just that container; `postgres`
 and its data volume are untouched, so any new Flyway migrations run
 automatically against the existing database on startup.
 
+## Backing up the database
+
+The `postgres` container's data lives in a named Docker volume
+(`rolliq-postgres-data`), which survives container restarts and `docker
+compose up --build` — but not a lost/reimaged VM. Take an actual off-VM
+backup before you have real users on it:
+
+```sh
+# on the VM -- dumps the whole database to a timestamped file
+docker compose -f docker-compose.prod.yml exec postgres \
+  pg_dump -U rolliq rolliq > "backup-$(date +%F).sql"
+```
+
+To automate it, add a cron job on the VM that runs this daily and copies the
+result somewhere off the VM (e.g. `scp` to your own machine, or upload to
+object storage) — a local-only backup on the same VM doesn't protect you if
+the VM itself is lost. A minimal version:
+
+```sh
+# /etc/cron.daily/rolliq-backup (chmod +x)
+#!/bin/sh
+cd /home/ubuntu/rolliq/backend
+docker compose -f docker-compose.prod.yml exec -T postgres \
+  pg_dump -U rolliq rolliq | gzip > "/home/ubuntu/backups/rolliq-$(date +%F).sql.gz"
+find /home/ubuntu/backups -name '*.sql.gz' -mtime +30 -delete
+```
+
+This still leaves backups sitting on the same VM (better than nothing, but
+not disaster-proof) — pairing it with a small script that also pushes the
+gzipped file to S3/Backblaze/etc. is the next step once this matters enough
+to invest in.
+
+To restore from a dump:
+
+```sh
+docker compose -f docker-compose.prod.yml exec -T postgres \
+  psql -U rolliq rolliq < backup-2026-08-23.sql
+```
+
 ## Not covered here (see the plan this came from)
 
 - **HTTPS.** This setup is plain HTTP against a bare IP — fine for testing,
