@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useCreateRoll, useDeleteRoll, useRolls, useUpdateRoll } from '../hooks/useRolls';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
@@ -11,7 +11,7 @@ import TagInput from '@/components/ui/TagInput';
 
 export default function RollForm({ rollId }: Readonly<{ rollId?: string }>) {
   const router = useRouter();
-  const { data: rolls = [] } = useRolls();
+  const { data: rolls = [], isLoading } = useRolls();
   const existing = rollId ? rolls.find(r => r.id === rollId) : undefined;
   const createRoll = useCreateRoll();
   const updateRoll = useUpdateRoll();
@@ -26,6 +26,25 @@ export default function RollForm({ rollId }: Readonly<{ rollId?: string }>) {
   const [effortRating, setEffortRating] = useState(existing?.effort_rating ?? null as number | null);
   const [notes, setNotes] = useState(existing?.notes ?? '');
   const [saving, setSaving] = useState(false);
+
+  // See SessionForm.tsx -- hydrates once real data arrives so a direct URL
+  // load can't silently seed blanks and overwrite the record on save.
+  const [hydrated, setHydrated] = useState(false);
+  /* eslint-disable react-hooks/set-state-in-effect */
+  useEffect(() => {
+    if (existing && !hydrated) {
+      setHydrated(true);
+      setPartnerName(existing.partner_name ?? '');
+      setSubmissionsLanded(existing.submissions_landed);
+      setSubmissionsReceived(existing.submissions_received);
+      setEscapes(existing.escapes?.toString() ?? '0');
+      setEffortRating(existing.effort_rating ?? null);
+      setNotes(existing.notes ?? '');
+    }
+  }, [existing, hydrated]);
+  /* eslint-enable react-hooks/set-state-in-effect */
+
+  const awaitingHydration = !!rollId && !hydrated && isLoading;
 
   const handleSave = async () => {
     setSaving(true);
@@ -62,6 +81,10 @@ export default function RollForm({ rollId }: Readonly<{ rollId?: string }>) {
       // toast already shown by the mutation itself
     }
   };
+
+  if (awaitingHydration) {
+    return <p className="text-sm text-text-secondary">Loading…</p>;
+  }
 
   return (
     <div className="flex w-full max-w-2xl flex-col gap-4">

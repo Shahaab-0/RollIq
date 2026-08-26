@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useCompetitions, useCreateCompetition, useDeleteCompetition, useUpdateCompetition } from '../hooks/useCompetitions';
 import { toLocalDateString } from '@/lib/dateFormat';
@@ -10,7 +10,7 @@ import Textarea from '@/components/ui/Textarea';
 
 export default function CompetitionForm({ competitionId }: Readonly<{ competitionId?: string }>) {
   const router = useRouter();
-  const { data: competitions = [] } = useCompetitions();
+  const { data: competitions = [], isLoading } = useCompetitions();
   const existing = competitionId ? competitions.find(c => c.id === competitionId) : undefined;
   const createCompetition = useCreateCompetition();
   const updateCompetition = useUpdateCompetition();
@@ -23,6 +23,25 @@ export default function CompetitionForm({ competitionId }: Readonly<{ competitio
   const [location, setLocation] = useState(existing?.location ?? '');
   const [notes, setNotes] = useState(existing?.notes ?? '');
   const [saving, setSaving] = useState(false);
+
+  // See SessionForm.tsx -- hydrates once real data arrives so a direct URL
+  // load can't silently seed blanks and overwrite the record on save.
+  const [hydrated, setHydrated] = useState(false);
+  /* eslint-disable react-hooks/set-state-in-effect */
+  useEffect(() => {
+    if (existing && !hydrated) {
+      setHydrated(true);
+      setName(existing.name);
+      setCompetitionDate(existing.competition_date);
+      setWeightCategory(existing.weight_category);
+      setBeltDivision(existing.belt_division ?? '');
+      setLocation(existing.location ?? '');
+      setNotes(existing.notes ?? '');
+    }
+  }, [existing, hydrated]);
+  /* eslint-enable react-hooks/set-state-in-effect */
+
+  const awaitingHydration = !!competitionId && !hydrated && isLoading;
 
   const handleSave = async () => {
     if (!name.trim() || !weightCategory.trim()) return;
@@ -60,6 +79,10 @@ export default function CompetitionForm({ competitionId }: Readonly<{ competitio
       // toast already shown by the mutation itself
     }
   };
+
+  if (awaitingHydration) {
+    return <p className="text-sm text-text-secondary">Loading…</p>;
+  }
 
   return (
     <div className="flex w-full max-w-2xl flex-col gap-4">

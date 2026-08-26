@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useCreateTechnique, useDeleteTechnique, useTechniques, useUpdateTechnique } from '../hooks/useTechniques';
 import { POSITION_PRESETS } from '../types';
 import Button from '@/components/ui/Button';
@@ -11,7 +11,7 @@ import Chip from '@/components/ui/Chip';
 
 export default function TechniqueForm({ techniqueId }: Readonly<{ techniqueId?: string }>) {
   const router = useRouter();
-  const { data: techniques = [] } = useTechniques();
+  const { data: techniques = [], isLoading } = useTechniques();
   const existing = techniqueId ? techniques.find(t => t.id === techniqueId) : undefined;
   const createTechnique = useCreateTechnique();
   const updateTechnique = useUpdateTechnique();
@@ -22,6 +22,23 @@ export default function TechniqueForm({ techniqueId }: Readonly<{ techniqueId?: 
   const [resourceUrl, setResourceUrl] = useState(existing?.resource_url ?? '');
   const [notes, setNotes] = useState(existing?.notes ?? '');
   const [saving, setSaving] = useState(false);
+
+  // See SessionForm.tsx -- hydrates once real data arrives so a direct URL
+  // load can't silently seed blanks and overwrite the record on save.
+  const [hydrated, setHydrated] = useState(false);
+  /* eslint-disable react-hooks/set-state-in-effect */
+  useEffect(() => {
+    if (existing && !hydrated) {
+      setHydrated(true);
+      setName(existing.name);
+      setPosition(existing.position);
+      setResourceUrl(existing.resource_url ?? '');
+      setNotes(existing.notes ?? '');
+    }
+  }, [existing, hydrated]);
+  /* eslint-enable react-hooks/set-state-in-effect */
+
+  const awaitingHydration = !!techniqueId && !hydrated && isLoading;
 
   const handleSave = async () => {
     if (!name.trim() || !position.trim()) return;
@@ -56,6 +73,10 @@ export default function TechniqueForm({ techniqueId }: Readonly<{ techniqueId?: 
       // toast already shown by the mutation itself
     }
   };
+
+  if (awaitingHydration) {
+    return <p className="text-sm text-text-secondary">Loading…</p>;
+  }
 
   return (
     <div className="flex w-full max-w-2xl flex-col gap-4">

@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useCreateSession, useDeleteSession, useSessions, useUpdateSession } from '../hooks/useSessions';
 import { SESSION_TYPE_OPTIONS, type SessionType } from '../types';
 import { toLocalDateString } from '@/lib/dateFormat';
@@ -12,7 +12,7 @@ import Chip from '@/components/ui/Chip';
 
 export default function SessionForm({ sessionId }: Readonly<{ sessionId?: string }>) {
   const router = useRouter();
-  const { data: sessions = [] } = useSessions();
+  const { data: sessions = [], isLoading } = useSessions();
   const existing = sessionId ? sessions.find(s => s.id === sessionId) : undefined;
   const createSession = useCreateSession();
   const updateSession = useUpdateSession();
@@ -31,6 +31,33 @@ export default function SessionForm({ sessionId }: Readonly<{ sessionId?: string
   );
   const [notes, setNotes] = useState(existing?.notes ?? '');
   const [saving, setSaving] = useState(false);
+
+  // On a direct URL load (hard refresh, bookmark, shared link) the sessions
+  // list query hasn't resolved yet on first render, so `existing` starts
+  // undefined and every field above seeds to its blank default -- the
+  // useState initializer only runs once and never re-syncs on its own.
+  // Hydrate once, the moment real data shows up, so Save can't silently
+  // overwrite the record with defaults.
+  const [hydrated, setHydrated] = useState(false);
+  /* eslint-disable react-hooks/set-state-in-effect */
+  useEffect(() => {
+    if (existing && !hydrated) {
+      setHydrated(true);
+      setDate(existing.date);
+      setGi(existing.gi);
+      setSessionType(existing.session_type);
+      setDurationMinutes(existing.duration_minutes?.toString() ?? '');
+      setInstructor(existing.instructor ?? '');
+      setRoundsCount(existing.rounds_count?.toString() ?? '');
+      setRoundMinutes(existing.round_minutes?.toString() ?? '');
+      setProductivityRating(existing.productivity_rating ?? null);
+      setSubmissionsLandedCount(existing.submissions_landed_count?.toString() ?? '');
+      setNotes(existing.notes ?? '');
+    }
+  }, [existing, hydrated]);
+  /* eslint-enable react-hooks/set-state-in-effect */
+
+  const awaitingHydration = !!sessionId && !hydrated && isLoading;
 
   const toIntOrNull = (v: string) => (v.trim() ? parseInt(v, 10) : null);
 
@@ -73,6 +100,10 @@ export default function SessionForm({ sessionId }: Readonly<{ sessionId?: string
     }
   };
 
+  if (awaitingHydration) {
+    return <p className="text-sm text-text-secondary">Loading…</p>;
+  }
+
   return (
     <div className="flex w-full max-w-2xl flex-col gap-4">
       <h1 className="text-2xl font-extrabold text-text-primary">
@@ -81,7 +112,7 @@ export default function SessionForm({ sessionId }: Readonly<{ sessionId?: string
 
       <div>
         <label className="mb-1 block text-xs font-semibold text-text-secondary">Date</label>
-        <Input type="date" value={date} onChange={e => setDate(e.target.value)} />
+        <Input type="date" max={toLocalDateString(new Date())} value={date} onChange={e => setDate(e.target.value)} />
       </div>
 
       <div>
