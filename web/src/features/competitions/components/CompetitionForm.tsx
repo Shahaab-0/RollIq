@@ -10,7 +10,7 @@ import Textarea from '@/components/ui/Textarea';
 
 export default function CompetitionForm({ competitionId }: Readonly<{ competitionId?: string }>) {
   const router = useRouter();
-  const { data: competitions = [], isLoading } = useCompetitions();
+  const { data: competitions = [], isLoading, isError } = useCompetitions();
   const existing = competitionId ? competitions.find(c => c.id === competitionId) : undefined;
   const createCompetition = useCreateCompetition();
   const updateCompetition = useUpdateCompetition();
@@ -42,7 +42,7 @@ export default function CompetitionForm({ competitionId }: Readonly<{ competitio
   /* eslint-enable react-hooks/set-state-in-effect */
 
   const awaitingHydration = !!competitionId && !hydrated && isLoading;
-  const notFound = !!competitionId && !hydrated && !isLoading && !existing;
+  const notFound = !!competitionId && !hydrated && !isLoading && !isError && !existing;
 
   const handleSave = async () => {
     if (!name.trim() || !weightCategory.trim()) return;
@@ -83,6 +83,10 @@ export default function CompetitionForm({ competitionId }: Readonly<{ competitio
 
   if (awaitingHydration) {
     return <p className="text-sm text-text-secondary">Loading…</p>;
+  }
+
+  if (!!competitionId && !hydrated && isError) {
+    return <p className="text-sm text-danger">Couldn&apos;t load this competition. Try refreshing.</p>;
   }
 
   if (notFound) {

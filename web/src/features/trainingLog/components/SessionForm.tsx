@@ -12,7 +12,7 @@ import Chip from '@/components/ui/Chip';
 
 export default function SessionForm({ sessionId }: Readonly<{ sessionId?: string }>) {
   const router = useRouter();
-  const { data: sessions = [], isLoading } = useSessions();
+  const { data: sessions = [], isLoading, isError } = useSessions();
   const existing = sessionId ? sessions.find(s => s.id === sessionId) : undefined;
   const createSession = useCreateSession();
   const updateSession = useUpdateSession();
@@ -58,7 +58,7 @@ export default function SessionForm({ sessionId }: Readonly<{ sessionId?: string
   /* eslint-enable react-hooks/set-state-in-effect */
 
   const awaitingHydration = !!sessionId && !hydrated && isLoading;
-  const notFound = !!sessionId && !hydrated && !isLoading && !existing;
+  const notFound = !!sessionId && !hydrated && !isLoading && !isError && !existing;
 
   const toIntOrNull = (v: string) => (v.trim() ? parseInt(v, 10) : null);
 
@@ -103,6 +103,10 @@ export default function SessionForm({ sessionId }: Readonly<{ sessionId?: string
 
   if (awaitingHydration) {
     return <p className="text-sm text-text-secondary">Loading…</p>;
+  }
+
+  if (!!sessionId && !hydrated && isError) {
+    return <p className="text-sm text-danger">Couldn&apos;t load this session. Try refreshing.</p>;
   }
 
   if (notFound) {

@@ -12,7 +12,7 @@ import Chip from '@/components/ui/Chip';
 
 export default function InjuryForm({ injuryId }: Readonly<{ injuryId?: string }>) {
   const router = useRouter();
-  const { data: injuries = [], isLoading } = useInjuries();
+  const { data: injuries = [], isLoading, isError } = useInjuries();
   const existing = injuryId ? injuries.find(i => i.id === injuryId) : undefined;
   const createInjury = useCreateInjury();
   const updateInjury = useUpdateInjury();
@@ -44,7 +44,7 @@ export default function InjuryForm({ injuryId }: Readonly<{ injuryId?: string }>
   /* eslint-enable react-hooks/set-state-in-effect */
 
   const awaitingHydration = !!injuryId && !hydrated && isLoading;
-  const notFound = !!injuryId && !hydrated && !isLoading && !existing;
+  const notFound = !!injuryId && !hydrated && !isLoading && !isError && !existing;
 
   const handleSave = async () => {
     if (!bodyPart.trim() || !description.trim()) return;
@@ -84,6 +84,10 @@ export default function InjuryForm({ injuryId }: Readonly<{ injuryId?: string }>
 
   if (awaitingHydration) {
     return <p className="text-sm text-text-secondary">Loading…</p>;
+  }
+
+  if (!!injuryId && !hydrated && isError) {
+    return <p className="text-sm text-danger">Couldn&apos;t load this injury. Try refreshing.</p>;
   }
 
   if (notFound) {

@@ -11,7 +11,7 @@ import TagInput from '@/components/ui/TagInput';
 
 export default function RollForm({ rollId }: Readonly<{ rollId?: string }>) {
   const router = useRouter();
-  const { data: rolls = [], isLoading } = useRolls();
+  const { data: rolls = [], isLoading, isError } = useRolls();
   const existing = rollId ? rolls.find(r => r.id === rollId) : undefined;
   const createRoll = useCreateRoll();
   const updateRoll = useUpdateRoll();
@@ -45,7 +45,7 @@ export default function RollForm({ rollId }: Readonly<{ rollId?: string }>) {
   /* eslint-enable react-hooks/set-state-in-effect */
 
   const awaitingHydration = !!rollId && !hydrated && isLoading;
-  const notFound = !!rollId && !hydrated && !isLoading && !existing;
+  const notFound = !!rollId && !hydrated && !isLoading && !isError && !existing;
 
   const handleSave = async () => {
     setSaving(true);
@@ -85,6 +85,10 @@ export default function RollForm({ rollId }: Readonly<{ rollId?: string }>) {
 
   if (awaitingHydration) {
     return <p className="text-sm text-text-secondary">Loading…</p>;
+  }
+
+  if (!!rollId && !hydrated && isError) {
+    return <p className="text-sm text-danger">Couldn&apos;t load this roll. Try refreshing.</p>;
   }
 
   if (notFound) {

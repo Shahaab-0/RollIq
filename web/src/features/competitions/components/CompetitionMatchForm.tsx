@@ -25,7 +25,7 @@ export default function CompetitionMatchForm({
   matchId,
 }: Readonly<{ competitionId: string; matchId?: string }>) {
   const router = useRouter();
-  const { data: matches = [], isLoading } = useCompetitionMatches(competitionId);
+  const { data: matches = [], isLoading, isError } = useCompetitionMatches(competitionId);
   const existing = matchId ? matches.find(m => m.id === matchId) : undefined;
   const createMatch = useCreateMatch(competitionId);
   const updateMatch = useUpdateMatch(competitionId);
@@ -53,7 +53,7 @@ export default function CompetitionMatchForm({
   /* eslint-enable react-hooks/set-state-in-effect */
 
   const awaitingHydration = !!matchId && !hydrated && isLoading;
-  const notFound = !!matchId && !hydrated && !isLoading && !existing;
+  const notFound = !!matchId && !hydrated && !isLoading && !isError && !existing;
 
   const backHref = `/competitions/${competitionId}`;
 
@@ -94,6 +94,10 @@ export default function CompetitionMatchForm({
 
   if (awaitingHydration) {
     return <p className="text-sm text-text-secondary">Loading…</p>;
+  }
+
+  if (!!matchId && !hydrated && isError) {
+    return <p className="text-sm text-danger">Couldn&apos;t load this match. Try refreshing.</p>;
   }
 
   if (notFound) {

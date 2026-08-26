@@ -11,7 +11,7 @@ import Chip from '@/components/ui/Chip';
 
 export default function TechniqueForm({ techniqueId }: Readonly<{ techniqueId?: string }>) {
   const router = useRouter();
-  const { data: techniques = [], isLoading } = useTechniques();
+  const { data: techniques = [], isLoading, isError } = useTechniques();
   const existing = techniqueId ? techniques.find(t => t.id === techniqueId) : undefined;
   const createTechnique = useCreateTechnique();
   const updateTechnique = useUpdateTechnique();
@@ -39,7 +39,7 @@ export default function TechniqueForm({ techniqueId }: Readonly<{ techniqueId?: 
   /* eslint-enable react-hooks/set-state-in-effect */
 
   const awaitingHydration = !!techniqueId && !hydrated && isLoading;
-  const notFound = !!techniqueId && !hydrated && !isLoading && !existing;
+  const notFound = !!techniqueId && !hydrated && !isLoading && !isError && !existing;
 
   const handleSave = async () => {
     if (!name.trim() || !position.trim()) return;
@@ -77,6 +77,10 @@ export default function TechniqueForm({ techniqueId }: Readonly<{ techniqueId?: 
 
   if (awaitingHydration) {
     return <p className="text-sm text-text-secondary">Loading…</p>;
+  }
+
+  if (!!techniqueId && !hydrated && isError) {
+    return <p className="text-sm text-danger">Couldn&apos;t load this technique. Try refreshing.</p>;
   }
 
   if (notFound) {
