@@ -8,13 +8,14 @@ import {
   useColorScheme,
   View,
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { DrawerActions, useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { Trash2 } from 'lucide-react-native';
+import { ClipboardList, Menu, Trash2 } from 'lucide-react-native';
 import { getTheme, Theme, UI_ACCENT } from '../../../theme/colors';
 import { FONT_SIZE, FONT_WEIGHT } from '../../../theme/typography';
 import FloatingAddButton from '../../../components/FloatingAddButton';
 import ErrorState from '../../../components/ErrorState';
+import EmptyState from '../../../components/EmptyState';
 import { useDeleteSession, useSessions } from '../hooks/useSessions';
 import { SESSION_TYPE_OPTIONS } from '../types';
 import type { LogStackParamList } from '../../../navigation/types';
@@ -74,6 +75,11 @@ function TrainingLogScreen() {
   return (
     <View style={styles.screen}>
       <View style={styles.header}>
+        <Pressable
+          hitSlop={12}
+          onPress={() => navigation.dispatch(DrawerActions.openDrawer())}>
+          <Menu color={theme.textPrimary} size={22} />
+        </Pressable>
         <Text style={styles.title}>Training Log</Text>
       </View>
 
@@ -84,11 +90,13 @@ function TrainingLogScreen() {
       ) : isError ? (
         <ErrorState />
       ) : items.length === 0 ? (
-        <View style={styles.centered}>
-          <Text style={styles.emptyText}>
-            No sessions logged yet — tap + to add your first one.
-          </Text>
-        </View>
+        <EmptyState
+          icon={ClipboardList}
+          title="No sessions yet"
+          description="Log your first training session to start tracking your BJJ journey."
+          actionLabel="Log Session"
+          onAction={() => navigation.navigate('LogSessionForm', undefined)}
+        />
       ) : (
         <FlatList
           data={items}
@@ -110,9 +118,12 @@ function createStyles(theme: Theme) {
       backgroundColor: theme.background,
     },
     header: {
+      flexDirection: 'row',
+      alignItems: 'center',
       paddingHorizontal: 20,
       paddingTop: 60,
       paddingBottom: 16,
+      gap: 12,
     },
     title: {
       color: theme.textPrimary,
@@ -124,11 +135,6 @@ function createStyles(theme: Theme) {
       alignItems: 'center',
       justifyContent: 'center',
       paddingHorizontal: 32,
-    },
-    emptyText: {
-      color: theme.textSecondary,
-      fontSize: FONT_SIZE.body,
-      textAlign: 'center',
     },
     listContent: {
       paddingHorizontal: 20,

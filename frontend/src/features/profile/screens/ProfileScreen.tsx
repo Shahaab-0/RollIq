@@ -3,6 +3,7 @@ import {
   ActivityIndicator,
   Alert,
   KeyboardAvoidingView,
+  Linking,
   Platform,
   Pressable,
   ScrollView,
@@ -12,6 +13,9 @@ import {
   useColorScheme,
   View,
 } from 'react-native';
+import { DrawerActions, useNavigation } from '@react-navigation/native';
+import { Menu } from 'lucide-react-native';
+import { API_BASE_URL } from '@env';
 import {
   BELT_COLORS,
   getTheme,
@@ -22,9 +26,10 @@ import {
 } from '../../../theme/colors';
 import { FONT_SIZE, FONT_WEIGHT } from '../../../theme/typography';
 import { useAppSelector } from '../../../redux/hooks';
-import { useSignOut } from '../../auth/hooks/useAuth';
+import { useDeleteAccount, useSignOut } from '../../auth/hooks/useAuth';
 import { useProfile, useUpdateProfile } from '../hooks/useProfile';
 import { useLogMilestone } from '../hooks/useBeltPromotions';
+import { useGyms } from '../../gyms/hooks/useGyms';
 import { toLocalDateString } from '../../../lib/dateFormat';
 import BeltHistorySection from '../components/BeltHistorySection';
 import BeltDatePromptModal from '../components/BeltDatePromptModal';
@@ -32,15 +37,22 @@ import { BELT_OPTIONS, type Belt } from '../types';
 
 const STRIPE_OPTIONS = [0, 1, 2, 3, 4];
 
+// API_BASE_URL is "<host>/api/v1" -- the legal pages are static content
+// served by the same backend, but outside that API prefix.
+const LEGAL_BASE_URL = API_BASE_URL.replace(/\/api\/v1\/?$/, '');
+
 function ProfileScreen() {
   const scheme = useColorScheme();
   const theme = useMemo(() => getTheme(scheme), [scheme]);
   const styles = useMemo(() => createStyles(theme), [theme]);
+  const navigation = useNavigation();
   const email = useAppSelector(state => state.auth.session?.user.email);
   const { data: profile, isLoading } = useProfile();
+  const { data: gyms = [] } = useGyms();
   const updateProfile = useUpdateProfile();
   const logMilestone = useLogMilestone();
   const signOut = useSignOut();
+  const deleteAccount = useDeleteAccount();
 
   const [displayName, setDisplayName] = useState('');
   const [belt, setBelt] = useState<Belt>('white');
@@ -136,6 +148,21 @@ function ProfileScreen() {
     );
   };
 
+  const handleDeleteAccount = () => {
+    Alert.alert(
+      'Delete your account?',
+      'This permanently deletes your account and everything in it -- sessions, techniques, rolls, injuries, competitions, and gym memberships. This cannot be undone.',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Delete Account',
+          style: 'destructive',
+          onPress: () => deleteAccount.mutate(),
+        },
+      ],
+    );
+  };
+
   if (isLoading && !profile) {
     return (
       <View style={[styles.screen, styles.centered]}>
@@ -149,7 +176,14 @@ function ProfileScreen() {
       style={styles.screen}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
       <ScrollView contentContainerStyle={styles.content}>
-        <Text style={styles.title}>Profile</Text>
+        <View style={styles.header}>
+          <Pressable
+            hitSlop={12}
+            onPress={() => navigation.dispatch(DrawerActions.openDrawer())}>
+            <Menu color={theme.textPrimary} size={22} />
+          </Pressable>
+          <Text style={styles.title}>Profile</Text>
+        </View>
         {email ? <Text style={styles.email}>{email}</Text> : null}
 
         <Text style={styles.label}>Name</Text>
@@ -203,13 +237,34 @@ function ProfileScreen() {
         </View>
 
         <Text style={styles.label}>Home gym</Text>
-        <TextInput
-          style={styles.input}
-          value={homeGym}
-          onChangeText={setHomeGym}
-          placeholder="Optional"
-          placeholderTextColor={theme.textSecondary}
-        />
+        {gyms.length === 0 ? (
+          <Text style={styles.hintText}>
+            Add a gym from the Dashboard to pick it here as your home gym.
+          </Text>
+        ) : (
+          <View style={styles.chipRow}>
+            <Pressable
+              style={[styles.chip, homeGym === '' && styles.chipActive]}
+              onPress={() => setHomeGym('')}>
+              <Text style={[styles.chipText, homeGym === '' && styles.chipTextActive]}>
+                None
+              </Text>
+            </Pressable>
+            {gyms.map(gym => {
+              const active = homeGym === gym.name;
+              return (
+                <Pressable
+                  key={gym.id}
+                  style={[styles.chip, active && styles.chipActive]}
+                  onPress={() => setHomeGym(gym.name)}>
+                  <Text style={[styles.chipText, active && styles.chipTextActive]}>
+                    {gym.name}
+                  </Text>
+                </Pressable>
+              );
+            })}
+          </View>
+        )}
 
         <BeltHistorySection
           onPromotionAdded={addedBelt => {
@@ -229,6 +284,25 @@ function ProfileScreen() {
 
         <Pressable style={styles.signOutButton} onPress={() => signOut.mutate()}>
           <Text style={styles.signOutButtonText}>Sign Out</Text>
+        </Pressable>
+
+        <View style={styles.legalRow}>
+          <Pressable onPress={() => Linking.openURL(`${LEGAL_BASE_URL}/legal/privacy.html`)}>
+            <Text style={styles.legalLink}>Privacy Policy</Text>
+          </Pressable>
+          <Text style={styles.legalDivider}>·</Text>
+          <Pressable onPress={() => Linking.openURL(`${LEGAL_BASE_URL}/legal/terms.html`)}>
+            <Text style={styles.legalLink}>Terms of Service</Text>
+          </Pressable>
+        </View>
+
+        <Pressable
+          style={styles.deleteAccountButton}
+          disabled={deleteAccount.isPending}
+          onPress={handleDeleteAccount}>
+          <Text style={styles.deleteAccountButtonText}>
+            {deleteAccount.isPending ? 'Deleting…' : 'Delete Account'}
+          </Text>
         </Pressable>
       </ScrollView>
 
@@ -262,6 +336,11 @@ function createStyles(theme: Theme) {
       padding: 24,
       paddingTop: 60,
       gap: 8,
+    },
+    header: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 12,
     },
     title: {
       color: theme.textPrimary,
@@ -302,6 +381,14 @@ function createStyles(theme: Theme) {
       backgroundColor: UI_ACCENT_MUTED,
       borderWidth: 1,
       borderColor: 'transparent',
+    },
+    chipActive: {
+      backgroundColor: UI_ACCENT,
+      borderColor: UI_ACCENT,
+    },
+    hintText: {
+      color: theme.textSecondary,
+      fontSize: FONT_SIZE.label,
     },
     chipText: {
       color: theme.textSecondary,
@@ -352,6 +439,32 @@ function createStyles(theme: Theme) {
       color: UI_ACCENT,
       fontWeight: FONT_WEIGHT.bold,
       fontSize: FONT_SIZE.base,
+    },
+    legalRow: {
+      flexDirection: 'row',
+      justifyContent: 'center',
+      alignItems: 'center',
+      gap: 8,
+      marginTop: 24,
+    },
+    legalLink: {
+      color: theme.textSecondary,
+      fontSize: FONT_SIZE.label,
+      textDecorationLine: 'underline',
+    },
+    legalDivider: {
+      color: theme.textSecondary,
+      fontSize: FONT_SIZE.label,
+    },
+    deleteAccountButton: {
+      alignItems: 'center',
+      marginTop: 20,
+      padding: 8,
+    },
+    deleteAccountButtonText: {
+      color: theme.danger,
+      fontSize: FONT_SIZE.label,
+      fontWeight: FONT_WEIGHT.semibold,
     },
   });
 }

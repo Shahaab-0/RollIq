@@ -55,8 +55,9 @@ export function useDeleteTechnique() {
 export function useImportFundamentals() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (seeds: { name: string; position: string; notes: string }[]) =>
-      techniquesApi.importFundamentals(seeds),
+    mutationFn: (
+      seeds: { name: string; position: string; notes: string; resource_url: string | null }[],
+    ) => techniquesApi.importFundamentals(seeds),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['techniques'] }),
     onError: error =>
       showToast(getApiErrorMessage(error, 'Could not import fundamentals'), 'error'),

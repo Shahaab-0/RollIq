@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import { StyleSheet, Text, useColorScheme, View } from 'react-native';
-import { BELT_COLORS, getTheme, Theme } from '../../../theme/colors';
+import { Award } from 'lucide-react-native';
+import { BELT_COLORS, getTheme, Theme, UI_ACCENT, UI_ACCENT_MUTED } from '../../../theme/colors';
 import { FONT_SIZE, FONT_WEIGHT } from '../../../theme/typography';
 import { formatDisplayDate } from '../../../lib/dateFormat';
 import { BELT_LABELS } from '../../profile/types';
@@ -18,9 +19,17 @@ function BeltTimelineCard() {
     <View style={styles.card}>
       <Text style={styles.cardTitle}>Belt timeline</Text>
       {timeline.length === 0 ? (
-        <Text style={styles.emptyText}>
-          No promotions logged yet — add one from your Profile.
-        </Text>
+        <View style={styles.miniEmpty}>
+          <View style={styles.miniEmptyIcon}>
+            <Award color={UI_ACCENT} size={22} />
+          </View>
+          <View style={styles.miniEmptyText}>
+            <Text style={styles.miniEmptyTitle}>No promotions logged</Text>
+            <Text style={styles.miniEmptyDesc}>
+              Add your belt history from the Profile tab to build your timeline.
+            </Text>
+          </View>
+        </View>
       ) : (
         [...timeline].reverse().map((entry, i) => (
           <View key={entry.id} style={styles.timelineRow}>
@@ -36,10 +45,15 @@ function BeltTimelineCard() {
               ) : null}
             </View>
             <View style={styles.timelineContent}>
-              <Text style={styles.timelineBelt}>
-                {BELT_LABELS[entry.belt]}
-                {entry.isCurrent ? ' · Current' : ''}
-              </Text>
+              <View style={styles.timelineBeltRow}>
+                <Text style={styles.timelineBelt}>{BELT_LABELS[entry.belt]}</Text>
+                {entry.isCurrent ? (
+                  <View style={styles.currentPill}>
+                    <View style={[styles.currentPillDot, { backgroundColor: BELT_COLORS[entry.belt] }]} />
+                    <Text style={styles.currentPillText}>Current</Text>
+                  </View>
+                ) : null}
+              </View>
               <Text style={styles.timelineMeta}>
                 {formatDisplayDate(entry.promotedOn)}
               </Text>
@@ -67,9 +81,32 @@ function createStyles(theme: Theme) {
       fontWeight: FONT_WEIGHT.bold,
       marginBottom: 12,
     },
-    emptyText: {
+    miniEmpty: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 14,
+      paddingVertical: 4,
+    },
+    miniEmptyIcon: {
+      width: 44,
+      height: 44,
+      borderRadius: 22,
+      backgroundColor: UI_ACCENT_MUTED,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    miniEmptyText: {
+      flex: 1,
+      gap: 2,
+    },
+    miniEmptyTitle: {
+      color: theme.textPrimary,
+      fontSize: FONT_SIZE.body,
+      fontWeight: FONT_WEIGHT.bold,
+    },
+    miniEmptyDesc: {
       color: theme.textSecondary,
-      fontSize: FONT_SIZE.label,
+      fontSize: FONT_SIZE.sm,
     },
     timelineRow: {
       flexDirection: 'row',
@@ -95,10 +132,34 @@ function createStyles(theme: Theme) {
       flex: 1,
       paddingBottom: 16,
     },
+    timelineBeltRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 8,
+    },
     timelineBelt: {
       color: theme.textPrimary,
       fontSize: FONT_SIZE.body,
       fontWeight: FONT_WEIGHT.semibold,
+    },
+    currentPill: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 5,
+      backgroundColor: UI_ACCENT_MUTED,
+      borderRadius: 10,
+      paddingHorizontal: 8,
+      paddingVertical: 3,
+    },
+    currentPillDot: {
+      width: 6,
+      height: 6,
+      borderRadius: 3,
+    },
+    currentPillText: {
+      color: UI_ACCENT,
+      fontSize: FONT_SIZE.tiny,
+      fontWeight: FONT_WEIGHT.bold,
     },
     timelineMeta: {
       color: theme.textSecondary,

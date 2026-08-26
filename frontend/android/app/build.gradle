@@ -2,6 +2,14 @@ apply plugin: "com.android.application"
 apply plugin: "org.jetbrains.kotlin.android"
 apply plugin: "com.facebook.react"
 
+// Only applied once google-services.json (from the Firebase Console) is
+// dropped into this folder -- see backend/docs/push-notifications-setup.md.
+// Without this guard, the build fails outright for anyone who hasn't done
+// the Firebase Console setup yet.
+if (file("google-services.json").exists()) {
+    apply plugin: "com.google.gms.google-services"
+}
+
 /**
  * This is the configuration block to customize your React Native Android app.
  * By default you don't need to apply any configuration, just uncomment the lines you need.

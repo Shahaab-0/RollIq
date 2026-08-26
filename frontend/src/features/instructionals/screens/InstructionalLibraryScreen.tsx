@@ -9,9 +9,9 @@ import {
   useColorScheme,
   View,
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { DrawerActions, useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { SlidersHorizontal } from 'lucide-react-native';
+import { Menu, SlidersHorizontal } from 'lucide-react-native';
 import { getTheme, Theme, TOAST_TEXT, UI_ACCENT, UI_ACCENT_TEXT } from '../../../theme/colors';
 import { FONT_SIZE, FONT_WEIGHT } from '../../../theme/typography';
 import FloatingAddButton from '../../../components/FloatingAddButton';
@@ -84,6 +84,11 @@ function InstructionalLibraryScreen() {
   return (
     <View style={styles.screen}>
       <View style={styles.header}>
+        <Pressable
+          hitSlop={12}
+          onPress={() => navigation.dispatch(DrawerActions.openDrawer())}>
+          <Menu color={theme.textPrimary} size={22} />
+        </Pressable>
         <Text style={styles.title}>Instructionals</Text>
       </View>
 
@@ -162,9 +167,12 @@ function createStyles(theme: Theme) {
       backgroundColor: theme.background,
     },
     header: {
+      flexDirection: 'row',
+      alignItems: 'center',
       paddingHorizontal: 20,
       paddingTop: 60,
       paddingBottom: 12,
+      gap: 12,
     },
     title: {
       color: theme.textPrimary,

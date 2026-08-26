@@ -14,7 +14,7 @@ import {
 import { useNavigation, useRoute } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RouteProp } from '@react-navigation/native';
-import { ChevronLeft, Repeat } from 'lucide-react-native';
+import { ChevronLeft, PlayCircle, Repeat } from 'lucide-react-native';
 import {
   getTheme,
   Theme,
@@ -168,14 +168,28 @@ function TechniqueFormScreen() {
         />
 
         <Text style={styles.label}>Resource link</Text>
-        <TextInput
-          style={styles.input}
-          value={resourceUrl}
-          onChangeText={setResourceUrl}
-          placeholder="Optional (YouTube, BJJ Fanatics, etc.)"
-          placeholderTextColor={theme.textSecondary}
-          autoCapitalize="none"
-        />
+        <View style={styles.resourceRow}>
+          <TextInput
+            style={[styles.input, styles.resourceInput]}
+            value={resourceUrl}
+            onChangeText={setResourceUrl}
+            placeholder="Optional (YouTube, BJJ Fanatics, etc.)"
+            placeholderTextColor={theme.textSecondary}
+            autoCapitalize="none"
+          />
+          {resourceUrl ? (
+            <Pressable
+              style={styles.watchButton}
+              onPress={() =>
+                navigation.navigate('TechniqueVideoPlayer', {
+                  name: name || 'Technique',
+                  url: resourceUrl,
+                })
+              }>
+              <PlayCircle color={UI_ACCENT} size={20} />
+            </Pressable>
+          ) : null}
+        </View>
 
         <Text style={styles.label}>Notes</Text>
         <TextInput
@@ -284,6 +298,20 @@ function createStyles(theme: Theme) {
     notesInput: {
       minHeight: 90,
       textAlignVertical: 'top',
+    },
+    resourceRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 8,
+    },
+    resourceInput: {
+      flex: 1,
+    },
+    watchButton: {
+      padding: 14,
+      borderRadius: 12,
+      borderWidth: 1,
+      borderColor: UI_ACCENT,
     },
     chipRow: {
       flexDirection: 'row',

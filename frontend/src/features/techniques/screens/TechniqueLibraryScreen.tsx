@@ -11,9 +11,16 @@ import {
   useColorScheme,
   View,
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { DrawerActions, useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { ChevronDown, ChevronUp, Repeat, Trash2 } from 'lucide-react-native';
+import {
+  ChevronDown,
+  ChevronUp,
+  Menu,
+  PlayCircle,
+  Repeat,
+  Trash2,
+} from 'lucide-react-native';
 import { getTheme, Theme, UI_ACCENT, UI_ACCENT_TEXT } from '../../../theme/colors';
 import { FONT_SIZE, FONT_WEIGHT } from '../../../theme/typography';
 import FloatingAddButton from '../../../components/FloatingAddButton';
@@ -85,6 +92,7 @@ function TechniqueLibraryScreen() {
         name: seed.name,
         position: seed.position,
         notes: seed.description,
+        resource_url: seed.videoUrl,
       })),
     );
     setImporting(false);
@@ -115,6 +123,19 @@ function TechniqueLibraryScreen() {
         <Text style={styles.rowMeta}>{item.drill_count} drills logged</Text>
       </View>
       <View style={styles.rowActions}>
+        {item.resource_url ? (
+          <Pressable
+            hitSlop={8}
+            style={styles.watchButton}
+            onPress={() =>
+              navigation.navigate('TechniqueVideoPlayer', {
+                name: item.name,
+                url: item.resource_url as string,
+              })
+            }>
+            <PlayCircle color={UI_ACCENT} size={18} />
+          </Pressable>
+        ) : null}
         <Pressable
           hitSlop={8}
           style={styles.drillButton}
@@ -134,6 +155,11 @@ function TechniqueLibraryScreen() {
   return (
     <View style={styles.screen}>
       <View style={styles.header}>
+        <Pressable
+          hitSlop={12}
+          onPress={() => navigation.dispatch(DrawerActions.openDrawer())}>
+          <Menu color={theme.textPrimary} size={22} />
+        </Pressable>
         <Text style={styles.title}>Technique Journal</Text>
       </View>
 
@@ -204,9 +230,12 @@ function createStyles(theme: Theme) {
       backgroundColor: theme.background,
     },
     header: {
+      flexDirection: 'row',
+      alignItems: 'center',
       paddingHorizontal: 20,
       paddingTop: 60,
       paddingBottom: 16,
+      gap: 12,
     },
     title: {
       color: theme.textPrimary,
@@ -299,6 +328,12 @@ function createStyles(theme: Theme) {
     rowActions: {
       flexDirection: 'row',
       gap: 8,
+    },
+    watchButton: {
+      padding: 8,
+      borderRadius: 10,
+      borderWidth: 1,
+      borderColor: UI_ACCENT,
     },
     drillButton: {
       padding: 8,

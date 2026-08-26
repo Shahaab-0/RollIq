@@ -63,6 +63,12 @@ function SignInScreen({ navigation }: Readonly<Props>) {
 
         <Pressable
           style={styles.linkButton}
+          onPress={() => navigation.navigate('ForgotPassword')}>
+          <Text style={styles.linkText}>Forgot password?</Text>
+        </Pressable>
+
+        <Pressable
+          style={styles.linkButton}
           onPress={() => navigation.navigate('SignUp')}>
           <Text style={styles.linkText}>
             Don't have an account? <Text style={styles.linkTextAccent}>Sign up</Text>

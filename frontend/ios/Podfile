@@ -5,8 +5,20 @@ require Pod::Executable.execute_command('node', ['-p',
     {paths: [process.argv[1]]},
   )', __dir__]).strip
 
+# We don't use `use_frameworks!` (see below), which defaults CocoaPods to
+# static linkage -- react-native-firebase's SPM-based Firebase resolution
+# only supports dynamic linkage, so it collides with duplicate symbols at
+# link time otherwise. This opts react-native-firebase back onto plain
+# CocoaPods-resolved Firebase pods instead, which is compatible with our
+# static (non-use_frameworks!) setup.
+$RNFirebaseDisableSPM = true
+
 platform :ios, min_ios_version_supported
 prepare_react_native_project!
+
+# FirebaseCoreInternal (Swift) depends on GoogleUtilities, which doesn't
+# define modules -- required for Swift pods to build as static libraries.
+use_modular_headers!
 
 linkage = ENV['USE_FRAMEWORKS']
 if linkage != nil

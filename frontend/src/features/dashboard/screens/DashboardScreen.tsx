@@ -9,16 +9,17 @@ import {
   View,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useNavigation } from '@react-navigation/native';
+import { DrawerActions, useNavigation } from '@react-navigation/native';
 import type { CompositeNavigationProp } from '@react-navigation/native';
 import type { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { Plus } from 'lucide-react-native';
+import { ChevronRight, History, Plus } from 'lucide-react-native';
 import {
   BELT_COLORS,
   getTheme,
   Theme,
   UI_ACCENT,
+  UI_ACCENT_MUTED,
   UI_ACCENT_TEXT,
 } from '../../../theme/colors';
 import { FONT_SIZE, FONT_WEIGHT } from '../../../theme/typography';
@@ -80,22 +81,16 @@ function DashboardScreen() {
           belt={belt}
           stripes={profile?.current_stripes ?? 0}
           accent={accent}
+          onMenuPress={() => navigation.dispatch(DrawerActions.openDrawer())}
         />
 
         {stats.error ? <Text style={styles.errorText}>{stats.error}</Text> : null}
 
-        <View style={[styles.card, styles.streakCard]}>
-          <View>
-            <Text style={styles.streakValue}>{stats.currentStreak} 🔥</Text>
-            <Text style={styles.streakLabel}>day streak</Text>
-          </View>
-          <Text style={styles.streakBest}>Best: {stats.bestStreak} days</Text>
-        </View>
-
-        <GymTilesRow />
-
         <View style={styles.card}>
-          <Text style={styles.cardTitle}>This week</Text>
+          <View style={styles.weekHeaderRow}>
+            <Text style={[styles.cardTitle, styles.weekHeaderTitle]}>This week</Text>
+            <Text style={styles.streakInline}>{stats.currentStreak} 🔥</Text>
+          </View>
           <View style={styles.weekRow}>
             {stats.week.map(day => (
               <View key={day.key} style={styles.dayColumn}>
@@ -112,6 +107,8 @@ function DashboardScreen() {
             ))}
           </View>
         </View>
+
+        <GymTilesRow />
 
         <View style={styles.actionsRow}>
           <Pressable
@@ -133,11 +130,33 @@ function DashboardScreen() {
         </View>
 
         <View style={styles.card}>
-          <Text style={styles.cardTitle}>Recent activity</Text>
+          <View style={styles.activityHeaderRow}>
+            <Text style={[styles.cardTitle, styles.activityHeaderTitle]}>Recent activity</Text>
+            <Pressable
+              hitSlop={8}
+              style={styles.activityAddButton}
+              onPress={() =>
+                navigation.navigate('Log', {
+                  screen: 'LogSessionForm',
+                  params: undefined,
+                  initial: false,
+                })
+              }>
+              <Plus color={UI_ACCENT} size={18} strokeWidth={2.5} />
+            </Pressable>
+          </View>
           {stats.recentActivity.length === 0 ? (
-            <Text style={styles.activityMeta}>
-              No sessions logged yet — tap "+ Log Session" to start.
-            </Text>
+            <View style={styles.miniEmpty}>
+              <View style={styles.miniEmptyIcon}>
+                <History color={UI_ACCENT} size={22} />
+              </View>
+              <View style={styles.miniEmptyText}>
+                <Text style={styles.miniEmptyTitle}>No sessions yet</Text>
+                <Text style={styles.miniEmptyDesc}>
+                  Tap + to log your first session and start building your history.
+                </Text>
+              </View>
+            </View>
           ) : (
             stats.recentActivity.map((item, i) => (
               <React.Fragment key={item.id}>
@@ -147,10 +166,17 @@ function DashboardScreen() {
                     navigation.navigate('Log', {
                       screen: 'LogSessionForm',
                       params: { sessionId: item.id },
+                      initial: false,
                     })
                   }>
-                  <Text style={styles.activityText}>{item.text}</Text>
-                  <Text style={styles.activityMeta}>{item.when}</Text>
+                  <View style={styles.activityIconBadge}>
+                    <History color={UI_ACCENT} size={16} />
+                  </View>
+                  <View style={styles.activityTextStack}>
+                    <Text style={styles.activityText}>{item.text}</Text>
+                    <Text style={styles.activityMeta}>{item.when}</Text>
+                  </View>
+                  <ChevronRight color={theme.textSecondary} size={18} />
                 </Pressable>
                 {i < stats.recentActivity.length - 1 && (
                   <View style={styles.activityDivider} />
@@ -181,7 +207,8 @@ function createStyles(theme: Theme) {
       fontSize: FONT_SIZE.label,
     },
     scrollContent: {
-      padding: 20,
+      paddingHorizontal: 20,
+      paddingTop: 12,
       paddingBottom: 24,
       gap: 16,
     },
@@ -192,30 +219,25 @@ function createStyles(theme: Theme) {
       borderWidth: 1,
       borderColor: theme.border,
     },
-    streakCard: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-    },
-    streakValue: {
-      color: theme.textPrimary,
-      fontSize: FONT_SIZE.streak,
-      fontWeight: FONT_WEIGHT.extrabold,
-    },
-    streakLabel: {
-      color: theme.textSecondary,
-      fontSize: FONT_SIZE.label,
-      marginTop: 2,
-    },
-    streakBest: {
-      color: theme.textSecondary,
-      fontSize: FONT_SIZE.label,
-    },
     cardTitle: {
       color: theme.textPrimary,
       fontSize: FONT_SIZE.base,
       fontWeight: FONT_WEIGHT.bold,
       marginBottom: 12,
+    },
+    weekHeaderRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      marginBottom: 12,
+    },
+    weekHeaderTitle: {
+      marginBottom: 0,
+    },
+    streakInline: {
+      color: theme.textPrimary,
+      fontSize: FONT_SIZE.md,
+      fontWeight: FONT_WEIGHT.extrabold,
     },
     weekRow: {
       flexDirection: 'row',
@@ -289,14 +311,46 @@ function createStyles(theme: Theme) {
       fontSize: FONT_SIZE.xs,
       textAlign: 'center',
     },
+    activityHeaderRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      marginBottom: 12,
+    },
+    activityHeaderTitle: {
+      marginBottom: 0,
+    },
+    activityAddButton: {
+      width: 28,
+      height: 28,
+      borderRadius: 14,
+      borderWidth: 1,
+      borderColor: UI_ACCENT,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
     activityRow: {
       flexDirection: 'row',
-      justifyContent: 'space-between',
-      paddingVertical: 8,
+      alignItems: 'center',
+      gap: 12,
+      paddingVertical: 10,
+    },
+    activityIconBadge: {
+      width: 34,
+      height: 34,
+      borderRadius: 17,
+      backgroundColor: UI_ACCENT_MUTED,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    activityTextStack: {
+      flex: 1,
+      gap: 2,
     },
     activityText: {
       color: theme.textPrimary,
       fontSize: FONT_SIZE.body,
+      fontWeight: FONT_WEIGHT.semibold,
     },
     activityMeta: {
       color: theme.textSecondary,
@@ -305,6 +359,33 @@ function createStyles(theme: Theme) {
     activityDivider: {
       height: 1,
       backgroundColor: theme.border,
+    },
+    miniEmpty: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 14,
+      paddingVertical: 4,
+    },
+    miniEmptyIcon: {
+      width: 44,
+      height: 44,
+      borderRadius: 22,
+      backgroundColor: UI_ACCENT_MUTED,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    miniEmptyText: {
+      flex: 1,
+      gap: 2,
+    },
+    miniEmptyTitle: {
+      color: theme.textPrimary,
+      fontSize: FONT_SIZE.body,
+      fontWeight: FONT_WEIGHT.bold,
+    },
+    miniEmptyDesc: {
+      color: theme.textSecondary,
+      fontSize: FONT_SIZE.sm,
     },
   });
 }

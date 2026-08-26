@@ -8,11 +8,20 @@
 import { Provider } from 'react-redux';
 import { MutationCache, QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import * as Sentry from '@sentry/react-native';
+import { SENTRY_DSN } from '@env';
 import { store } from './src/redux/store';
 import RootNavigator from './src/navigation/RootNavigator';
 import ToastHost from './src/components/ToastHost';
 import { showToast } from './src/lib/toast';
 import type { MutationMeta } from './src/types/reactQuery';
+
+// Sentry.init with an empty dsn is a documented no-op -- same "blank means
+// disabled, no separate conditional needed" shape as the backend's
+// sentry.dsn: ${SENTRY_DSN:} in application-prod.yml.
+if (SENTRY_DSN) {
+  Sentry.init({ dsn: SENTRY_DSN, tracesSampleRate: 0.2 });
+}
 
 // Success toasts stay automatic/global -- a call site sets meta.toastSuccess
 // to customize the message, or omits it for low-stakes actions where the UI
@@ -42,4 +51,4 @@ function App() {
   );
 }
 
-export default App;
+export default Sentry.wrap(App);

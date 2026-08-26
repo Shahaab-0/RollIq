@@ -11,7 +11,7 @@ import { useAppSelector } from '../redux/hooks';
 import { useAuthListener } from '../features/auth/hooks/useAuthListener';
 import { getTheme, Theme, UI_ACCENT } from '../theme/colors';
 import AuthStack from './AuthStack';
-import AppTabs from './AppTabs';
+import AppDrawer from './AppDrawer';
 
 function RootNavigator() {
   useAuthListener();
@@ -32,7 +32,7 @@ function RootNavigator() {
         </View>
       ) : (
         <NavigationContainer>
-          {session ? <AppTabs /> : <AuthStack />}
+          {session ? <AppDrawer /> : <AuthStack />}
         </NavigationContainer>
       )}
     </>

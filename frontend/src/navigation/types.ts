@@ -3,6 +3,8 @@ import type { NavigatorScreenParams } from '@react-navigation/native';
 export type AuthStackParamList = {
   SignIn: undefined;
   SignUp: undefined;
+  ForgotPassword: undefined;
+  ResetPassword: { email: string };
 };
 
 export type LogStackParamList = {
@@ -13,11 +15,13 @@ export type LogStackParamList = {
 export type TechniquesStackParamList = {
   TechniqueLibrary: undefined;
   TechniqueForm: { techniqueId?: string } | undefined;
+  TechniqueVideoPlayer: { name: string; url: string };
 };
 
 export type RollsStackParamList = {
   RollTracker: undefined;
   LogRollForm: { rollId?: string } | undefined;
+  PartnerHistory: undefined;
 };
 
 export type InstructionalsStackParamList = {
@@ -43,11 +47,32 @@ export type HomeStackParamList = {
   GymVideoPlayer: { url: string; techniques: string[] };
 };
 
+export type InjuriesStackParamList = {
+  InjuryList: undefined;
+  InjuryForm: { injuryId?: string } | undefined;
+};
+
+export type CompetitionsStackParamList = {
+  CompetitionList: undefined;
+  CompetitionForm: { competitionId?: string } | undefined;
+  CompetitionDetail: { competitionId: string };
+  CompetitionMatchForm: { competitionId: string; matchId?: string };
+};
+
 export type AppTabsParamList = {
   Home: NavigatorScreenParams<HomeStackParamList>;
   Log: NavigatorScreenParams<LogStackParamList>;
   Techniques: NavigatorScreenParams<TechniquesStackParamList>;
-  Instructionals: NavigatorScreenParams<InstructionalsStackParamList>;
-  Rolls: NavigatorScreenParams<RollsStackParamList>;
+  Competitions: NavigatorScreenParams<CompetitionsStackParamList>;
   Profile: undefined;
+};
+
+// The drawer sits above the tab bar -- "Main" is the existing 5-tab bar,
+// "Rolls", "Injuries", and "Instructionals" are secondary features reached
+// via the drawer instead of extra bottom tabs.
+export type AppDrawerParamList = {
+  Main: NavigatorScreenParams<AppTabsParamList>;
+  Rolls: NavigatorScreenParams<RollsStackParamList>;
+  Injuries: NavigatorScreenParams<InjuriesStackParamList>;
+  Instructionals: NavigatorScreenParams<InstructionalsStackParamList>;
 };

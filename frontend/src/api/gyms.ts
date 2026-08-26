@@ -1,6 +1,7 @@
 import { apiClient } from './client';
 import type {
   Gym,
+  GymAttendee,
   GymClassEntry,
   GymClassVideo,
   GymMember,
@@ -102,4 +103,27 @@ export async function createScheduleEntry(
 
 export async function deleteScheduleEntry(gymId: string, entryId: string): Promise<void> {
   await apiClient.delete(`/gyms/${gymId}/schedule/${entryId}`);
+}
+
+export async function listAttendance(gymId: string, classId: string): Promise<GymAttendee[]> {
+  const { data } = await apiClient.get<GymAttendee[]>(
+    `/gyms/${gymId}/classes/${classId}/attendance`,
+  );
+  return data;
+}
+
+export async function markAttendance(
+  gymId: string,
+  classId: string,
+  userId: string,
+): Promise<void> {
+  await apiClient.put(`/gyms/${gymId}/classes/${classId}/attendance/${userId}`);
+}
+
+export async function unmarkAttendance(
+  gymId: string,
+  classId: string,
+  userId: string,
+): Promise<void> {
+  await apiClient.delete(`/gyms/${gymId}/classes/${classId}/attendance/${userId}`);
 }

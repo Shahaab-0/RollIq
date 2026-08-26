@@ -11,10 +11,12 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { Dumbbell } from 'lucide-react-native';
 import { getTheme, Theme, UI_ACCENT, UI_ACCENT_MUTED } from '../../../theme/colors';
 import { FONT_SIZE, FONT_WEIGHT } from '../../../theme/typography';
 import FloatingAddButton from '../../../components/FloatingAddButton';
 import ErrorState from '../../../components/ErrorState';
+import EmptyState from '../../../components/EmptyState';
 import { useGyms } from '../hooks/useGyms';
 import type { HomeStackParamList } from '../../../navigation/types';
 import type { Gym } from '../types';
@@ -69,11 +71,13 @@ function GymListScreen() {
       ) : isError ? (
         <ErrorState />
       ) : gyms.length === 0 ? (
-        <View style={styles.centered}>
-          <Text style={styles.emptyText}>
-            No gyms yet — create one or join with an invite code.
-          </Text>
-        </View>
+        <EmptyState
+          icon={Dumbbell}
+          title="No gyms yet"
+          description="Create a gym for your team, or join one with an invite code from your coach or a teammate."
+          actionLabel="Add a Gym"
+          onAction={openAddChoices}
+        />
       ) : (
         <FlatList
           data={gyms}
@@ -109,11 +113,6 @@ function createStyles(theme: Theme) {
       alignItems: 'center',
       justifyContent: 'center',
       paddingHorizontal: 32,
-    },
-    emptyText: {
-      color: theme.textSecondary,
-      fontSize: FONT_SIZE.body,
-      textAlign: 'center',
     },
     listContent: {
       paddingHorizontal: 20,

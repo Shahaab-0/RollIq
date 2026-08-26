@@ -8,6 +8,10 @@ export function useRolls() {
   return useQuery({ queryKey: ['rolls'], queryFn: rollsApi.listRolls });
 }
 
+export function usePartnerHistory() {
+  return useQuery({ queryKey: ['rolls', 'partners'], queryFn: rollsApi.listPartnerHistory });
+}
+
 export function useCreateRoll() {
   const queryClient = useQueryClient();
   return useMutation({

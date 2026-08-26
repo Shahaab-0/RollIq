@@ -165,3 +165,33 @@ export function useDeleteScheduleEntry(gymId: string) {
     meta: { toastSuccess: 'Schedule slot removed' },
   });
 }
+
+export function useGymAttendance(gymId: string, classId: string | undefined) {
+  return useQuery({
+    queryKey: ['gyms', gymId, 'classes', classId, 'attendance'],
+    queryFn: () => gymsApi.listAttendance(gymId, classId as string),
+    enabled: !!classId,
+  });
+}
+
+export function useMarkAttendance(gymId: string, classId: string) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (userId: string) => gymsApi.markAttendance(gymId, classId, userId),
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: ['gyms', gymId, 'classes', classId, 'attendance'] }),
+    onError: error =>
+      showToast(getApiErrorMessage(error, 'Could not mark attendance'), 'error'),
+  });
+}
+
+export function useUnmarkAttendance(gymId: string, classId: string) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (userId: string) => gymsApi.unmarkAttendance(gymId, classId, userId),
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: ['gyms', gymId, 'classes', classId, 'attendance'] }),
+    onError: error =>
+      showToast(getApiErrorMessage(error, 'Could not update attendance'), 'error'),
+  });
+}

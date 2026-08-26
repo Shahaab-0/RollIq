@@ -8,13 +8,14 @@ import {
   useColorScheme,
   View,
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { DrawerActions, useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { Trash2 } from 'lucide-react-native';
+import { Menu, Swords, Trash2, Users } from 'lucide-react-native';
 import { getTheme, Theme, UI_ACCENT } from '../../../theme/colors';
 import { FONT_SIZE, FONT_WEIGHT } from '../../../theme/typography';
 import FloatingAddButton from '../../../components/FloatingAddButton';
 import ErrorState from '../../../components/ErrorState';
+import EmptyState from '../../../components/EmptyState';
 import { useDeleteRoll, useRolls } from '../hooks/useRolls';
 import type { RollsStackParamList } from '../../../navigation/types';
 import type { Roll } from '../types';
@@ -77,7 +78,17 @@ function RollTrackerScreen() {
   return (
     <View style={styles.screen}>
       <View style={styles.header}>
+        <Pressable
+          hitSlop={12}
+          onPress={() => navigation.dispatch(DrawerActions.openDrawer())}>
+          <Menu color={theme.textPrimary} size={22} />
+        </Pressable>
         <Text style={styles.title}>Roll Tracker</Text>
+        <Pressable
+          style={styles.partnersButton}
+          onPress={() => navigation.navigate('PartnerHistory')}>
+          <Users color={UI_ACCENT} size={18} />
+        </Pressable>
       </View>
 
       {isLoading && items.length === 0 ? (
@@ -86,6 +97,14 @@ function RollTrackerScreen() {
         </View>
       ) : isError ? (
         <ErrorState />
+      ) : items.length === 0 ? (
+        <EmptyState
+          icon={Swords}
+          title="No rolls logged yet"
+          description="Log a roll after sparring to track partners, submissions, and how the exchange went."
+          actionLabel="Log a Roll"
+          onAction={() => navigation.navigate('LogRollForm', undefined)}
+        />
       ) : (
         <FlatList
           data={items}
@@ -105,13 +124,6 @@ function RollTrackerScreen() {
               </View>
             ) : null
           }
-          ListEmptyComponent={
-            <View style={styles.centered}>
-              <Text style={styles.emptyText}>
-                No rolls logged yet — tap + to log your first roll.
-              </Text>
-            </View>
-          }
         />
       )}
 
@@ -127,14 +139,25 @@ function createStyles(theme: Theme) {
       backgroundColor: theme.background,
     },
     header: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
       paddingHorizontal: 20,
       paddingTop: 60,
       paddingBottom: 16,
     },
     title: {
+      flex: 1,
+      marginLeft: 12,
       color: theme.textPrimary,
       fontSize: FONT_SIZE.title,
       fontWeight: FONT_WEIGHT.extrabold,
+    },
+    partnersButton: {
+      padding: 8,
+      borderRadius: 10,
+      borderWidth: 1,
+      borderColor: UI_ACCENT,
     },
     centered: {
       flex: 1,
@@ -142,11 +165,6 @@ function createStyles(theme: Theme) {
       justifyContent: 'center',
       paddingHorizontal: 32,
       paddingTop: 60,
-    },
-    emptyText: {
-      color: theme.textSecondary,
-      fontSize: FONT_SIZE.body,
-      textAlign: 'center',
     },
     listContent: {
       paddingHorizontal: 20,

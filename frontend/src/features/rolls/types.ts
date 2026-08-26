@@ -11,3 +11,10 @@ export interface Roll {
 }
 
 export type NewRoll = Omit<Roll, 'id' | 'created_at'>;
+
+export interface PartnerHistoryEntry {
+  partner_name: string;
+  roll_count: number;
+  landed_total: number;
+  received_total: number;
+}

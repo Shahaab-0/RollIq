@@ -42,3 +42,23 @@ export async function me(): Promise<{ id: string; email: string }> {
   const { data } = await apiClient.get('/auth/me');
   return data;
 }
+
+export async function forgotPassword(email: string): Promise<void> {
+  await apiClient.post('/auth/forgot-password', { email });
+}
+
+export async function resetPassword(
+  email: string,
+  code: string,
+  newPassword: string,
+): Promise<void> {
+  await apiClient.post('/auth/reset-password', {
+    email,
+    code,
+    new_password: newPassword,
+  });
+}
+
+export async function deleteAccount(): Promise<void> {
+  await apiClient.delete('/account');
+}

@@ -29,7 +29,7 @@ export async function deleteTechnique(id: string): Promise<void> {
 }
 
 export async function importFundamentals(
-  seeds: { name: string; position: string; notes: string }[],
+  seeds: { name: string; position: string; notes: string; resource_url: string | null }[],
 ): Promise<Technique[]> {
   const { data } = await apiClient.post<Technique[]>('/techniques/import', seeds);
   return data;

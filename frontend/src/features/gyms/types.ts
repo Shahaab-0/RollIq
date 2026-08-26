@@ -64,3 +64,9 @@ export type NewGymScheduleEntry = Pick<
   GymScheduleEntry,
   'day_of_week' | 'start_time' | 'end_time' | 'topic'
 >;
+
+export interface GymAttendee {
+  user_id: string;
+  display_name: string;
+  present: boolean;
+}
