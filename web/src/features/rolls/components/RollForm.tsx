@@ -45,6 +45,7 @@ export default function RollForm({ rollId }: Readonly<{ rollId?: string }>) {
   /* eslint-enable react-hooks/set-state-in-effect */
 
   const awaitingHydration = !!rollId && !hydrated && isLoading;
+  const notFound = !!rollId && !hydrated && !isLoading && !existing;
 
   const handleSave = async () => {
     setSaving(true);
@@ -84,6 +85,10 @@ export default function RollForm({ rollId }: Readonly<{ rollId?: string }>) {
 
   if (awaitingHydration) {
     return <p className="text-sm text-text-secondary">Loading…</p>;
+  }
+
+  if (notFound) {
+    return <p className="text-sm text-text-secondary">Roll not found.</p>;
   }
 
   return (

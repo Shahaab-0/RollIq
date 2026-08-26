@@ -58,6 +58,7 @@ export default function SessionForm({ sessionId }: Readonly<{ sessionId?: string
   /* eslint-enable react-hooks/set-state-in-effect */
 
   const awaitingHydration = !!sessionId && !hydrated && isLoading;
+  const notFound = !!sessionId && !hydrated && !isLoading && !existing;
 
   const toIntOrNull = (v: string) => (v.trim() ? parseInt(v, 10) : null);
 
@@ -102,6 +103,10 @@ export default function SessionForm({ sessionId }: Readonly<{ sessionId?: string
 
   if (awaitingHydration) {
     return <p className="text-sm text-text-secondary">Loading…</p>;
+  }
+
+  if (notFound) {
+    return <p className="text-sm text-text-secondary">Session not found.</p>;
   }
 
   return (

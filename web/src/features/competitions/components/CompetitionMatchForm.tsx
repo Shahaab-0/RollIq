@@ -53,6 +53,7 @@ export default function CompetitionMatchForm({
   /* eslint-enable react-hooks/set-state-in-effect */
 
   const awaitingHydration = !!matchId && !hydrated && isLoading;
+  const notFound = !!matchId && !hydrated && !isLoading && !existing;
 
   const backHref = `/competitions/${competitionId}`;
 
@@ -93,6 +94,10 @@ export default function CompetitionMatchForm({
 
   if (awaitingHydration) {
     return <p className="text-sm text-text-secondary">Loading…</p>;
+  }
+
+  if (notFound) {
+    return <p className="text-sm text-text-secondary">Match not found.</p>;
   }
 
   return (

@@ -42,6 +42,7 @@ export default function CompetitionForm({ competitionId }: Readonly<{ competitio
   /* eslint-enable react-hooks/set-state-in-effect */
 
   const awaitingHydration = !!competitionId && !hydrated && isLoading;
+  const notFound = !!competitionId && !hydrated && !isLoading && !existing;
 
   const handleSave = async () => {
     if (!name.trim() || !weightCategory.trim()) return;
@@ -82,6 +83,10 @@ export default function CompetitionForm({ competitionId }: Readonly<{ competitio
 
   if (awaitingHydration) {
     return <p className="text-sm text-text-secondary">Loading…</p>;
+  }
+
+  if (notFound) {
+    return <p className="text-sm text-text-secondary">Competition not found.</p>;
   }
 
   return (

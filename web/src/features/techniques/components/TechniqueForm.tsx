@@ -39,6 +39,7 @@ export default function TechniqueForm({ techniqueId }: Readonly<{ techniqueId?: 
   /* eslint-enable react-hooks/set-state-in-effect */
 
   const awaitingHydration = !!techniqueId && !hydrated && isLoading;
+  const notFound = !!techniqueId && !hydrated && !isLoading && !existing;
 
   const handleSave = async () => {
     if (!name.trim() || !position.trim()) return;
@@ -76,6 +77,10 @@ export default function TechniqueForm({ techniqueId }: Readonly<{ techniqueId?: 
 
   if (awaitingHydration) {
     return <p className="text-sm text-text-secondary">Loading…</p>;
+  }
+
+  if (notFound) {
+    return <p className="text-sm text-text-secondary">Technique not found.</p>;
   }
 
   return (
