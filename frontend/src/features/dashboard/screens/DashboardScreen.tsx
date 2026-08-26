@@ -321,13 +321,10 @@ function createStyles(theme: Theme) {
       marginBottom: 0,
     },
     activityAddButton: {
-      width: 28,
-      height: 28,
-      borderRadius: 14,
+      padding: 8,
+      borderRadius: 10,
       borderWidth: 1,
       borderColor: UI_ACCENT,
-      alignItems: 'center',
-      justifyContent: 'center',
     },
     activityRow: {
       flexDirection: 'row',

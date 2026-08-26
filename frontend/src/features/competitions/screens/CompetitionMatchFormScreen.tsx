@@ -46,6 +46,20 @@ function CompetitionMatchFormScreen() {
   const scheme = useColorScheme();
   const theme = useMemo(() => getTheme(scheme), [scheme]);
   const styles = useMemo(() => createStyles(theme), [theme]);
+  // A per-result active-chip color, memoized alongside styles rather than
+  // built as a literal style object inline in JSX (CLAUDE.md's
+  // no-inline-styles rule) -- three theme colors, computed once per theme
+  // change instead of once per render per option.
+  const resultChipActiveStyle = useMemo(
+    () =>
+      Object.fromEntries(
+        RESULT_OPTIONS.map(option => {
+          const accent = theme[RESULT_COLOR[option.value]] as string;
+          return [option.value, { backgroundColor: accent, borderColor: accent }];
+        }),
+      ) as Record<MatchResult, { backgroundColor: string; borderColor: string }>,
+    [theme],
+  );
   const navigation = useNavigation<Nav>();
   const route = useRoute<Route>();
   const { competitionId, matchId } = route.params;
@@ -132,14 +146,10 @@ function CompetitionMatchFormScreen() {
         <View style={styles.chipRow}>
           {RESULT_OPTIONS.map(option => {
             const active = result === option.value;
-            const accent = theme[RESULT_COLOR[option.value]] as string;
             return (
               <Pressable
                 key={option.value}
-                style={[
-                  styles.chip,
-                  active && { backgroundColor: accent, borderColor: accent },
-                ]}
+                style={[styles.chip, active && resultChipActiveStyle[option.value]]}
                 onPress={() => setResult(option.value)}>
                 <Text style={[styles.chipText, active && styles.chipTextActive]}>
                   {option.label}
