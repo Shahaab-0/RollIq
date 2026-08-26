@@ -50,7 +50,13 @@ public class CompetitionService {
         if (request.beltDivision() != null) competition.setBeltDivision(request.beltDivision());
         if (request.location() != null) competition.setLocation(request.location());
         if (request.notes() != null) competition.setNotes(request.notes());
-        competitionRepository.save(competition);
+        // saveAndFlush, not save -- the re-fetch below is a native query,
+        // and Hibernate's auto-flush-before-query only reliably covers
+        // JPQL/Criteria; it isn't guaranteed to flush pending changes to a
+        // managed entity before a native SQL query that touches the same
+        // table, which would otherwise risk the response reflecting a
+        // stale name/date/location alongside the freshly-computed stats.
+        competitionRepository.saveAndFlush(competition);
         return toResponse(competitionRepository
                 .findSummaryByIdAndUserId(id, userId)
                 .orElseThrow(() -> ApiException.notFound("Competition not found")));
