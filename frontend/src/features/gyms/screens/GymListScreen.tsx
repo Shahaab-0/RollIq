@@ -12,13 +12,8 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Dumbbell } from 'lucide-react-native';
-import {
-  getTheme,
-  Theme,
-  UI_ACCENT,
-  UI_ACCENT_MUTED,
-} from '../../../theme/colors';
-import { FONT_SIZE, FONT_WEIGHT } from '../../../theme/typography';
+import { getTheme, Theme } from '../../../theme/colors';
+import { FONT_SIZE, FONT_WEIGHT, FONT_FAMILY } from '../../../theme/typography';
 import FloatingAddButton from '../../../components/FloatingAddButton';
 import ErrorState from '../../../components/ErrorState';
 import EmptyState from '../../../components/EmptyState';
@@ -73,7 +68,7 @@ function GymListScreen() {
 
       {isLoading && gyms.length === 0 ? (
         <View style={styles.centered}>
-          <ActivityIndicator color={UI_ACCENT} />
+          <ActivityIndicator color={theme.accent} />
         </View>
       ) : isError ? (
         <ErrorState />
@@ -114,6 +109,7 @@ function createStyles(theme: Theme) {
       color: theme.textPrimary,
       fontSize: FONT_SIZE.title,
       fontWeight: FONT_WEIGHT.extrabold,
+      fontFamily: FONT_FAMILY.extrabold,
     },
     centered: {
       flex: 1,
@@ -145,6 +141,7 @@ function createStyles(theme: Theme) {
       color: theme.textPrimary,
       fontSize: FONT_SIZE.base,
       fontWeight: FONT_WEIGHT.semibold,
+      fontFamily: FONT_FAMILY.semibold,
     },
     description: {
       color: theme.textSecondary,
@@ -156,10 +153,11 @@ function createStyles(theme: Theme) {
       marginTop: 2,
     },
     roleBadge: {
-      color: UI_ACCENT,
+      color: theme.accent,
       fontSize: FONT_SIZE.tiny,
       fontWeight: FONT_WEIGHT.semibold,
-      backgroundColor: UI_ACCENT_MUTED,
+      fontFamily: FONT_FAMILY.semibold,
+      backgroundColor: theme.accentMuted,
       paddingHorizontal: 8,
       paddingVertical: 4,
       borderRadius: 10,

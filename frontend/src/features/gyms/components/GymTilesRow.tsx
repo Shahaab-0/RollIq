@@ -10,13 +10,8 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Plus } from 'lucide-react-native';
-import {
-  getTheme,
-  Theme,
-  UI_ACCENT,
-  UI_ACCENT_MUTED,
-} from '../../../theme/colors';
-import { FONT_SIZE, FONT_WEIGHT } from '../../../theme/typography';
+import { getTheme, Theme } from '../../../theme/colors';
+import { FONT_SIZE, FONT_WEIGHT, FONT_FAMILY } from '../../../theme/typography';
 import { useGyms } from '../hooks/useGyms';
 import type { HomeStackParamList } from '../../../navigation/types';
 
@@ -62,7 +57,7 @@ function GymTilesRow() {
           style={styles.addTile}
           onPress={() => navigation.navigate('GymList')}
         >
-          <Plus color={UI_ACCENT} size={22} strokeWidth={2.5} />
+          <Plus color={theme.accent} size={22} strokeWidth={2.5} />
           <Text style={styles.addTileText}>Add Gym</Text>
         </Pressable>
       </ScrollView>
@@ -91,11 +86,13 @@ function createStyles(theme: Theme) {
       color: theme.textPrimary,
       fontSize: FONT_SIZE.base,
       fontWeight: FONT_WEIGHT.bold,
+      fontFamily: FONT_FAMILY.bold,
     },
     viewAll: {
-      color: UI_ACCENT,
+      color: theme.accent,
       fontSize: FONT_SIZE.label,
       fontWeight: FONT_WEIGHT.semibold,
+      fontFamily: FONT_FAMILY.semibold,
     },
     row: {
       gap: 10,
@@ -114,6 +111,7 @@ function createStyles(theme: Theme) {
       color: theme.textPrimary,
       fontSize: FONT_SIZE.label,
       fontWeight: FONT_WEIGHT.semibold,
+      fontFamily: FONT_FAMILY.semibold,
     },
     tileMeta: {
       color: theme.textSecondary,
@@ -124,17 +122,18 @@ function createStyles(theme: Theme) {
       height: TILE_SIZE,
       borderRadius: 14,
       borderWidth: 1.5,
-      borderColor: UI_ACCENT,
+      borderColor: theme.accent,
       borderStyle: 'dashed',
-      backgroundColor: UI_ACCENT_MUTED,
+      backgroundColor: theme.accentMuted,
       alignItems: 'center',
       justifyContent: 'center',
       gap: 6,
     },
     addTileText: {
-      color: UI_ACCENT,
+      color: theme.accent,
       fontSize: FONT_SIZE.tiny,
       fontWeight: FONT_WEIGHT.semibold,
+      fontFamily: FONT_FAMILY.semibold,
     },
   });
 }

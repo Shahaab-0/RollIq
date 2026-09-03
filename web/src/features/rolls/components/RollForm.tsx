@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useCreateRoll, useDeleteRoll, useRolls, useUpdateRoll } from '../hooks/useRolls';
 import Button from '@/components/ui/Button';
+import Card from '@/components/ui/Card';
 import Input from '@/components/ui/Input';
 import Textarea from '@/components/ui/Textarea';
 import Chip from '@/components/ui/Chip';
@@ -96,46 +97,48 @@ export default function RollForm({ rollId }: Readonly<{ rollId?: string }>) {
   }
 
   return (
-    <div className="flex w-full max-w-2xl flex-col gap-4">
+    <div className="flex w-full max-w-2xl flex-col gap-5">
       <h1 className="text-2xl font-extrabold tracking-tight text-text-primary">{existing ? 'Edit Roll' : 'Log Roll'}</h1>
 
-      <div>
-        <label className="mb-1 block text-xs font-semibold text-text-secondary">Partner</label>
-        <Input value={partnerName} onChange={e => setPartnerName(e.target.value)} placeholder="Optional" />
-      </div>
-
-      <div>
-        <label className="mb-1 block text-xs font-semibold text-text-secondary">Submissions landed</label>
-        <TagInput values={submissionsLanded} onChange={setSubmissionsLanded} placeholder="Type and press Enter" />
-      </div>
-
-      <div>
-        <label className="mb-1 block text-xs font-semibold text-text-secondary">Submissions received</label>
-        <TagInput values={submissionsReceived} onChange={setSubmissionsReceived} placeholder="Type and press Enter" />
-      </div>
-
-      <div>
-        <label className="mb-1 block text-xs font-semibold text-text-secondary">Escapes</label>
-        <Input type="number" min={0} value={escapes} onChange={e => setEscapes(e.target.value)} />
-      </div>
-
-      <div>
-        <label className="mb-1 block text-xs font-semibold text-text-secondary">Effort (1-5)</label>
-        <div className="flex gap-2">
-          {[1, 2, 3, 4, 5].map(n => (
-            <Chip key={n} active={effortRating === n} onClick={() => setEffortRating(effortRating === n ? null : n)}>
-              {n}
-            </Chip>
-          ))}
+      <Card className="flex flex-col gap-4">
+        <div>
+          <label className="mb-1 block text-xs font-semibold text-text-secondary">Partner</label>
+          <Input value={partnerName} onChange={e => setPartnerName(e.target.value)} placeholder="Optional" />
         </div>
-      </div>
 
-      <div>
-        <label className="mb-1 block text-xs font-semibold text-text-secondary">Notes</label>
-        <Textarea rows={4} value={notes} onChange={e => setNotes(e.target.value)} placeholder="Optional" />
-      </div>
+        <div>
+          <label className="mb-1 block text-xs font-semibold text-text-secondary">Submissions landed</label>
+          <TagInput values={submissionsLanded} onChange={setSubmissionsLanded} placeholder="Type and press Enter" />
+        </div>
 
-      <Button disabled={saving} onClick={handleSave} className="mt-2">
+        <div>
+          <label className="mb-1 block text-xs font-semibold text-text-secondary">Submissions received</label>
+          <TagInput values={submissionsReceived} onChange={setSubmissionsReceived} placeholder="Type and press Enter" />
+        </div>
+
+        <div>
+          <label className="mb-1 block text-xs font-semibold text-text-secondary">Escapes</label>
+          <Input type="number" min={0} value={escapes} onChange={e => setEscapes(e.target.value)} />
+        </div>
+
+        <div>
+          <label className="mb-1 block text-xs font-semibold text-text-secondary">Effort (1-5)</label>
+          <div className="flex gap-2">
+            {[1, 2, 3, 4, 5].map(n => (
+              <Chip key={n} active={effortRating === n} onClick={() => setEffortRating(effortRating === n ? null : n)}>
+                {n}
+              </Chip>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <label className="mb-1 block text-xs font-semibold text-text-secondary">Notes</label>
+          <Textarea rows={4} value={notes} onChange={e => setNotes(e.target.value)} placeholder="Optional" />
+        </div>
+      </Card>
+
+      <Button disabled={saving} onClick={handleSave}>
         {saving ? 'Saving…' : existing ? 'Save Changes' : 'Log Roll'}
       </Button>
 

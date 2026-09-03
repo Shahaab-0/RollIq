@@ -55,14 +55,14 @@ export default function GymScheduleCard({ gymId, canManage }: Readonly<Props>) {
   };
 
   return (
-    <div className="flex flex-col gap-2.5 rounded-2xl border border-border bg-surface p-4">
-      <div className="flex items-center justify-between">
+    <div className="flex flex-col gap-2.5 rounded-2xl border border-border bg-surface p-4 shadow-sm">
+      <div className="flex flex-wrap items-center justify-between gap-2">
         <h2 className="text-sm font-bold text-text-primary">Weekly Schedule</h2>
         {canManage ? (
           <button
             type="button"
             onClick={() => setShowAdd(v => !v)}
-            className="flex items-center gap-1 rounded-lg bg-accent px-3 py-1.5 text-xs font-semibold text-accent-text"
+            className="flex items-center gap-1 rounded-lg bg-accent px-3 py-1.5 text-xs font-semibold text-accent-text shadow-sm transition hover:opacity-90 active:scale-[0.98]"
           >
             <Plus size={14} strokeWidth={2.5} />
             Add Slot
@@ -88,7 +88,11 @@ export default function GymScheduleCard({ gymId, canManage }: Readonly<Props>) {
                       {entry.topic ? <p className="text-[11px] text-text-secondary">{entry.topic}</p> : null}
                     </div>
                     {canManage ? (
-                      <button onClick={() => deleteEntry.mutate(entry.id)} className="text-danger">
+                      <button
+                        onClick={() => deleteEntry.mutate(entry.id)}
+                        aria-label="Delete this schedule slot"
+                        className="rounded-lg p-1 text-danger"
+                      >
                         <Trash2 size={14} />
                       </button>
                     ) : null}

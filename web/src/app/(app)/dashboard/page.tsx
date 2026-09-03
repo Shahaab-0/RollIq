@@ -8,10 +8,30 @@ import Button from '@/components/ui/Button';
 
 function StatCard({ label, value }: Readonly<{ label: string; value: string }>) {
   return (
-    <Card className="flex flex-col items-center gap-1 py-4">
-      <span className="text-xl font-bold text-text-primary">{value}</span>
-      <span className="text-center text-xs text-text-secondary">{label}</span>
+    <Card className="flex flex-col items-center gap-1 py-5">
+      <span className="font-mono text-2xl font-bold tabular-nums text-text-primary">{value}</span>
+      <span className="text-center text-xs font-semibold uppercase tracking-wide text-text-secondary">{label}</span>
     </Card>
+  );
+}
+
+function DashboardSkeleton() {
+  return (
+    <div className="flex w-full animate-pulse flex-col gap-5">
+      <div className="flex items-center justify-between">
+        <div className="h-8 w-40 rounded-lg bg-surface-alt" />
+        <div className="h-11 w-36 rounded-xl bg-surface-alt" />
+      </div>
+      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+        {Array.from({ length: 4 }).map((_, i) => (
+          <div key={i} className="h-20 rounded-2xl border border-border bg-surface-alt" />
+        ))}
+      </div>
+      <div className="grid grid-cols-12 gap-5">
+        <div className="col-span-5 h-40 rounded-2xl border border-border bg-surface-alt" />
+        <div className="col-span-7 h-40 rounded-2xl border border-border bg-surface-alt" />
+      </div>
+    </div>
   );
 }
 
@@ -19,12 +39,12 @@ export default function DashboardPage() {
   const stats = useDashboardStats();
 
   if (stats.loading) {
-    return <div className="text-sm text-text-secondary">Loading…</div>;
+    return <DashboardSkeleton />;
   }
 
   return (
-    <div className="flex w-full max-w-6xl flex-col gap-5">
-      <div className="flex items-center justify-between">
+    <div className="flex w-full flex-col gap-5">
+      <div className="flex flex-wrap items-center justify-between gap-3">
         <h1 className="text-2xl font-extrabold tracking-tight text-text-primary">Dashboard</h1>
         <Link href="/log/new">
           <Button className="flex items-center gap-2">
@@ -37,7 +57,15 @@ export default function DashboardPage() {
       {stats.error ? <p className="text-sm text-danger">{stats.error}</p> : null}
 
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-        <StatCard label="day streak" value={String(stats.currentStreak)} />
+        <div className="flex flex-col items-center justify-center gap-1 rounded-2xl bg-accent py-5 shadow-md">
+          <span className="flex items-center gap-1 font-mono text-2xl font-bold tabular-nums text-accent-text">
+            {stats.currentStreak}
+            <Flame size={18} className="text-accent-text" />
+          </span>
+          <span className="text-center text-xs font-semibold uppercase tracking-wide text-accent-text/80">
+            streak
+          </span>
+        </div>
         <StatCard label="mat hours" value={String(stats.matHours)} />
         <StatCard label="classes / yr" value={String(stats.classesThisYear)} />
         <StatCard
@@ -46,11 +74,11 @@ export default function DashboardPage() {
         />
       </div>
 
-      <div className="grid grid-cols-12 gap-5">
-        <Card className="col-span-5">
-          <div className="mb-3 flex items-center justify-between">
+      <div className="grid grid-cols-1 gap-5 lg:grid-cols-12">
+        <Card className="lg:col-span-5">
+          <div className="mb-4 flex items-center justify-between">
             <h2 className="text-base font-bold text-text-primary">This week</h2>
-            <span className="flex items-center gap-1 text-sm font-extrabold text-text-primary">
+            <span className="flex items-center gap-1 font-mono text-sm font-extrabold tabular-nums text-text-primary">
               {stats.currentStreak}
               <Flame size={16} className="text-accent" />
             </span>
@@ -59,8 +87,10 @@ export default function DashboardPage() {
             {stats.week.map(day => (
               <div key={day.key} className="flex flex-col items-center gap-2">
                 <div
-                  className={`h-7 w-7 rounded-full border ${
-                    day.trained ? 'border-accent bg-accent' : 'border-border bg-surface-alt'
+                  className={`h-8 w-8 rounded-full border transition ${
+                    day.trained
+                      ? 'border-accent bg-accent shadow-[0_0_0_4px_var(--color-accent-muted)]'
+                      : 'border-border bg-surface-alt'
                   }`}
                 />
                 <span className="text-xs text-text-secondary">{day.label}</span>
@@ -69,7 +99,7 @@ export default function DashboardPage() {
           </div>
         </Card>
 
-        <Card className="col-span-7">
+        <Card className="lg:col-span-7">
           <h2 className="mb-3 text-base font-bold text-text-primary">Recent activity</h2>
           {stats.recentActivity.length === 0 ? (
             <p className="text-sm text-text-secondary">
@@ -81,7 +111,7 @@ export default function DashboardPage() {
                 <Link
                   key={item.id}
                   href={`/log/${item.id}`}
-                  className="flex items-center justify-between py-2.5 first:pt-0 last:pb-0 hover:text-accent"
+                  className="flex items-center justify-between py-2.5 transition first:pt-0 last:pb-0 hover:text-accent"
                 >
                   <span className="text-sm text-text-primary">{item.text}</span>
                   <span className="text-xs text-text-secondary">{item.when}</span>

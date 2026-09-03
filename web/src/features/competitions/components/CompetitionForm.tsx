@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useCompetitions, useCreateCompetition, useDeleteCompetition, useUpdateCompetition } from '../hooks/useCompetitions';
 import { toLocalDateString } from '@/lib/dateFormat';
 import Button from '@/components/ui/Button';
+import Card from '@/components/ui/Card';
 import Input from '@/components/ui/Input';
 import Textarea from '@/components/ui/Textarea';
 
@@ -94,40 +95,44 @@ export default function CompetitionForm({ competitionId }: Readonly<{ competitio
   }
 
   return (
-    <div className="flex w-full max-w-2xl flex-col gap-4">
+    <div className="flex w-full max-w-2xl flex-col gap-5">
       <h1 className="text-2xl font-extrabold tracking-tight text-text-primary">{existing ? 'Edit Competition' : 'Log Competition'}</h1>
 
-      <div>
-        <label className="mb-1 block text-xs font-semibold text-text-secondary">Competition name</label>
-        <Input value={name} onChange={e => setName(e.target.value)} placeholder="e.g. IBJJF Pan Ams" />
-      </div>
+      <Card className="flex flex-col gap-4">
+        <div>
+          <label className="mb-1 block text-xs font-semibold text-text-secondary">Competition name</label>
+          <Input value={name} onChange={e => setName(e.target.value)} placeholder="e.g. IBJJF Pan Ams" />
+        </div>
 
-      <div>
-        <label className="mb-1 block text-xs font-semibold text-text-secondary">Date</label>
-        <Input type="date" max={toLocalDateString(new Date())} value={competitionDate} onChange={e => setCompetitionDate(e.target.value)} />
-      </div>
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div>
+            <label className="mb-1 block text-xs font-semibold text-text-secondary">Date</label>
+            <Input type="date" max={toLocalDateString(new Date())} value={competitionDate} onChange={e => setCompetitionDate(e.target.value)} />
+          </div>
+          <div>
+            <label className="mb-1 block text-xs font-semibold text-text-secondary">Weight category</label>
+            <Input value={weightCategory} onChange={e => setWeightCategory(e.target.value)} placeholder="e.g. Featherweight" />
+          </div>
+        </div>
 
-      <div>
-        <label className="mb-1 block text-xs font-semibold text-text-secondary">Weight category</label>
-        <Input value={weightCategory} onChange={e => setWeightCategory(e.target.value)} placeholder="e.g. Featherweight" />
-      </div>
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div>
+            <label className="mb-1 block text-xs font-semibold text-text-secondary">Belt division</label>
+            <Input value={beltDivision} onChange={e => setBeltDivision(e.target.value)} placeholder="Optional -- e.g. Blue Belt Adult" />
+          </div>
+          <div>
+            <label className="mb-1 block text-xs font-semibold text-text-secondary">Location</label>
+            <Input value={location} onChange={e => setLocation(e.target.value)} placeholder="Optional" />
+          </div>
+        </div>
 
-      <div>
-        <label className="mb-1 block text-xs font-semibold text-text-secondary">Belt division</label>
-        <Input value={beltDivision} onChange={e => setBeltDivision(e.target.value)} placeholder="Optional -- e.g. Blue Belt Adult" />
-      </div>
+        <div>
+          <label className="mb-1 block text-xs font-semibold text-text-secondary">Notes</label>
+          <Textarea rows={4} value={notes} onChange={e => setNotes(e.target.value)} placeholder="Optional" />
+        </div>
+      </Card>
 
-      <div>
-        <label className="mb-1 block text-xs font-semibold text-text-secondary">Location</label>
-        <Input value={location} onChange={e => setLocation(e.target.value)} placeholder="Optional" />
-      </div>
-
-      <div>
-        <label className="mb-1 block text-xs font-semibold text-text-secondary">Notes</label>
-        <Textarea rows={4} value={notes} onChange={e => setNotes(e.target.value)} placeholder="Optional" />
-      </div>
-
-      <Button disabled={saving || !name.trim() || !weightCategory.trim()} onClick={handleSave} className="mt-2">
+      <Button disabled={saving || !name.trim() || !weightCategory.trim()} onClick={handleSave}>
         {saving ? 'Saving…' : existing ? 'Save Changes' : 'Log Competition'}
       </Button>
 

@@ -40,7 +40,7 @@ export function Tr({
             }
           : undefined
       }
-      className={`group ${
+      className={`group transition-colors ${
         onClick
           ? 'cursor-pointer hover:bg-surface-alt focus-visible:outline-none focus-visible:bg-surface-alt focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-accent'
           : ''
@@ -67,9 +67,14 @@ export function Td({ children, className = '', ...props }: Readonly<TdHTMLAttrib
   );
 }
 
-// Wrap a row's action icons in this -- invisible until the row (its `group`
-// ancestor from Tr) is hovered, so a table full of rows doesn't read as a
-// wall of always-on icon buttons the way the mobile-style card lists did.
+// Wrap a row's action icons in this -- always visible below lg (touch
+// devices have no hover state, so a hover-only reveal would make these
+// unreachable), and hover-revealed at lg+ so a dense desktop table doesn't
+// read as a wall of always-on icon buttons.
 export function TableRowActions({ children }: Readonly<HTMLAttributes<HTMLDivElement>>) {
-  return <div className="flex justify-end gap-2 opacity-0 transition-opacity group-hover:opacity-100">{children}</div>;
+  return (
+    <div className="flex justify-end gap-2 opacity-100 transition-opacity lg:opacity-0 lg:group-hover:opacity-100">
+      {children}
+    </div>
+  );
 }

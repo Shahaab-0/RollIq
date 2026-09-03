@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { ChevronDown, ChevronUp, Play } from 'lucide-react';
+import { ChevronDown, Play } from 'lucide-react';
 import {
   useInstructionalProgress,
   useInstructionalVideos,
@@ -34,7 +34,7 @@ export default function InstructionalCard({ instructional }: Readonly<{ instruct
       : `${instructional.completed_video_count}/${instructional.video_count} completed`;
 
   return (
-    <div className="rounded-2xl border border-border bg-surface px-4">
+    <div className="rounded-2xl border border-border bg-surface px-4 shadow-sm transition hover:border-accent/50">
       <button
         type="button"
         onClick={() => setExpanded(v => !v)}
@@ -50,8 +50,13 @@ export default function InstructionalCard({ instructional }: Readonly<{ instruct
           </span>
         </div>
         <div className="flex flex-col items-end gap-1.5">
-          <span className="rounded-lg bg-accent-muted px-2 py-1 text-xs font-semibold text-accent">{badgeLabel}</span>
-          {expanded ? <ChevronUp size={18} className="text-text-secondary" /> : <ChevronDown size={18} className="text-text-secondary" />}
+          <span className="rounded-lg bg-accent-muted px-2 py-1 font-mono text-xs font-semibold tabular-nums text-accent">
+            {badgeLabel}
+          </span>
+          <ChevronDown
+            size={18}
+            className={`text-text-secondary transition-transform ${expanded ? 'rotate-180' : ''}`}
+          />
         </div>
       </button>
 

@@ -14,15 +14,8 @@ import type { CompositeNavigationProp } from '@react-navigation/native';
 import type { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { ChevronRight, History, Plus } from 'lucide-react-native';
-import {
-  BELT_COLORS,
-  getTheme,
-  Theme,
-  UI_ACCENT,
-  UI_ACCENT_MUTED,
-  UI_ACCENT_TEXT,
-} from '../../../theme/colors';
-import { FONT_SIZE, FONT_WEIGHT } from '../../../theme/typography';
+import { BELT_COLORS, getTheme, Theme } from '../../../theme/colors';
+import { FONT_SIZE, FONT_WEIGHT, FONT_FAMILY } from '../../../theme/typography';
 import { useProfile } from '../../profile/hooks/useProfile';
 import { useDashboardStats } from '../hooks/useDashboardStats';
 import ProfileHeader from '../components/ProfileHeader';
@@ -130,7 +123,7 @@ function DashboardScreen() {
               navigation.navigate('Log', { screen: 'TrainingLog' })
             }
           >
-            <Plus color={UI_ACCENT_TEXT} size={18} strokeWidth={2.5} />
+            <Plus color={theme.accentText} size={18} strokeWidth={2.5} />
             <Text style={styles.actionButtonTextPrimary}>Log Session</Text>
           </Pressable>
         </View>
@@ -171,13 +164,13 @@ function DashboardScreen() {
                 })
               }
             >
-              <Plus color={UI_ACCENT} size={18} strokeWidth={2.5} />
+              <Plus color={theme.accent} size={18} strokeWidth={2.5} />
             </Pressable>
           </View>
           {stats.recentActivity.length === 0 ? (
             <View style={styles.miniEmpty}>
               <View style={styles.miniEmptyIcon}>
-                <History color={UI_ACCENT} size={22} />
+                <History color={theme.accent} size={22} />
               </View>
               <View style={styles.miniEmptyText}>
                 <Text style={styles.miniEmptyTitle}>No sessions yet</Text>
@@ -201,7 +194,7 @@ function DashboardScreen() {
                   }
                 >
                   <View style={styles.activityIconBadge}>
-                    <History color={UI_ACCENT} size={16} />
+                    <History color={theme.accent} size={16} />
                   </View>
                   <View style={styles.activityTextStack}>
                     <Text style={styles.activityText}>{item.text}</Text>
@@ -254,6 +247,7 @@ function createStyles(theme: Theme) {
       color: theme.textPrimary,
       fontSize: FONT_SIZE.base,
       fontWeight: FONT_WEIGHT.bold,
+      fontFamily: FONT_FAMILY.bold,
       marginBottom: 12,
     },
     weekHeaderRow: {
@@ -269,6 +263,7 @@ function createStyles(theme: Theme) {
       color: theme.textPrimary,
       fontSize: FONT_SIZE.md,
       fontWeight: FONT_WEIGHT.extrabold,
+      fontFamily: FONT_FAMILY.extrabold,
     },
     weekRow: {
       flexDirection: 'row',
@@ -299,7 +294,7 @@ function createStyles(theme: Theme) {
     actionButton: {
       flex: 1,
       flexDirection: 'row',
-      backgroundColor: UI_ACCENT,
+      backgroundColor: theme.accent,
       paddingVertical: 16,
       borderRadius: 14,
       alignItems: 'center',
@@ -311,12 +306,14 @@ function createStyles(theme: Theme) {
       borderWidth: 1.5,
     },
     actionButtonTextPrimary: {
-      color: UI_ACCENT_TEXT,
+      color: theme.accentText,
       fontWeight: FONT_WEIGHT.bold,
+      fontFamily: FONT_FAMILY.bold,
       fontSize: FONT_SIZE.base,
     },
     actionButtonTextSecondary: {
       fontWeight: FONT_WEIGHT.bold,
+      fontFamily: FONT_FAMILY.bold,
       fontSize: FONT_SIZE.base,
     },
     statsRow: {
@@ -337,6 +334,7 @@ function createStyles(theme: Theme) {
       color: theme.textPrimary,
       fontSize: FONT_SIZE.xl,
       fontWeight: FONT_WEIGHT.bold,
+      fontFamily: FONT_FAMILY.bold,
     },
     statLabel: {
       color: theme.textSecondary,
@@ -356,7 +354,7 @@ function createStyles(theme: Theme) {
       padding: 8,
       borderRadius: 10,
       borderWidth: 1,
-      borderColor: UI_ACCENT,
+      borderColor: theme.accent,
     },
     activityRow: {
       flexDirection: 'row',
@@ -368,7 +366,7 @@ function createStyles(theme: Theme) {
       width: 34,
       height: 34,
       borderRadius: 17,
-      backgroundColor: UI_ACCENT_MUTED,
+      backgroundColor: theme.accentMuted,
       alignItems: 'center',
       justifyContent: 'center',
     },
@@ -380,6 +378,7 @@ function createStyles(theme: Theme) {
       color: theme.textPrimary,
       fontSize: FONT_SIZE.body,
       fontWeight: FONT_WEIGHT.semibold,
+      fontFamily: FONT_FAMILY.semibold,
     },
     activityMeta: {
       color: theme.textSecondary,
@@ -399,7 +398,7 @@ function createStyles(theme: Theme) {
       width: 44,
       height: 44,
       borderRadius: 22,
-      backgroundColor: UI_ACCENT_MUTED,
+      backgroundColor: theme.accentMuted,
       alignItems: 'center',
       justifyContent: 'center',
     },
@@ -411,6 +410,7 @@ function createStyles(theme: Theme) {
       color: theme.textPrimary,
       fontSize: FONT_SIZE.body,
       fontWeight: FONT_WEIGHT.bold,
+      fontFamily: FONT_FAMILY.bold,
     },
     miniEmptyDesc: {
       color: theme.textSecondary,

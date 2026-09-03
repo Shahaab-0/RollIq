@@ -21,13 +21,8 @@ import {
   Repeat,
   Trash2,
 } from 'lucide-react-native';
-import {
-  getTheme,
-  Theme,
-  UI_ACCENT,
-  UI_ACCENT_TEXT,
-} from '../../../theme/colors';
-import { FONT_SIZE, FONT_WEIGHT } from '../../../theme/typography';
+import { getTheme, Theme } from '../../../theme/colors';
+import { FONT_SIZE, FONT_WEIGHT, FONT_FAMILY } from '../../../theme/typography';
 import FloatingAddButton from '../../../components/FloatingAddButton';
 import ErrorState from '../../../components/ErrorState';
 import {
@@ -143,7 +138,7 @@ function TechniqueLibraryScreen() {
               })
             }
           >
-            <PlayCircle color={UI_ACCENT} size={18} />
+            <PlayCircle color={theme.accent} size={18} />
           </Pressable>
         ) : null}
         <Pressable
@@ -151,7 +146,7 @@ function TechniqueLibraryScreen() {
           style={styles.drillButton}
           onPress={() => incrementDrillCount.mutate(item.id)}
         >
-          <Repeat color={UI_ACCENT} size={18} />
+          <Repeat color={theme.accent} size={18} />
         </Pressable>
         <Pressable
           hitSlop={8}
@@ -178,7 +173,7 @@ function TechniqueLibraryScreen() {
 
       {isLoading && items.length === 0 ? (
         <View style={styles.centered}>
-          <ActivityIndicator color={UI_ACCENT} />
+          <ActivityIndicator color={theme.accent} />
         </View>
       ) : isError ? (
         <ErrorState />
@@ -262,6 +257,7 @@ function createStyles(theme: Theme) {
       color: theme.textPrimary,
       fontSize: FONT_SIZE.title,
       fontWeight: FONT_WEIGHT.extrabold,
+      fontFamily: FONT_FAMILY.extrabold,
     },
     centered: {
       flex: 1,
@@ -276,7 +272,7 @@ function createStyles(theme: Theme) {
       marginBottom: 20,
     },
     importButton: {
-      backgroundColor: UI_ACCENT,
+      backgroundColor: theme.accent,
       borderRadius: 14,
       paddingVertical: 14,
       paddingHorizontal: 24,
@@ -286,8 +282,9 @@ function createStyles(theme: Theme) {
       opacity: 0.6,
     },
     importButtonText: {
-      color: UI_ACCENT_TEXT,
+      color: theme.accentText,
       fontWeight: FONT_WEIGHT.bold,
+      fontFamily: FONT_FAMILY.bold,
       fontSize: FONT_SIZE.base,
     },
     importHint: {
@@ -319,6 +316,7 @@ function createStyles(theme: Theme) {
       color: theme.textPrimary,
       fontSize: FONT_SIZE.body,
       fontWeight: FONT_WEIGHT.bold,
+      fontFamily: FONT_FAMILY.bold,
     },
     sectionBody: {
       gap: 10,
@@ -341,6 +339,7 @@ function createStyles(theme: Theme) {
       color: theme.textPrimary,
       fontSize: FONT_SIZE.base,
       fontWeight: FONT_WEIGHT.semibold,
+      fontFamily: FONT_FAMILY.semibold,
     },
     rowMeta: {
       color: theme.textSecondary,
@@ -354,13 +353,13 @@ function createStyles(theme: Theme) {
       padding: 8,
       borderRadius: 10,
       borderWidth: 1,
-      borderColor: UI_ACCENT,
+      borderColor: theme.accent,
     },
     drillButton: {
       padding: 8,
       borderRadius: 10,
       borderWidth: 1,
-      borderColor: UI_ACCENT,
+      borderColor: theme.accent,
     },
     deleteIconButton: {
       padding: 8,

@@ -12,13 +12,8 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RouteProp } from '@react-navigation/native';
 import { ChevronLeft, Pencil, Trash2 } from 'lucide-react-native';
-import {
-  getTheme,
-  Theme,
-  UI_ACCENT,
-  UI_ACCENT_MUTED,
-} from '../../../theme/colors';
-import { FONT_SIZE, FONT_WEIGHT } from '../../../theme/typography';
+import { getTheme, Theme } from '../../../theme/colors';
+import { FONT_SIZE, FONT_WEIGHT, FONT_FAMILY } from '../../../theme/typography';
 import { formatDisplayDate } from '../../../lib/dateFormat';
 import FloatingAddButton from '../../../components/FloatingAddButton';
 import {
@@ -108,13 +103,13 @@ function CompetitionDetailScreen() {
             navigation.navigate('CompetitionForm', { competitionId })
           }
         >
-          <Pencil color={UI_ACCENT} size={20} />
+          <Pencil color={theme.accent} size={20} />
         </Pressable>
       </View>
 
       {isLoading && matches.length === 0 ? (
         <View style={styles.centered}>
-          <ActivityIndicator color={UI_ACCENT} />
+          <ActivityIndicator color={theme.accent} />
         </View>
       ) : (
         <FlatList
@@ -194,6 +189,7 @@ function createStyles(theme: Theme) {
       color: theme.textPrimary,
       fontSize: FONT_SIZE.lg,
       fontWeight: FONT_WEIGHT.bold,
+      fontFamily: FONT_FAMILY.bold,
       textAlign: 'center',
     },
     listContent: {
@@ -222,7 +218,8 @@ function createStyles(theme: Theme) {
       color: theme.textPrimary,
       fontSize: FONT_SIZE.md,
       fontWeight: FONT_WEIGHT.extrabold,
-      backgroundColor: UI_ACCENT_MUTED,
+      fontFamily: FONT_FAMILY.extrabold,
+      backgroundColor: theme.accentMuted,
       paddingHorizontal: 10,
       paddingVertical: 4,
       borderRadius: 10,
@@ -257,6 +254,7 @@ function createStyles(theme: Theme) {
       color: theme.textPrimary,
       fontSize: FONT_SIZE.base,
       fontWeight: FONT_WEIGHT.semibold,
+      fontFamily: FONT_FAMILY.semibold,
     },
     matchMeta: {
       color: theme.textSecondary,

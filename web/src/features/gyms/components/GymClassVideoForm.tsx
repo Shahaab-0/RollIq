@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useCreateGymClassVideo, useGymClassVideos } from '../hooks/useGyms';
 import Button from '@/components/ui/Button';
+import Card from '@/components/ui/Card';
 import Input from '@/components/ui/Input';
 import TagInput from '@/components/ui/TagInput';
 
@@ -33,20 +34,22 @@ export default function GymClassVideoForm({ gymId, classId }: Readonly<{ gymId: 
   };
 
   return (
-    <div className="flex w-full max-w-2xl flex-col gap-4">
+    <div className="flex w-full max-w-2xl flex-col gap-5">
       <h1 className="text-2xl font-extrabold tracking-tight text-text-primary">Add Video</h1>
 
-      <div>
-        <label className="mb-1 block text-xs font-semibold text-text-secondary">Link</label>
-        <Input value={url} onChange={e => setUrl(e.target.value)} placeholder="Optional" />
-      </div>
+      <Card className="flex flex-col gap-4">
+        <div>
+          <label className="mb-1 block text-xs font-semibold text-text-secondary">Link</label>
+          <Input value={url} onChange={e => setUrl(e.target.value)} placeholder="Optional" />
+        </div>
 
-      <div>
-        <label className="mb-1 block text-xs font-semibold text-text-secondary">Techniques shown in this video</label>
-        <TagInput values={techniques} onChange={setTechniques} placeholder="e.g. Ashi Garami, then hit enter" />
-      </div>
+        <div>
+          <label className="mb-1 block text-xs font-semibold text-text-secondary">Techniques shown in this video</label>
+          <TagInput values={techniques} onChange={setTechniques} placeholder="e.g. Ashi Garami, then hit enter" />
+        </div>
+      </Card>
 
-      <Button disabled={saving} onClick={handleSave} className="mt-2">
+      <Button disabled={saving} onClick={handleSave}>
         {saving ? 'Saving…' : 'Add Video'}
       </Button>
     </div>

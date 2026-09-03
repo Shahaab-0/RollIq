@@ -12,14 +12,8 @@ import {
 import { DrawerActions, useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Menu, SlidersHorizontal } from 'lucide-react-native';
-import {
-  getTheme,
-  Theme,
-  TOAST_TEXT,
-  UI_ACCENT,
-  UI_ACCENT_TEXT,
-} from '../../../theme/colors';
-import { FONT_SIZE, FONT_WEIGHT } from '../../../theme/typography';
+import { getTheme, Theme, TOAST_TEXT } from '../../../theme/colors';
+import { FONT_SIZE, FONT_WEIGHT, FONT_FAMILY } from '../../../theme/typography';
 import FloatingAddButton from '../../../components/FloatingAddButton';
 import ErrorState from '../../../components/ErrorState';
 import { useInstructionals } from '../hooks/useInstructionals';
@@ -122,7 +116,7 @@ function InstructionalLibraryScreen() {
           onPress={() => setFiltersVisible(true)}
         >
           <SlidersHorizontal
-            color={activeFilterCount > 0 ? UI_ACCENT_TEXT : UI_ACCENT}
+            color={activeFilterCount > 0 ? theme.accentText : theme.accent}
             size={20}
           />
           {activeFilterCount > 0 ? (
@@ -156,7 +150,7 @@ function InstructionalLibraryScreen() {
 
       {isLoading && items.length === 0 ? (
         <View style={styles.centered}>
-          <ActivityIndicator color={UI_ACCENT} />
+          <ActivityIndicator color={theme.accent} />
         </View>
       ) : isError ? (
         <ErrorState />
@@ -200,6 +194,7 @@ function createStyles(theme: Theme) {
       color: theme.textPrimary,
       fontSize: FONT_SIZE.title,
       fontWeight: FONT_WEIGHT.extrabold,
+      fontFamily: FONT_FAMILY.extrabold,
     },
     searchWrap: {
       flexDirection: 'row',
@@ -223,10 +218,10 @@ function createStyles(theme: Theme) {
       padding: 11,
       borderRadius: 12,
       borderWidth: 1,
-      borderColor: UI_ACCENT,
+      borderColor: theme.accent,
     },
     filterButtonActive: {
-      backgroundColor: UI_ACCENT,
+      backgroundColor: theme.accent,
     },
     filterBadge: {
       position: 'absolute',
@@ -244,6 +239,7 @@ function createStyles(theme: Theme) {
       color: TOAST_TEXT,
       fontSize: FONT_SIZE.tiny,
       fontWeight: FONT_WEIGHT.bold,
+      fontFamily: FONT_FAMILY.bold,
     },
     centered: {
       flex: 1,

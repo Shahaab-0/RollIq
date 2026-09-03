@@ -6,14 +6,8 @@ import {
   useColorScheme,
   View,
 } from 'react-native';
-import {
-  getTheme,
-  Theme,
-  UI_ACCENT,
-  UI_ACCENT_MUTED,
-  UI_ACCENT_TEXT,
-} from '../../../theme/colors';
-import { FONT_SIZE, FONT_WEIGHT } from '../../../theme/typography';
+import { getTheme, Theme } from '../../../theme/colors';
+import { FONT_SIZE, FONT_WEIGHT, FONT_FAMILY } from '../../../theme/typography';
 import { SESSION_TYPE_OPTIONS, SessionType } from '../types';
 
 interface Props {
@@ -87,6 +81,7 @@ function createStyles(theme: Theme) {
       color: theme.textSecondary,
       fontSize: FONT_SIZE.label,
       fontWeight: FONT_WEIGHT.semibold,
+      fontFamily: FONT_FAMILY.semibold,
       marginTop: 12,
       marginBottom: 4,
     },
@@ -99,21 +94,22 @@ function createStyles(theme: Theme) {
       paddingHorizontal: 14,
       paddingVertical: 10,
       borderRadius: 20,
-      backgroundColor: UI_ACCENT_MUTED,
+      backgroundColor: theme.accentMuted,
       borderWidth: 1,
       borderColor: 'transparent',
     },
     chipActive: {
-      backgroundColor: UI_ACCENT,
-      borderColor: UI_ACCENT,
+      backgroundColor: theme.accent,
+      borderColor: theme.accent,
     },
     chipText: {
       color: theme.textSecondary,
       fontSize: FONT_SIZE.label,
       fontWeight: FONT_WEIGHT.semibold,
+      fontFamily: FONT_FAMILY.semibold,
     },
     chipTextActive: {
-      color: UI_ACCENT_TEXT,
+      color: theme.accentText,
     },
   });
 }

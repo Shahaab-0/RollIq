@@ -16,6 +16,22 @@ import GymClassVideoRow from './GymClassVideoRow';
 import type { GymAttendee } from '../types';
 import Button from '@/components/ui/Button';
 
+function GymClassDetailSkeleton() {
+  return (
+    <div className="flex w-full animate-pulse flex-col gap-5">
+      <div className="flex items-center justify-between">
+        <div className="h-8 w-56 rounded-lg bg-surface-alt" />
+        <div className="h-11 w-32 rounded-xl bg-surface-alt" />
+      </div>
+      <div className="flex flex-col gap-2.5">
+        {Array.from({ length: 3 }).map((_, i) => (
+          <div key={i} className="h-16 rounded-2xl border border-border bg-surface-alt" />
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export default function GymClassDetailView({ gymId, classId }: Readonly<{ gymId: string; classId: string }>) {
   const { data: gym } = useGym(gymId);
   const { data: classes = [] } = useGymClasses(gymId);
@@ -37,9 +53,13 @@ export default function GymClassDetailView({ gymId, classId }: Readonly<{ gymId:
     }
   };
 
+  if (isLoading) {
+    return <GymClassDetailSkeleton />;
+  }
+
   return (
-    <div className="flex w-full max-w-3xl flex-col gap-5">
-      <div className="flex items-center justify-between">
+    <div className="flex w-full flex-col gap-5">
+      <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h1 className="text-2xl font-extrabold tracking-tight text-text-primary">{entry?.title ?? 'Class'}</h1>
           {entry ? <p className="text-sm text-text-secondary">{formatDisplayDate(entry.class_date)}</p> : null}
@@ -55,9 +75,7 @@ export default function GymClassDetailView({ gymId, classId }: Readonly<{ gymId:
       </div>
       {entry?.description ? <p className="-mt-3 text-sm text-text-primary">{entry.description}</p> : null}
 
-      {isLoading ? (
-        <p className="text-sm text-text-secondary">Loading…</p>
-      ) : videos.length === 0 ? (
+      {videos.length === 0 ? (
         <p className="text-sm text-text-secondary">
           {canManage ? 'No videos yet — add one.' : "This class doesn't have any videos yet."}
         </p>
@@ -79,7 +97,7 @@ export default function GymClassDetailView({ gymId, classId }: Readonly<{ gymId:
               <button
                 key={attendee.user_id}
                 onClick={() => toggleAttendee(attendee)}
-                className="flex items-center justify-between rounded-xl border border-border bg-surface px-3.5 py-3"
+                className="flex items-center justify-between rounded-xl border border-border bg-surface px-3.5 py-3 shadow-sm transition hover:border-accent"
               >
                 <span className="text-sm font-semibold text-text-primary">{attendee.display_name}</span>
                 <span

@@ -11,15 +11,8 @@ import DateTimePicker, {
   DateTimePickerAndroid,
 } from '@react-native-community/datetimepicker';
 import { Plus, Trash2 } from 'lucide-react-native';
-import {
-  BELT_COLORS,
-  getTheme,
-  Theme,
-  UI_ACCENT,
-  UI_ACCENT_MUTED,
-  UI_ACCENT_TEXT,
-} from '../../../theme/colors';
-import { FONT_SIZE, FONT_WEIGHT } from '../../../theme/typography';
+import { BELT_COLORS, getTheme, Theme } from '../../../theme/colors';
+import { FONT_SIZE, FONT_WEIGHT, FONT_FAMILY } from '../../../theme/typography';
 import {
   useBeltPromotions,
   useCreatePromotion,
@@ -76,7 +69,7 @@ function BeltHistorySection({ onPromotionAdded }: Readonly<Props>) {
           style={styles.addPromotionButton}
           onPress={() => setShowAddPromotion(v => !v)}
         >
-          <Plus color={UI_ACCENT} size={16} strokeWidth={2.5} />
+          <Plus color={theme.accent} size={16} strokeWidth={2.5} />
         </Pressable>
       </View>
 
@@ -142,7 +135,7 @@ function BeltHistorySection({ onPromotionAdded }: Readonly<Props>) {
               mode="date"
               display="compact"
               themeVariant={theme.scheme}
-              accentColor={UI_ACCENT}
+              accentColor={theme.accent}
               maximumDate={new Date()}
               onChange={(_event, selected) => {
                 if (selected) setNewPromotionDate(toLocalDateString(selected));
@@ -185,6 +178,7 @@ function createStyles(theme: Theme) {
       color: theme.textSecondary,
       fontSize: FONT_SIZE.label,
       fontWeight: FONT_WEIGHT.semibold,
+      fontFamily: FONT_FAMILY.semibold,
       marginTop: 12,
       marginBottom: 4,
     },
@@ -207,7 +201,7 @@ function createStyles(theme: Theme) {
       paddingHorizontal: 14,
       paddingVertical: 10,
       borderRadius: 20,
-      backgroundColor: UI_ACCENT_MUTED,
+      backgroundColor: theme.accentMuted,
       borderWidth: 1,
       borderColor: 'transparent',
     },
@@ -215,20 +209,22 @@ function createStyles(theme: Theme) {
       color: theme.textSecondary,
       fontSize: FONT_SIZE.label,
       fontWeight: FONT_WEIGHT.semibold,
+      fontFamily: FONT_FAMILY.semibold,
     },
     chipTextActive: {
-      color: UI_ACCENT_TEXT,
+      color: theme.accentText,
     },
     saveButton: {
-      backgroundColor: UI_ACCENT,
+      backgroundColor: theme.accent,
       borderRadius: 14,
       paddingVertical: 16,
       alignItems: 'center',
       marginTop: 20,
     },
     saveButtonText: {
-      color: UI_ACCENT_TEXT,
+      color: theme.accentText,
       fontWeight: FONT_WEIGHT.bold,
+      fontFamily: FONT_FAMILY.bold,
       fontSize: FONT_SIZE.base,
     },
     historyHeader: {
@@ -241,7 +237,7 @@ function createStyles(theme: Theme) {
       padding: 8,
       borderRadius: 10,
       borderWidth: 1,
-      borderColor: UI_ACCENT,
+      borderColor: theme.accent,
     },
     emptyHistoryText: {
       color: theme.textSecondary,
@@ -262,6 +258,7 @@ function createStyles(theme: Theme) {
       color: theme.textPrimary,
       fontSize: FONT_SIZE.body,
       fontWeight: FONT_WEIGHT.semibold,
+      fontFamily: FONT_FAMILY.semibold,
     },
     promotionDate: {
       color: theme.textSecondary,

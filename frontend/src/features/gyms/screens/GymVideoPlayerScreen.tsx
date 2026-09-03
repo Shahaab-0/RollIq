@@ -12,8 +12,8 @@ import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RouteProp } from '@react-navigation/native';
 import { WebView } from 'react-native-webview';
 import { ChevronLeft, ExternalLink } from 'lucide-react-native';
-import { getTheme, Theme, UI_ACCENT } from '../../../theme/colors';
-import { FONT_SIZE, FONT_WEIGHT } from '../../../theme/typography';
+import { getTheme, Theme } from '../../../theme/colors';
+import { FONT_SIZE, FONT_WEIGHT, FONT_FAMILY } from '../../../theme/typography';
 import type { HomeStackParamList } from '../../../navigation/types';
 
 type Nav = NativeStackNavigationProp<HomeStackParamList, 'GymVideoPlayer'>;
@@ -45,7 +45,7 @@ function GymVideoPlayerScreen() {
             if (url) Linking.openURL(url);
           }}
         >
-          <ExternalLink color={UI_ACCENT} size={22} />
+          <ExternalLink color={theme.accent} size={22} />
         </Pressable>
       </View>
 
@@ -82,6 +82,7 @@ function createStyles(theme: Theme) {
       color: theme.textPrimary,
       fontSize: FONT_SIZE.lg,
       fontWeight: FONT_WEIGHT.bold,
+      fontFamily: FONT_FAMILY.bold,
       textAlign: 'center',
     },
     webview: {

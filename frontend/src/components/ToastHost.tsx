@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Animated, StyleSheet, Text, useColorScheme } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { getTheme, Theme, TOAST_TEXT } from '../theme/colors';
-import { FONT_SIZE, FONT_WEIGHT } from '../theme/typography';
+import { FONT_SIZE, FONT_WEIGHT, FONT_FAMILY } from '../theme/typography';
 import { subscribeToast, ToastEvent } from '../lib/toast';
 
 const VISIBLE_MS = 2500;
@@ -85,6 +85,7 @@ function createStyles(theme: Theme) {
       color: TOAST_TEXT,
       fontSize: FONT_SIZE.body,
       fontWeight: FONT_WEIGHT.semibold,
+      fontFamily: FONT_FAMILY.semibold,
       textAlign: 'center',
     },
   });

@@ -19,6 +19,20 @@ function resultLabel(result: MatchResult): string {
   return result.charAt(0).toUpperCase() + result.slice(1);
 }
 
+function CompetitionDetailSkeleton() {
+  return (
+    <div className="flex w-full animate-pulse flex-col gap-5">
+      <div className="h-8 w-64 rounded-lg bg-surface-alt" />
+      <div className="h-24 rounded-2xl bg-surface-alt" />
+      <div className="overflow-hidden rounded-2xl border border-border">
+        {Array.from({ length: 3 }).map((_, i) => (
+          <div key={i} className="h-12 border-b border-border bg-surface-alt last:border-0" />
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export default function CompetitionDetailView({ competitionId }: Readonly<{ competitionId: string }>) {
   const router = useRouter();
   const { data: competitions = [] } = useCompetitions();
@@ -27,11 +41,15 @@ export default function CompetitionDetailView({ competitionId }: Readonly<{ comp
 
   const competition = competitions.find(c => c.id === competitionId);
 
+  if (isLoading && !competition) {
+    return <CompetitionDetailSkeleton />;
+  }
+
   return (
-    <div className="flex w-full max-w-4xl flex-col gap-5">
-      <div className="flex items-center justify-between">
+    <div className="flex w-full flex-col gap-5">
+      <div className="flex flex-wrap items-center justify-between gap-3">
         <h1 className="text-2xl font-extrabold tracking-tight text-text-primary">{competition?.name ?? 'Competition'}</h1>
-        <Link href={`/competitions/${competitionId}/edit`} className="text-accent">
+        <Link href={`/competitions/${competitionId}/edit`} aria-label="Edit competition" className="text-accent">
           <Pencil size={20} />
         </Link>
       </div>
@@ -44,13 +62,13 @@ export default function CompetitionDetailView({ competitionId }: Readonly<{ comp
           {competition.belt_division ? <p className="text-sm text-text-secondary">{competition.belt_division}</p> : null}
           {competition.location ? <p className="text-sm text-text-secondary">{competition.location}</p> : null}
           {competition.notes ? <p className="mt-1 text-sm text-text-primary">{competition.notes}</p> : null}
-          <span className="mt-2 w-fit rounded-lg bg-accent-muted px-3 py-1 text-base font-extrabold text-text-primary">
+          <span className="mt-2 w-fit rounded-lg bg-accent-muted px-3 py-1 font-mono text-base font-extrabold tabular-nums text-text-primary">
             {competition.wins}W · {competition.losses}L{competition.draws > 0 ? ` · ${competition.draws}D` : ''}
           </span>
         </div>
       ) : null}
 
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-center justify-between gap-3">
         <h2 className="text-base font-bold text-text-primary">Matches</h2>
         <Link href={`/competitions/${competitionId}/matches/new`}>
           <Button className="flex items-center gap-2">
@@ -60,9 +78,7 @@ export default function CompetitionDetailView({ competitionId }: Readonly<{ comp
         </Link>
       </div>
 
-      {isLoading ? (
-        <p className="text-sm text-text-secondary">Loading…</p>
-      ) : matches.length === 0 ? (
+      {matches.length === 0 ? (
         <p className="text-sm text-text-secondary">No matches yet — log one.</p>
       ) : (
         <Table>
@@ -94,6 +110,7 @@ export default function CompetitionDetailView({ competitionId }: Readonly<{ comp
                         e.stopPropagation();
                         deleteMatch.mutate(match.id);
                       }}
+                      aria-label={`Delete match against ${match.opponent_name}`}
                       className="rounded-lg border border-danger p-1.5 text-danger hover:bg-danger/10"
                     >
                       <Trash2 size={15} />

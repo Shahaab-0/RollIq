@@ -6,6 +6,7 @@ import { useCreateSession, useDeleteSession, useSessions, useUpdateSession } fro
 import { SESSION_TYPE_OPTIONS, type SessionType } from '../types';
 import { toLocalDateString } from '@/lib/dateFormat';
 import Button from '@/components/ui/Button';
+import Card from '@/components/ui/Card';
 import Input from '@/components/ui/Input';
 import Textarea from '@/components/ui/Textarea';
 import Chip from '@/components/ui/Chip';
@@ -114,93 +115,95 @@ export default function SessionForm({ sessionId }: Readonly<{ sessionId?: string
   }
 
   return (
-    <div className="flex w-full max-w-2xl flex-col gap-4">
+    <div className="flex w-full max-w-2xl flex-col gap-5">
       <h1 className="text-2xl font-extrabold tracking-tight text-text-primary">
         {existing ? 'Edit Session' : 'Log Session'}
       </h1>
 
-      <div>
-        <label className="mb-1 block text-xs font-semibold text-text-secondary">Date</label>
-        <Input type="date" max={toLocalDateString(new Date())} value={date} onChange={e => setDate(e.target.value)} />
-      </div>
-
-      <div>
-        <label className="mb-1 block text-xs font-semibold text-text-secondary">Gi / No-Gi</label>
-        <div className="flex gap-2">
-          <Chip active={gi} onClick={() => setGi(true)}>
-            Gi
-          </Chip>
-          <Chip active={!gi} onClick={() => setGi(false)}>
-            No-Gi
-          </Chip>
+      <Card className="flex flex-col gap-4">
+        <div>
+          <label className="mb-1 block text-xs font-semibold text-text-secondary">Date</label>
+          <Input type="date" max={toLocalDateString(new Date())} value={date} onChange={e => setDate(e.target.value)} />
         </div>
-      </div>
 
-      <div>
-        <label className="mb-1 block text-xs font-semibold text-text-secondary">Session type</label>
-        <div className="flex flex-wrap gap-2">
-          {SESSION_TYPE_OPTIONS.map(opt => (
-            <Chip key={opt.value} active={sessionType === opt.value} onClick={() => setSessionType(opt.value)}>
-              {opt.label}
+        <div>
+          <label className="mb-1 block text-xs font-semibold text-text-secondary">Gi / No-Gi</label>
+          <div className="flex gap-2">
+            <Chip active={gi} onClick={() => setGi(true)}>
+              Gi
             </Chip>
-          ))}
-        </div>
-      </div>
-
-      <div className="grid grid-cols-2 gap-3">
-        <div>
-          <label className="mb-1 block text-xs font-semibold text-text-secondary">Duration (min)</label>
-          <Input
-            type="number"
-            min={0}
-            value={durationMinutes}
-            onChange={e => setDurationMinutes(e.target.value)}
-          />
-        </div>
-        <div>
-          <label className="mb-1 block text-xs font-semibold text-text-secondary">Instructor</label>
-          <Input value={instructor} onChange={e => setInstructor(e.target.value)} placeholder="Optional" />
-        </div>
-        <div>
-          <label className="mb-1 block text-xs font-semibold text-text-secondary">Rounds</label>
-          <Input type="number" min={0} value={roundsCount} onChange={e => setRoundsCount(e.target.value)} />
-        </div>
-        <div>
-          <label className="mb-1 block text-xs font-semibold text-text-secondary">Round length (min)</label>
-          <Input type="number" min={0} value={roundMinutes} onChange={e => setRoundMinutes(e.target.value)} />
-        </div>
-        <div>
-          <label className="mb-1 block text-xs font-semibold text-text-secondary">Submissions landed</label>
-          <Input
-            type="number"
-            min={0}
-            value={submissionsLandedCount}
-            onChange={e => setSubmissionsLandedCount(e.target.value)}
-          />
-        </div>
-      </div>
-
-      <div>
-        <label className="mb-1 block text-xs font-semibold text-text-secondary">Productivity (1-5)</label>
-        <div className="flex gap-2">
-          {[1, 2, 3, 4, 5].map(n => (
-            <Chip
-              key={n}
-              active={productivityRating === n}
-              onClick={() => setProductivityRating(productivityRating === n ? null : n)}
-            >
-              {n}
+            <Chip active={!gi} onClick={() => setGi(false)}>
+              No-Gi
             </Chip>
-          ))}
+          </div>
         </div>
-      </div>
 
-      <div>
-        <label className="mb-1 block text-xs font-semibold text-text-secondary">Notes</label>
-        <Textarea rows={4} value={notes} onChange={e => setNotes(e.target.value)} placeholder="Optional" />
-      </div>
+        <div>
+          <label className="mb-1 block text-xs font-semibold text-text-secondary">Session type</label>
+          <div className="flex flex-wrap gap-2">
+            {SESSION_TYPE_OPTIONS.map(opt => (
+              <Chip key={opt.value} active={sessionType === opt.value} onClick={() => setSessionType(opt.value)}>
+                {opt.label}
+              </Chip>
+            ))}
+          </div>
+        </div>
 
-      <Button disabled={saving} onClick={handleSave} className="mt-2">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div>
+            <label className="mb-1 block text-xs font-semibold text-text-secondary">Duration (min)</label>
+            <Input
+              type="number"
+              min={0}
+              value={durationMinutes}
+              onChange={e => setDurationMinutes(e.target.value)}
+            />
+          </div>
+          <div>
+            <label className="mb-1 block text-xs font-semibold text-text-secondary">Instructor</label>
+            <Input value={instructor} onChange={e => setInstructor(e.target.value)} placeholder="Optional" />
+          </div>
+          <div>
+            <label className="mb-1 block text-xs font-semibold text-text-secondary">Rounds</label>
+            <Input type="number" min={0} value={roundsCount} onChange={e => setRoundsCount(e.target.value)} />
+          </div>
+          <div>
+            <label className="mb-1 block text-xs font-semibold text-text-secondary">Round length (min)</label>
+            <Input type="number" min={0} value={roundMinutes} onChange={e => setRoundMinutes(e.target.value)} />
+          </div>
+          <div>
+            <label className="mb-1 block text-xs font-semibold text-text-secondary">Submissions landed</label>
+            <Input
+              type="number"
+              min={0}
+              value={submissionsLandedCount}
+              onChange={e => setSubmissionsLandedCount(e.target.value)}
+            />
+          </div>
+        </div>
+
+        <div>
+          <label className="mb-1 block text-xs font-semibold text-text-secondary">Productivity (1-5)</label>
+          <div className="flex gap-2">
+            {[1, 2, 3, 4, 5].map(n => (
+              <Chip
+                key={n}
+                active={productivityRating === n}
+                onClick={() => setProductivityRating(productivityRating === n ? null : n)}
+              >
+                {n}
+              </Chip>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <label className="mb-1 block text-xs font-semibold text-text-secondary">Notes</label>
+          <Textarea rows={4} value={notes} onChange={e => setNotes(e.target.value)} placeholder="Optional" />
+        </div>
+      </Card>
+
+      <Button disabled={saving} onClick={handleSave}>
         {saving ? 'Saving…' : existing ? 'Save Changes' : 'Log Session'}
       </Button>
 

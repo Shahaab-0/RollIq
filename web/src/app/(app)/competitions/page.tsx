@@ -16,6 +16,22 @@ function recordLabel(item: Competition): string {
   return parts.join(' · ');
 }
 
+function CompetitionsSkeleton() {
+  return (
+    <div className="flex w-full animate-pulse flex-col gap-5">
+      <div className="flex items-center justify-between">
+        <div className="h-8 w-48 rounded-lg bg-surface-alt" />
+        <div className="h-11 w-40 rounded-xl bg-surface-alt" />
+      </div>
+      <div className="overflow-hidden rounded-2xl border border-border">
+        {Array.from({ length: 5 }).map((_, i) => (
+          <div key={i} className="h-12 border-b border-border bg-surface-alt last:border-0" />
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export default function CompetitionsPage() {
   const router = useRouter();
   const { data: items = [], isLoading } = useCompetitions();
@@ -27,9 +43,13 @@ export default function CompetitionsPage() {
     }
   };
 
+  if (isLoading) {
+    return <CompetitionsSkeleton />;
+  }
+
   return (
-    <div className="flex w-full max-w-5xl flex-col gap-5">
-      <div className="flex items-center justify-between">
+    <div className="flex w-full flex-col gap-5">
+      <div className="flex flex-wrap items-center justify-between gap-3">
         <h1 className="text-2xl font-extrabold tracking-tight text-text-primary">Competitions</h1>
         <Link href="/competitions/new">
           <Button className="flex items-center gap-2">
@@ -39,9 +59,7 @@ export default function CompetitionsPage() {
         </Link>
       </div>
 
-      {isLoading ? (
-        <p className="text-sm text-text-secondary">Loading…</p>
-      ) : items.length === 0 ? (
+      {items.length === 0 ? (
         <EmptyState
           icon={Trophy}
           title="No competitions logged"
@@ -67,7 +85,7 @@ export default function CompetitionsPage() {
                 <Td className="text-text-secondary">{item.weight_category}</Td>
                 <Td className="text-text-secondary">{item.belt_division || '—'}</Td>
                 <Td>
-                  <span className="rounded-lg border border-border bg-surface-alt px-2.5 py-1 text-xs font-bold text-text-primary">
+                  <span className="rounded-lg border border-border bg-surface-alt px-2.5 py-1 font-mono text-xs font-bold tabular-nums text-text-primary">
                     {item.match_count === 0 ? 'No matches' : recordLabel(item)}
                   </span>
                 </Td>
@@ -78,6 +96,7 @@ export default function CompetitionsPage() {
                         e.stopPropagation();
                         confirmDelete(item);
                       }}
+                      aria-label={`Delete ${item.name}`}
                       className="rounded-lg border border-danger p-1.5 text-danger hover:bg-danger/10"
                     >
                       <Trash2 size={15} />

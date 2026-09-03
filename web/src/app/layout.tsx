@@ -1,17 +1,22 @@
 import type { Metadata } from 'next';
-import { Geist, Geist_Mono } from 'next/font/google';
+import { Oswald, JetBrains_Mono } from 'next/font/google';
 import QueryProvider from '@/components/QueryProvider';
 import ToastHost from '@/components/ToastHost';
 import './globals.css';
 
-const geistSans = Geist({
-  variable: '--font-geist-sans',
+// Power theme: Oswald (condensed, heavy-weight) as the primary/display face
+// so headings and body copy both read big and bold; JetBrains Mono for
+// every tabular-nums number column already in use across the app.
+const oswald = Oswald({
+  variable: '--font-oswald',
   subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
 });
 
-const geistMono = Geist_Mono({
-  variable: '--font-geist-mono',
+const jetbrainsMono = JetBrains_Mono({
+  variable: '--font-jetbrains-mono',
   subsets: ['latin'],
+  weight: ['400', '500', '700'],
 });
 
 export const metadata: Metadata = {
@@ -21,8 +26,12 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<'/'>) {
   return (
-    <html lang="en" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col">
+    <html
+      lang="en"
+      data-scroll-behavior="smooth"
+      className={`${oswald.variable} ${jetbrainsMono.variable} h-full antialiased`}
+    >
+      <body className="min-h-full flex flex-col overflow-x-hidden">
         <QueryProvider>
           {children}
           <ToastHost />

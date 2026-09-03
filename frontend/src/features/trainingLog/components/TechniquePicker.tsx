@@ -8,8 +8,8 @@ import {
   View,
 } from 'react-native';
 import { X } from 'lucide-react-native';
-import { getTheme, Theme, UI_ACCENT } from '../../../theme/colors';
-import { FONT_SIZE, FONT_WEIGHT } from '../../../theme/typography';
+import { getTheme, Theme } from '../../../theme/colors';
+import { FONT_SIZE, FONT_WEIGHT, FONT_FAMILY } from '../../../theme/typography';
 import {
   useCreateTechnique,
   useTechniques,
@@ -137,6 +137,7 @@ function createStyles(theme: Theme) {
       color: theme.textPrimary,
       fontSize: FONT_SIZE.label,
       fontWeight: FONT_WEIGHT.semibold,
+      fontFamily: FONT_FAMILY.semibold,
     },
     input: {
       backgroundColor: theme.surface,
@@ -167,9 +168,10 @@ function createStyles(theme: Theme) {
       fontSize: FONT_SIZE.body,
     },
     createText: {
-      color: UI_ACCENT,
+      color: theme.accent,
       fontSize: FONT_SIZE.body,
       fontWeight: FONT_WEIGHT.semibold,
+      fontFamily: FONT_FAMILY.semibold,
     },
   });
 }

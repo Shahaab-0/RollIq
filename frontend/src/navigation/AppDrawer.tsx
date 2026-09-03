@@ -16,8 +16,8 @@ import RollsStack from './RollsStack';
 import InjuriesStack from './InjuriesStack';
 import InstructionalsStack from './InstructionalsStack';
 import { useSignOut } from '../features/auth/hooks/useAuth';
-import { getTheme, Theme, UI_ACCENT, UI_ACCENT_MUTED } from '../theme/colors';
-import { FONT_SIZE, FONT_WEIGHT } from '../theme/typography';
+import { getTheme, Theme } from '../theme/colors';
+import { FONT_SIZE, FONT_WEIGHT, FONT_FAMILY } from '../theme/typography';
 import type { AppDrawerParamList } from './types';
 
 const Drawer = createDrawerNavigator<AppDrawerParamList>();
@@ -51,7 +51,7 @@ function DrawerContent({ navigation, state }: DrawerContentComponentProps) {
                 onPress={() => navigation.navigate(item.route)}
               >
                 <Icon
-                  color={active ? UI_ACCENT : theme.textSecondary}
+                  color={active ? theme.accent : theme.textSecondary}
                   size={20}
                 />
                 <Text
@@ -107,6 +107,7 @@ function createStyles(theme: Theme) {
       color: theme.textPrimary,
       fontSize: FONT_SIZE.lg,
       fontWeight: FONT_WEIGHT.extrabold,
+      fontFamily: FONT_FAMILY.extrabold,
       marginBottom: 24,
       paddingHorizontal: 4,
     },
@@ -124,16 +125,17 @@ function createStyles(theme: Theme) {
       padding: 16,
     },
     cardActive: {
-      borderColor: UI_ACCENT,
-      backgroundColor: UI_ACCENT_MUTED,
+      borderColor: theme.accent,
+      backgroundColor: theme.accentMuted,
     },
     cardLabel: {
       color: theme.textPrimary,
       fontSize: FONT_SIZE.base,
       fontWeight: FONT_WEIGHT.semibold,
+      fontFamily: FONT_FAMILY.semibold,
     },
     cardLabelActive: {
-      color: UI_ACCENT,
+      color: theme.accent,
     },
     signOutButton: {
       flexDirection: 'row',
@@ -149,6 +151,7 @@ function createStyles(theme: Theme) {
       color: theme.danger,
       fontSize: FONT_SIZE.base,
       fontWeight: FONT_WEIGHT.bold,
+      fontFamily: FONT_FAMILY.bold,
     },
   });
 }

@@ -7,14 +7,8 @@ import {
   View,
 } from 'react-native';
 import { Play } from 'lucide-react-native';
-import {
-  getTheme,
-  Theme,
-  UI_ACCENT,
-  UI_ACCENT_MUTED,
-  UI_ACCENT_TEXT,
-} from '../../../theme/colors';
-import { FONT_SIZE, FONT_WEIGHT } from '../../../theme/typography';
+import { getTheme, Theme } from '../../../theme/colors';
+import { FONT_SIZE, FONT_WEIGHT, FONT_FAMILY } from '../../../theme/typography';
 import {
   PROGRESS_STATUS_OPTIONS,
   type InstructionalVideo,
@@ -71,7 +65,7 @@ function InstructionalVideoRow({
 
       {video.url ? (
         <Pressable style={styles.watchButton} onPress={onWatch}>
-          <Play color={UI_ACCENT} size={16} />
+          <Play color={theme.accent} size={16} />
           <Text style={styles.watchText}>Watch</Text>
         </Pressable>
       ) : (
@@ -100,6 +94,7 @@ function createStyles(theme: Theme) {
       color: theme.textPrimary,
       fontSize: FONT_SIZE.body,
       fontWeight: FONT_WEIGHT.semibold,
+      fontFamily: FONT_FAMILY.semibold,
     },
     chipRow: {
       flexDirection: 'row',
@@ -110,21 +105,22 @@ function createStyles(theme: Theme) {
       paddingHorizontal: 10,
       paddingVertical: 6,
       borderRadius: 14,
-      backgroundColor: UI_ACCENT_MUTED,
+      backgroundColor: theme.accentMuted,
       borderWidth: 1,
       borderColor: 'transparent',
     },
     chipActive: {
-      backgroundColor: UI_ACCENT,
-      borderColor: UI_ACCENT,
+      backgroundColor: theme.accent,
+      borderColor: theme.accent,
     },
     chipText: {
       color: theme.textSecondary,
       fontSize: FONT_SIZE.tiny,
       fontWeight: FONT_WEIGHT.semibold,
+      fontFamily: FONT_FAMILY.semibold,
     },
     chipTextActive: {
-      color: UI_ACCENT_TEXT,
+      color: theme.accentText,
     },
     watchButton: {
       flexDirection: 'row',
@@ -134,11 +130,12 @@ function createStyles(theme: Theme) {
       paddingVertical: 8,
       borderRadius: 10,
       borderWidth: 1,
-      borderColor: UI_ACCENT,
+      borderColor: theme.accent,
     },
     watchText: {
-      color: UI_ACCENT,
+      color: theme.accent,
       fontWeight: FONT_WEIGHT.semibold,
+      fontFamily: FONT_FAMILY.semibold,
       fontSize: FONT_SIZE.label,
     },
     noLinkText: {

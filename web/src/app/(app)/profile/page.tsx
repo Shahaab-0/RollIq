@@ -9,6 +9,7 @@ import { BELT_COLOR_VAR, BELT_OPTIONS, type Belt } from '@/features/profile/type
 import { toLocalDateString } from '@/lib/dateFormat';
 import BeltHistorySection from '@/features/profile/components/BeltHistorySection';
 import Button from '@/components/ui/Button';
+import Card from '@/components/ui/Card';
 import Input from '@/components/ui/Input';
 import Chip from '@/components/ui/Chip';
 
@@ -96,72 +97,81 @@ export default function ProfilePage() {
   };
 
   if (isLoading && !profile) {
-    return <p className="text-sm text-text-secondary">Loading…</p>;
+    return (
+      <div className="flex w-full max-w-2xl animate-pulse flex-col gap-5">
+        <div className="h-8 w-32 rounded-lg bg-surface-alt" />
+        <div className="h-64 rounded-2xl border border-border bg-surface-alt" />
+      </div>
+    );
   }
 
   return (
-    <div className="flex w-full max-w-2xl flex-col gap-4">
-      <h1 className="text-2xl font-extrabold tracking-tight text-text-primary">Profile</h1>
-      {me?.email ? <p className="-mt-2 text-sm text-text-secondary">{me.email}</p> : null}
-
+    <div className="flex w-full max-w-2xl flex-col gap-5">
       <div>
-        <label className="mb-1 block text-xs font-semibold text-text-secondary">Name</label>
-        <Input value={displayName} onChange={e => setDisplayName(e.target.value)} placeholder="Your name" />
+        <h1 className="text-2xl font-extrabold tracking-tight text-text-primary">Profile</h1>
+        {me?.email ? <p className="mt-1 text-sm text-text-secondary">{me.email}</p> : null}
       </div>
 
-      <div>
-        <label className="mb-1 block text-xs font-semibold text-text-secondary">Belt</label>
-        <div className="flex flex-wrap gap-2">
-          {BELT_OPTIONS.map(option => (
-            <Chip
-              key={option.value}
-              active={belt === option.value}
-              activeColor={BELT_COLOR_VAR[option.value]}
-              onClick={() => setBelt(option.value)}
-            >
-              {option.label}
-            </Chip>
-          ))}
+      <Card className="flex flex-col gap-4">
+        <div>
+          <label className="mb-1 block text-xs font-semibold text-text-secondary">Name</label>
+          <Input value={displayName} onChange={e => setDisplayName(e.target.value)} placeholder="Your name" />
         </div>
-      </div>
 
-      <div>
-        <label className="mb-1 block text-xs font-semibold text-text-secondary">Stripes</label>
-        <div className="flex flex-wrap gap-2">
-          {STRIPE_OPTIONS.map(count => (
-            <Chip key={count} active={stripes === count} onClick={() => setStripes(count)}>
-              {count}
-            </Chip>
-          ))}
-        </div>
-      </div>
-
-      <div>
-        <label className="mb-1 block text-xs font-semibold text-text-secondary">Home gym</label>
-        {gyms.length === 0 ? (
-          <p className="text-xs text-text-secondary">Add a gym to pick it here as your home gym.</p>
-        ) : (
+        <div>
+          <label className="mb-1 block text-xs font-semibold text-text-secondary">Belt</label>
           <div className="flex flex-wrap gap-2">
-            <Chip active={homeGym === ''} onClick={() => setHomeGym('')}>
-              None
-            </Chip>
-            {gyms.map(gym => (
-              <Chip key={gym.id} active={homeGym === gym.name} onClick={() => setHomeGym(gym.name)}>
-                {gym.name}
+            {BELT_OPTIONS.map(option => (
+              <Chip
+                key={option.value}
+                active={belt === option.value}
+                activeColor={BELT_COLOR_VAR[option.value]}
+                onClick={() => setBelt(option.value)}
+              >
+                {option.label}
               </Chip>
             ))}
           </div>
-        )}
-      </div>
+        </div>
 
-      <BeltHistorySection
-        onPromotionAdded={addedBelt => {
-          setBelt(addedBelt);
-          setStripes(0);
-        }}
-      />
+        <div>
+          <label className="mb-1 block text-xs font-semibold text-text-secondary">Stripes</label>
+          <div className="flex flex-wrap gap-2">
+            {STRIPE_OPTIONS.map(count => (
+              <Chip key={count} active={stripes === count} onClick={() => setStripes(count)}>
+                {count}
+              </Chip>
+            ))}
+          </div>
+        </div>
 
-      <Button disabled={saving} onClick={handleSave} className="mt-2">
+        <div>
+          <label className="mb-1 block text-xs font-semibold text-text-secondary">Home gym</label>
+          {gyms.length === 0 ? (
+            <p className="text-xs text-text-secondary">Add a gym to pick it here as your home gym.</p>
+          ) : (
+            <div className="flex flex-wrap gap-2">
+              <Chip active={homeGym === ''} onClick={() => setHomeGym('')}>
+                None
+              </Chip>
+              {gyms.map(gym => (
+                <Chip key={gym.id} active={homeGym === gym.name} onClick={() => setHomeGym(gym.name)}>
+                  {gym.name}
+                </Chip>
+              ))}
+            </div>
+          )}
+        </div>
+
+        <BeltHistorySection
+          onPromotionAdded={addedBelt => {
+            setBelt(addedBelt);
+            setStripes(0);
+          }}
+        />
+      </Card>
+
+      <Button disabled={saving} onClick={handleSave}>
         {saving ? 'Saving…' : 'Save Changes'}
       </Button>
 

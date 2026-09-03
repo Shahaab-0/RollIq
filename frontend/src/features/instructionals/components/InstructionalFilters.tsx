@@ -9,14 +9,8 @@ import {
   View,
 } from 'react-native';
 import { X } from 'lucide-react-native';
-import {
-  getTheme,
-  Theme,
-  UI_ACCENT,
-  UI_ACCENT_MUTED,
-  UI_ACCENT_TEXT,
-} from '../../../theme/colors';
-import { FONT_SIZE, FONT_WEIGHT } from '../../../theme/typography';
+import { getTheme, Theme } from '../../../theme/colors';
+import { FONT_SIZE, FONT_WEIGHT, FONT_FAMILY } from '../../../theme/typography';
 import { DIFFICULTY_OPTIONS, Difficulty } from '../types';
 
 export type OverallStatus = 'not_started' | 'in_progress' | 'completed';
@@ -243,6 +237,7 @@ function createStyles(theme: Theme) {
       color: theme.textPrimary,
       fontSize: FONT_SIZE.lg,
       fontWeight: FONT_WEIGHT.bold,
+      fontFamily: FONT_FAMILY.bold,
     },
     content: {
       paddingHorizontal: 20,
@@ -257,6 +252,7 @@ function createStyles(theme: Theme) {
       color: theme.textSecondary,
       fontSize: FONT_SIZE.label,
       fontWeight: FONT_WEIGHT.semibold,
+      fontFamily: FONT_FAMILY.semibold,
       textTransform: 'uppercase',
       letterSpacing: 0.5,
     },
@@ -269,21 +265,22 @@ function createStyles(theme: Theme) {
       paddingHorizontal: 14,
       paddingVertical: 10,
       borderRadius: 20,
-      backgroundColor: UI_ACCENT_MUTED,
+      backgroundColor: theme.accentMuted,
       borderWidth: 1,
       borderColor: 'transparent',
     },
     chipActive: {
-      backgroundColor: UI_ACCENT,
-      borderColor: UI_ACCENT,
+      backgroundColor: theme.accent,
+      borderColor: theme.accent,
     },
     chipText: {
       color: theme.textSecondary,
       fontSize: FONT_SIZE.label,
       fontWeight: FONT_WEIGHT.semibold,
+      fontFamily: FONT_FAMILY.semibold,
     },
     chipTextActive: {
-      color: UI_ACCENT_TEXT,
+      color: theme.accentText,
     },
     footer: {
       flexDirection: 'row',
@@ -294,26 +291,28 @@ function createStyles(theme: Theme) {
     clearButton: {
       flex: 1,
       borderWidth: 1,
-      borderColor: UI_ACCENT,
+      borderColor: theme.accent,
       borderRadius: 14,
       paddingVertical: 14,
       alignItems: 'center',
     },
     clearButtonText: {
-      color: UI_ACCENT,
+      color: theme.accent,
       fontWeight: FONT_WEIGHT.semibold,
+      fontFamily: FONT_FAMILY.semibold,
       fontSize: FONT_SIZE.base,
     },
     doneButton: {
       flex: 1,
-      backgroundColor: UI_ACCENT,
+      backgroundColor: theme.accent,
       borderRadius: 14,
       paddingVertical: 14,
       alignItems: 'center',
     },
     doneButtonText: {
-      color: UI_ACCENT_TEXT,
+      color: theme.accentText,
       fontWeight: FONT_WEIGHT.bold,
+      fontFamily: FONT_FAMILY.bold,
       fontSize: FONT_SIZE.base,
     },
   });

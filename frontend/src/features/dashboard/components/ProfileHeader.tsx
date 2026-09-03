@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import { Menu } from 'lucide-react-native';
 import { getTheme, Theme } from '../../../theme/colors';
-import { FONT_SIZE, FONT_WEIGHT } from '../../../theme/typography';
+import { FONT_SIZE, FONT_WEIGHT, FONT_FAMILY } from '../../../theme/typography';
 import { BELT_LABELS } from '../../profile/types';
 import type { Belt } from '../../profile/types';
 
@@ -83,6 +83,7 @@ function createStyles(theme: Theme) {
     avatarText: {
       color: theme.textPrimary,
       fontWeight: FONT_WEIGHT.bold,
+      fontFamily: FONT_FAMILY.bold,
       fontSize: FONT_SIZE.base,
     },
     headerText: {
@@ -92,6 +93,7 @@ function createStyles(theme: Theme) {
       color: theme.textPrimary,
       fontSize: FONT_SIZE.xxl,
       fontWeight: FONT_WEIGHT.bold,
+      fontFamily: FONT_FAMILY.bold,
     },
     beltRow: {
       flexDirection: 'row',

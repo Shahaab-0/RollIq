@@ -6,6 +6,7 @@ import { useCreateInjury, useDeleteInjury, useInjuries, useUpdateInjury } from '
 import { SEVERITY_OPTIONS, STATUS_OPTIONS, type InjuryStatus, type Severity } from '../types';
 import { toLocalDateString } from '@/lib/dateFormat';
 import Button from '@/components/ui/Button';
+import Card from '@/components/ui/Card';
 import Input from '@/components/ui/Input';
 import Textarea from '@/components/ui/Textarea';
 import Chip from '@/components/ui/Chip';
@@ -95,52 +96,54 @@ export default function InjuryForm({ injuryId }: Readonly<{ injuryId?: string }>
   }
 
   return (
-    <div className="flex w-full max-w-2xl flex-col gap-4">
+    <div className="flex w-full max-w-2xl flex-col gap-5">
       <h1 className="text-2xl font-extrabold tracking-tight text-text-primary">{existing ? 'Edit Injury' : 'Log Injury'}</h1>
 
-      <div>
-        <label className="mb-1 block text-xs font-semibold text-text-secondary">Body part</label>
-        <Input value={bodyPart} onChange={e => setBodyPart(e.target.value)} placeholder="e.g. Left knee" />
-      </div>
-
-      <div>
-        <label className="mb-1 block text-xs font-semibold text-text-secondary">Description</label>
-        <Textarea rows={3} value={description} onChange={e => setDescription(e.target.value)} placeholder="What happened?" />
-      </div>
-
-      <div>
-        <label className="mb-1 block text-xs font-semibold text-text-secondary">Date</label>
-        <Input type="date" max={toLocalDateString(new Date())} value={injuryDate} onChange={e => setInjuryDate(e.target.value)} />
-      </div>
-
-      <div>
-        <label className="mb-1 block text-xs font-semibold text-text-secondary">Severity</label>
-        <div className="flex flex-wrap gap-2">
-          {SEVERITY_OPTIONS.map(option => (
-            <Chip key={option.value} active={severity === option.value} onClick={() => setSeverity(option.value)}>
-              {option.label}
-            </Chip>
-          ))}
+      <Card className="flex flex-col gap-4">
+        <div>
+          <label className="mb-1 block text-xs font-semibold text-text-secondary">Body part</label>
+          <Input value={bodyPart} onChange={e => setBodyPart(e.target.value)} placeholder="e.g. Left knee" />
         </div>
-      </div>
 
-      <div>
-        <label className="mb-1 block text-xs font-semibold text-text-secondary">Status</label>
-        <div className="flex flex-wrap gap-2">
-          {STATUS_OPTIONS.map(option => (
-            <Chip key={option.value} active={status === option.value} onClick={() => setStatus(option.value)}>
-              {option.label}
-            </Chip>
-          ))}
+        <div>
+          <label className="mb-1 block text-xs font-semibold text-text-secondary">Description</label>
+          <Textarea rows={3} value={description} onChange={e => setDescription(e.target.value)} placeholder="What happened?" />
         </div>
-      </div>
 
-      <div>
-        <label className="mb-1 block text-xs font-semibold text-text-secondary">Notes</label>
-        <Textarea rows={3} value={notes} onChange={e => setNotes(e.target.value)} placeholder="Optional" />
-      </div>
+        <div>
+          <label className="mb-1 block text-xs font-semibold text-text-secondary">Date</label>
+          <Input type="date" max={toLocalDateString(new Date())} value={injuryDate} onChange={e => setInjuryDate(e.target.value)} />
+        </div>
 
-      <Button disabled={saving || !bodyPart.trim() || !description.trim()} onClick={handleSave} className="mt-2">
+        <div>
+          <label className="mb-1 block text-xs font-semibold text-text-secondary">Severity</label>
+          <div className="flex flex-wrap gap-2">
+            {SEVERITY_OPTIONS.map(option => (
+              <Chip key={option.value} active={severity === option.value} onClick={() => setSeverity(option.value)}>
+                {option.label}
+              </Chip>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <label className="mb-1 block text-xs font-semibold text-text-secondary">Status</label>
+          <div className="flex flex-wrap gap-2">
+            {STATUS_OPTIONS.map(option => (
+              <Chip key={option.value} active={status === option.value} onClick={() => setStatus(option.value)}>
+                {option.label}
+              </Chip>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <label className="mb-1 block text-xs font-semibold text-text-secondary">Notes</label>
+          <Textarea rows={3} value={notes} onChange={e => setNotes(e.target.value)} placeholder="Optional" />
+        </div>
+      </Card>
+
+      <Button disabled={saving || !bodyPart.trim() || !description.trim()} onClick={handleSave}>
         {saving ? 'Saving…' : existing ? 'Save Changes' : 'Log Injury'}
       </Button>
 

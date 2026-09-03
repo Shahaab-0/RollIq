@@ -52,6 +52,7 @@ function InjuryTable({
                     e.stopPropagation();
                     onDelete(item.id);
                   }}
+                  aria-label={`Delete ${item.body_part} injury`}
                   className="rounded-lg border border-danger p-1.5 text-danger hover:bg-danger/10"
                 >
                   <Trash2 size={15} />
@@ -62,6 +63,22 @@ function InjuryTable({
         ))}
       </Tbody>
     </Table>
+  );
+}
+
+function InjuriesSkeleton() {
+  return (
+    <div className="flex w-full animate-pulse flex-col gap-5">
+      <div className="flex items-center justify-between">
+        <div className="h-8 w-32 rounded-lg bg-surface-alt" />
+        <div className="h-11 w-40 rounded-xl bg-surface-alt" />
+      </div>
+      <div className="overflow-hidden rounded-2xl border border-border">
+        {Array.from({ length: 4 }).map((_, i) => (
+          <div key={i} className="h-12 border-b border-border bg-surface-alt last:border-0" />
+        ))}
+      </div>
+    </div>
   );
 }
 
@@ -76,9 +93,13 @@ export default function InjuriesPage() {
   const openItem = (id: string) => router.push(`/injuries/${id}`);
   const removeItem = (id: string) => deleteInjury.mutate(id);
 
+  if (isLoading) {
+    return <InjuriesSkeleton />;
+  }
+
   return (
-    <div className="flex w-full max-w-5xl flex-col gap-5">
-      <div className="flex items-center justify-between">
+    <div className="flex w-full flex-col gap-5">
+      <div className="flex flex-wrap items-center justify-between gap-3">
         <h1 className="text-2xl font-extrabold tracking-tight text-text-primary">Injuries</h1>
         <Link href="/injuries/new">
           <Button className="flex items-center gap-2">
@@ -88,9 +109,7 @@ export default function InjuriesPage() {
         </Link>
       </div>
 
-      {isLoading ? (
-        <p className="text-sm text-text-secondary">Loading…</p>
-      ) : injuries.length === 0 ? (
+      {injuries.length === 0 ? (
         <EmptyState
           icon={HeartPulse}
           title="No injuries logged"

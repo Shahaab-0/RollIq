@@ -12,14 +12,8 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RouteProp } from '@react-navigation/native';
 import { Check, ChevronLeft } from 'lucide-react-native';
-import {
-  getTheme,
-  Theme,
-  UI_ACCENT,
-  UI_ACCENT_MUTED,
-  UI_ACCENT_TEXT,
-} from '../../../theme/colors';
-import { FONT_SIZE, FONT_WEIGHT } from '../../../theme/typography';
+import { getTheme, Theme } from '../../../theme/colors';
+import { FONT_SIZE, FONT_WEIGHT, FONT_FAMILY } from '../../../theme/typography';
 import { formatDisplayDate } from '../../../lib/dateFormat';
 import FloatingAddButton from '../../../components/FloatingAddButton';
 import {
@@ -97,7 +91,7 @@ function GymClassDetailScreen() {
 
       {isLoading && videos.length === 0 ? (
         <View style={styles.centered}>
-          <ActivityIndicator color={UI_ACCENT} />
+          <ActivityIndicator color={theme.accent} />
         </View>
       ) : (
         <FlatList
@@ -147,7 +141,7 @@ function GymClassDetailScreen() {
                         ]}
                       >
                         {attendee.present ? (
-                          <Check color={UI_ACCENT_TEXT} size={16} />
+                          <Check color={theme.accentText} size={16} />
                         ) : null}
                       </View>
                     </Pressable>
@@ -195,6 +189,7 @@ function createStyles(theme: Theme) {
       color: theme.textPrimary,
       fontSize: FONT_SIZE.lg,
       fontWeight: FONT_WEIGHT.bold,
+      fontFamily: FONT_FAMILY.bold,
       textAlign: 'center',
     },
     headerSpacer: {
@@ -213,6 +208,7 @@ function createStyles(theme: Theme) {
       color: theme.textSecondary,
       fontSize: FONT_SIZE.label,
       fontWeight: FONT_WEIGHT.semibold,
+      fontFamily: FONT_FAMILY.semibold,
     },
     description: {
       color: theme.textPrimary,
@@ -232,6 +228,7 @@ function createStyles(theme: Theme) {
       color: theme.textPrimary,
       fontSize: FONT_SIZE.md,
       fontWeight: FONT_WEIGHT.bold,
+      fontFamily: FONT_FAMILY.bold,
       marginBottom: 4,
     },
     attendeeRow: {
@@ -249,19 +246,20 @@ function createStyles(theme: Theme) {
       color: theme.textPrimary,
       fontSize: FONT_SIZE.body,
       fontWeight: FONT_WEIGHT.semibold,
+      fontFamily: FONT_FAMILY.semibold,
     },
     attendeeCheck: {
       width: 24,
       height: 24,
       borderRadius: 12,
       borderWidth: 1.5,
-      borderColor: UI_ACCENT,
-      backgroundColor: UI_ACCENT_MUTED,
+      borderColor: theme.accent,
+      backgroundColor: theme.accentMuted,
       alignItems: 'center',
       justifyContent: 'center',
     },
     attendeeCheckActive: {
-      backgroundColor: UI_ACCENT,
+      backgroundColor: theme.accent,
     },
   });
 }

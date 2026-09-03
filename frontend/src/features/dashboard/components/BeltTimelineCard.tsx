@@ -1,14 +1,8 @@
 import React, { useMemo } from 'react';
 import { StyleSheet, Text, useColorScheme, View } from 'react-native';
 import { Award } from 'lucide-react-native';
-import {
-  BELT_COLORS,
-  getTheme,
-  Theme,
-  UI_ACCENT,
-  UI_ACCENT_MUTED,
-} from '../../../theme/colors';
-import { FONT_SIZE, FONT_WEIGHT } from '../../../theme/typography';
+import { BELT_COLORS, getTheme, Theme } from '../../../theme/colors';
+import { FONT_SIZE, FONT_WEIGHT, FONT_FAMILY } from '../../../theme/typography';
 import { formatDisplayDate } from '../../../lib/dateFormat';
 import { BELT_LABELS } from '../../profile/types';
 import { useBeltTimeline } from '../hooks/useBeltTimeline';
@@ -27,7 +21,7 @@ function BeltTimelineCard() {
       {timeline.length === 0 ? (
         <View style={styles.miniEmpty}>
           <View style={styles.miniEmptyIcon}>
-            <Award color={UI_ACCENT} size={22} />
+            <Award color={theme.accent} size={22} />
           </View>
           <View style={styles.miniEmptyText}>
             <Text style={styles.miniEmptyTitle}>No promotions logged</Text>
@@ -92,6 +86,7 @@ function createStyles(theme: Theme) {
       color: theme.textPrimary,
       fontSize: FONT_SIZE.base,
       fontWeight: FONT_WEIGHT.bold,
+      fontFamily: FONT_FAMILY.bold,
       marginBottom: 12,
     },
     miniEmpty: {
@@ -104,7 +99,7 @@ function createStyles(theme: Theme) {
       width: 44,
       height: 44,
       borderRadius: 22,
-      backgroundColor: UI_ACCENT_MUTED,
+      backgroundColor: theme.accentMuted,
       alignItems: 'center',
       justifyContent: 'center',
     },
@@ -116,6 +111,7 @@ function createStyles(theme: Theme) {
       color: theme.textPrimary,
       fontSize: FONT_SIZE.body,
       fontWeight: FONT_WEIGHT.bold,
+      fontFamily: FONT_FAMILY.bold,
     },
     miniEmptyDesc: {
       color: theme.textSecondary,
@@ -154,12 +150,13 @@ function createStyles(theme: Theme) {
       color: theme.textPrimary,
       fontSize: FONT_SIZE.body,
       fontWeight: FONT_WEIGHT.semibold,
+      fontFamily: FONT_FAMILY.semibold,
     },
     currentPill: {
       flexDirection: 'row',
       alignItems: 'center',
       gap: 5,
-      backgroundColor: UI_ACCENT_MUTED,
+      backgroundColor: theme.accentMuted,
       borderRadius: 10,
       paddingHorizontal: 8,
       paddingVertical: 3,
@@ -170,9 +167,10 @@ function createStyles(theme: Theme) {
       borderRadius: 3,
     },
     currentPillText: {
-      color: UI_ACCENT,
+      color: theme.accent,
       fontSize: FONT_SIZE.tiny,
       fontWeight: FONT_WEIGHT.bold,
+      fontFamily: FONT_FAMILY.bold,
     },
     timelineMeta: {
       color: theme.textSecondary,

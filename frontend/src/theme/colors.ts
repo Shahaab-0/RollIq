@@ -8,49 +8,46 @@ export const BELT_COLORS = {
   black: '#18181B',
 };
 
-// Generic UI accent (buttons, active tab, chips) — kept distinct from every
-// belt color above so it never gets mistaken for a belt reference. Cyan,
-// not teal/purple/blue/amber, cool and energetic without overlapping the
-// blue-belt hue.
-export const UI_ACCENT = '#06B6D4';
-
-// Low-opacity accent tint for *inactive* selectable controls (chips, rating
-// dots) — gives them a cool, clearly-interactive look instead of flat gray,
-// without competing with the solid UI_ACCENT fill used once selected.
-export const UI_ACCENT_MUTED = '#06B6D429';
-
-// Text/icon color for content rendered on top of UI_ACCENT (or a belt
-// color) — stays dark regardless of light/dark theme, since it's read
-// against a bright fill rather than the screen background.
-export const UI_ACCENT_TEXT = '#0F0F12';
+// Power theme: monochrome accent (near-white on dark, near-black on light)
+// instead of a hue-based color -- unlike web's CSS custom properties, RN
+// has no cascade, so this can't be a single flat constant: a genuinely
+// high-contrast accent on BOTH a near-black dark surface AND a near-white
+// light surface has to invert, which means it must live on the `theme`
+// object (accent/accentMuted/accentText below) and be read via
+// `theme.accent` everywhere, not imported as a bare constant.
 
 // Text color for content rendered on top of theme.success/theme.danger
-// fills (toasts) — white reads cleanly against both regardless of theme,
-// unlike UI_ACCENT_TEXT which assumes a much brighter fill.
+// fills (toasts) — white reads cleanly against both regardless of theme.
 export const TOAST_TEXT = '#FFFFFF';
 
 export const darkTheme = {
   scheme: 'dark' as const,
-  background: '#0F0F12',
-  surface: '#1B1B20',
-  surfaceAlt: '#232329',
-  border: '#2A2A31',
-  textPrimary: '#F5F5F7',
-  textSecondary: '#9A9AA2',
+  background: '#060607',
+  surface: '#0E0E10',
+  surfaceAlt: '#19191C',
+  border: '#29292E',
+  textPrimary: '#FAFAFA',
+  textSecondary: '#9C9CA3',
   success: '#22C55E',
   danger: '#EF4444',
+  accent: '#FAFAFA',
+  accentMuted: '#FAFAFA24',
+  accentText: '#0A0A0A',
 };
 
 export const lightTheme = {
   scheme: 'light' as const,
-  background: '#F5F5F7',
+  background: '#F4F4F5',
   surface: '#FFFFFF',
-  surfaceAlt: '#F0F0F2',
-  border: '#E4E4E7',
-  textPrimary: '#111114',
-  textSecondary: '#6B6B76',
+  surfaceAlt: '#ECECEE',
+  border: '#D4D4D8',
+  textPrimary: '#0A0A0A',
+  textSecondary: '#52525B',
   success: '#16A34A',
   danger: '#DC2626',
+  accent: '#0A0A0A',
+  accentMuted: '#0A0A0A1F',
+  accentText: '#FAFAFA',
 };
 
 export type Theme = Omit<typeof darkTheme, 'scheme'> & {
