@@ -11,7 +11,12 @@ import {
 import DateTimePicker, {
   DateTimePickerAndroid,
 } from '@react-native-community/datetimepicker';
-import { getTheme, Theme, UI_ACCENT, UI_ACCENT_TEXT } from '../../../theme/colors';
+import {
+  getTheme,
+  Theme,
+  UI_ACCENT,
+  UI_ACCENT_TEXT,
+} from '../../../theme/colors';
 import { FONT_SIZE, FONT_WEIGHT } from '../../../theme/typography';
 import { formatDisplayDate, toLocalDateString } from '../../../lib/dateFormat';
 
@@ -45,7 +50,8 @@ function BeltDatePromptModal({
       visible={visible}
       transparent
       animationType="fade"
-      onRequestClose={onSkip}>
+      onRequestClose={onSkip}
+    >
       <View style={styles.backdrop}>
         <View style={styles.card}>
           <Text style={styles.title}>
@@ -78,7 +84,8 @@ function BeltDatePromptModal({
                     }
                   },
                 })
-              }>
+              }
+            >
               <Text style={styles.androidDateText}>
                 {formatDisplayDate(date)}
               </Text>

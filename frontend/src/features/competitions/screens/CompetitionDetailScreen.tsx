@@ -12,15 +12,27 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RouteProp } from '@react-navigation/native';
 import { ChevronLeft, Pencil, Trash2 } from 'lucide-react-native';
-import { getTheme, Theme, UI_ACCENT, UI_ACCENT_MUTED } from '../../../theme/colors';
+import {
+  getTheme,
+  Theme,
+  UI_ACCENT,
+  UI_ACCENT_MUTED,
+} from '../../../theme/colors';
 import { FONT_SIZE, FONT_WEIGHT } from '../../../theme/typography';
 import { formatDisplayDate } from '../../../lib/dateFormat';
 import FloatingAddButton from '../../../components/FloatingAddButton';
-import { useCompetitionMatches, useCompetitions, useDeleteMatch } from '../hooks/useCompetitions';
+import {
+  useCompetitionMatches,
+  useCompetitions,
+  useDeleteMatch,
+} from '../hooks/useCompetitions';
 import type { CompetitionsStackParamList } from '../../../navigation/types';
 import type { CompetitionMatch, MatchResult } from '../types';
 
-type Nav = NativeStackNavigationProp<CompetitionsStackParamList, 'CompetitionDetail'>;
+type Nav = NativeStackNavigationProp<
+  CompetitionsStackParamList,
+  'CompetitionDetail'
+>;
 type Route = RouteProp<CompetitionsStackParamList, 'CompetitionDetail'>;
 
 function resultColor(theme: Theme, result: MatchResult): string {
@@ -42,7 +54,8 @@ function CompetitionDetailScreen() {
   const { competitionId } = route.params;
 
   const { data: competitions = [] } = useCompetitions();
-  const { data: matches = [], isLoading } = useCompetitionMatches(competitionId);
+  const { data: matches = [], isLoading } =
+    useCompetitionMatches(competitionId);
   const deleteMatch = useDeleteMatch(competitionId);
 
   const competition = competitions.find(c => c.id === competitionId);
@@ -51,10 +64,17 @@ function CompetitionDetailScreen() {
     <Pressable
       style={styles.matchRow}
       onPress={() =>
-        navigation.navigate('CompetitionMatchForm', { competitionId, matchId: item.id })
-      }>
+        navigation.navigate('CompetitionMatchForm', {
+          competitionId,
+          matchId: item.id,
+        })
+      }
+    >
       <View
-        style={[styles.resultDot, { backgroundColor: resultColor(theme, item.result) }]}
+        style={[
+          styles.resultDot,
+          { backgroundColor: resultColor(theme, item.result) },
+        ]}
       />
       <View style={styles.matchMain}>
         <Text style={styles.matchOpponent}>{item.opponent_name}</Text>
@@ -66,7 +86,8 @@ function CompetitionDetailScreen() {
       <Pressable
         hitSlop={8}
         style={styles.deleteIconButton}
-        onPress={() => deleteMatch.mutate(item.id)}>
+        onPress={() => deleteMatch.mutate(item.id)}
+      >
         <Trash2 color={theme.danger} size={16} />
       </Pressable>
     </Pressable>
@@ -85,7 +106,8 @@ function CompetitionDetailScreen() {
           hitSlop={12}
           onPress={() =>
             navigation.navigate('CompetitionForm', { competitionId })
-          }>
+          }
+        >
           <Pencil color={UI_ACCENT} size={20} />
         </Pressable>
       </View>
@@ -108,7 +130,9 @@ function CompetitionDetailScreen() {
                   {competition.weight_category}
                 </Text>
                 {competition.belt_division ? (
-                  <Text style={styles.infoMeta}>{competition.belt_division}</Text>
+                  <Text style={styles.infoMeta}>
+                    {competition.belt_division}
+                  </Text>
                 ) : null}
                 {competition.location ? (
                   <Text style={styles.infoMeta}>{competition.location}</Text>
@@ -126,14 +150,19 @@ function CompetitionDetailScreen() {
             ) : null
           }
           ListEmptyComponent={
-            <Text style={styles.emptyText}>No matches yet — tap + to add one.</Text>
+            <Text style={styles.emptyText}>
+              No matches yet — tap + to add one.
+            </Text>
           }
         />
       )}
 
       <FloatingAddButton
         onPress={() =>
-          navigation.navigate('CompetitionMatchForm', { competitionId, matchId: undefined })
+          navigation.navigate('CompetitionMatchForm', {
+            competitionId,
+            matchId: undefined,
+          })
         }
       />
     </View>

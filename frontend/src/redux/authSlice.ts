@@ -1,7 +1,11 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import * as authApi from '../api/auth';
 import { clearTokens, getStoredTokens, saveTokens } from '../api/tokenStorage';
-import type { AuthCredentials, AuthStatus, Session } from '../features/auth/types';
+import type {
+  AuthCredentials,
+  AuthStatus,
+  Session,
+} from '../features/auth/types';
 
 interface AuthState {
   status: AuthStatus;
@@ -28,23 +32,26 @@ async function persistSession(session: Session): Promise<void> {
 // Restores any persisted session on launch by validating the stored tokens
 // against the server (rather than trusting them blindly) -- there's no
 // push-based auth listener, so this is the only place a session gets restored.
-export const restoreSession = createAsyncThunk('auth/restoreSession', async () => {
-  const tokens = await getStoredTokens();
-  if (!tokens) return null;
+export const restoreSession = createAsyncThunk(
+  'auth/restoreSession',
+  async () => {
+    const tokens = await getStoredTokens();
+    if (!tokens) return null;
 
-  try {
-    const user = await authApi.me();
-    return {
-      user,
-      accessToken: tokens.accessToken,
-      refreshToken: tokens.refreshToken,
-      expiresAt: tokens.expiresAt,
-    } satisfies Session;
-  } catch {
-    await clearTokens();
-    return null;
-  }
-});
+    try {
+      const user = await authApi.me();
+      return {
+        user,
+        accessToken: tokens.accessToken,
+        refreshToken: tokens.refreshToken,
+        expiresAt: tokens.expiresAt,
+      } satisfies Session;
+    } catch {
+      await clearTokens();
+      return null;
+    }
+  },
+);
 
 export const signUp = createAsyncThunk(
   'auth/signUp',

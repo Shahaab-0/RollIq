@@ -12,7 +12,12 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Dumbbell } from 'lucide-react-native';
-import { getTheme, Theme, UI_ACCENT, UI_ACCENT_MUTED } from '../../../theme/colors';
+import {
+  getTheme,
+  Theme,
+  UI_ACCENT,
+  UI_ACCENT_MUTED,
+} from '../../../theme/colors';
 import { FONT_SIZE, FONT_WEIGHT } from '../../../theme/typography';
 import FloatingAddButton from '../../../components/FloatingAddButton';
 import ErrorState from '../../../components/ErrorState';
@@ -41,7 +46,8 @@ function GymListScreen() {
   const renderItem = ({ item }: { item: Gym }) => (
     <Pressable
       style={styles.card}
-      onPress={() => navigation.navigate('GymDetail', { gymId: item.id })}>
+      onPress={() => navigation.navigate('GymDetail', { gymId: item.id })}
+    >
       <View style={styles.cardMain}>
         <Text style={styles.title}>{item.name}</Text>
         {item.description ? (
@@ -50,7 +56,8 @@ function GymListScreen() {
           </Text>
         ) : null}
         <Text style={styles.meta}>
-          {item.member_count} member{item.member_count === 1 ? '' : 's'} · {item.class_count} class
+          {item.member_count} member{item.member_count === 1 ? '' : 's'} ·{' '}
+          {item.class_count} class
           {item.class_count === 1 ? '' : 'es'}
         </Text>
       </View>

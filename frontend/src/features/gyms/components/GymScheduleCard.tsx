@@ -1,9 +1,20 @@
 import React, { useMemo } from 'react';
-import { Pressable, StyleSheet, Text, useColorScheme, View } from 'react-native';
+import {
+  Pressable,
+  StyleSheet,
+  Text,
+  useColorScheme,
+  View,
+} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Plus, Trash2 } from 'lucide-react-native';
-import { getTheme, Theme, UI_ACCENT, UI_ACCENT_TEXT } from '../../../theme/colors';
+import {
+  getTheme,
+  Theme,
+  UI_ACCENT,
+  UI_ACCENT_TEXT,
+} from '../../../theme/colors';
 import { FONT_SIZE, FONT_WEIGHT } from '../../../theme/typography';
 import { formatDisplayTime } from '../../../lib/dateFormat';
 import { useDeleteScheduleEntry, useGymSchedule } from '../hooks/useGyms';
@@ -38,7 +49,8 @@ function GymScheduleCard({ gymId, canManage }: Readonly<Props>) {
         {canManage ? (
           <Pressable
             style={styles.addButton}
-            onPress={() => navigation.navigate('GymScheduleForm', { gymId })}>
+            onPress={() => navigation.navigate('GymScheduleForm', { gymId })}
+          >
             <Plus color={UI_ACCENT_TEXT} size={14} strokeWidth={2.5} />
             <Text style={styles.addButtonText}>Add Slot</Text>
           </Pressable>
@@ -58,12 +70,18 @@ function GymScheduleCard({ gymId, canManage }: Readonly<Props>) {
                   <View key={entry.id} style={styles.slotRow}>
                     <View style={styles.slotMain}>
                       <Text style={styles.slotTime}>
-                        {formatDisplayTime(entry.start_time)} – {formatDisplayTime(entry.end_time)}
+                        {formatDisplayTime(entry.start_time)} –{' '}
+                        {formatDisplayTime(entry.end_time)}
                       </Text>
-                      {entry.topic ? <Text style={styles.slotTopic}>{entry.topic}</Text> : null}
+                      {entry.topic ? (
+                        <Text style={styles.slotTopic}>{entry.topic}</Text>
+                      ) : null}
                     </View>
                     {canManage ? (
-                      <Pressable hitSlop={8} onPress={() => deleteEntry.mutate(entry.id)}>
+                      <Pressable
+                        hitSlop={8}
+                        onPress={() => deleteEntry.mutate(entry.id)}
+                      >
                         <Trash2 color={theme.danger} size={14} />
                       </Pressable>
                     ) : null}

@@ -55,7 +55,8 @@ function ToastHost() {
         { top: insets.top + 8 },
         toast.variant === 'success' ? styles.success : styles.error,
         { opacity },
-      ]}>
+      ]}
+    >
       <Text style={styles.text} numberOfLines={2}>
         {toast.message}
       </Text>

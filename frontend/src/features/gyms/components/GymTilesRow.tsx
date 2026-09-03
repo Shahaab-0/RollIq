@@ -1,9 +1,21 @@
 import React, { useMemo } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, useColorScheme, View } from 'react-native';
+import {
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  useColorScheme,
+  View,
+} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Plus } from 'lucide-react-native';
-import { getTheme, Theme, UI_ACCENT, UI_ACCENT_MUTED } from '../../../theme/colors';
+import {
+  getTheme,
+  Theme,
+  UI_ACCENT,
+  UI_ACCENT_MUTED,
+} from '../../../theme/colors';
 import { FONT_SIZE, FONT_WEIGHT } from '../../../theme/typography';
 import { useGyms } from '../hooks/useGyms';
 import type { HomeStackParamList } from '../../../navigation/types';
@@ -31,12 +43,14 @@ function GymTilesRow() {
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.row}>
+        contentContainerStyle={styles.row}
+      >
         {gyms.map(gym => (
           <Pressable
             key={gym.id}
             style={styles.tile}
-            onPress={() => navigation.navigate('GymDetail', { gymId: gym.id })}>
+            onPress={() => navigation.navigate('GymDetail', { gymId: gym.id })}
+          >
             <Text style={styles.tileName} numberOfLines={2}>
               {gym.name}
             </Text>
@@ -44,7 +58,10 @@ function GymTilesRow() {
           </Pressable>
         ))}
 
-        <Pressable style={styles.addTile} onPress={() => navigation.navigate('GymList')}>
+        <Pressable
+          style={styles.addTile}
+          onPress={() => navigation.navigate('GymList')}
+        >
           <Plus color={UI_ACCENT} size={22} strokeWidth={2.5} />
           <Text style={styles.addTileText}>Add Gym</Text>
         </Pressable>

@@ -11,8 +11,13 @@ export async function listCompetitions(): Promise<Competition[]> {
   return data;
 }
 
-export async function createCompetition(competition: NewCompetition): Promise<Competition> {
-  const { data } = await apiClient.post<Competition>('/competitions', competition);
+export async function createCompetition(
+  competition: NewCompetition,
+): Promise<Competition> {
+  const { data } = await apiClient.post<Competition>(
+    '/competitions',
+    competition,
+  );
   return data;
 }
 
@@ -20,7 +25,10 @@ export async function updateCompetition(
   id: string,
   changes: Partial<NewCompetition>,
 ): Promise<Competition> {
-  const { data } = await apiClient.patch<Competition>(`/competitions/${id}`, changes);
+  const { data } = await apiClient.patch<Competition>(
+    `/competitions/${id}`,
+    changes,
+  );
   return data;
 }
 
@@ -28,7 +36,9 @@ export async function deleteCompetition(id: string): Promise<void> {
   await apiClient.delete(`/competitions/${id}`);
 }
 
-export async function listMatches(competitionId: string): Promise<CompetitionMatch[]> {
+export async function listMatches(
+  competitionId: string,
+): Promise<CompetitionMatch[]> {
   const { data } = await apiClient.get<CompetitionMatch[]>(
     `/competitions/${competitionId}/matches`,
   );
@@ -58,6 +68,9 @@ export async function updateMatch(
   return data;
 }
 
-export async function deleteMatch(competitionId: string, matchId: string): Promise<void> {
+export async function deleteMatch(
+  competitionId: string,
+  matchId: string,
+): Promise<void> {
   await apiClient.delete(`/competitions/${competitionId}/matches/${matchId}`);
 }

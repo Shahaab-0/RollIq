@@ -1,5 +1,11 @@
 import React, { useMemo } from 'react';
-import { Pressable, StyleSheet, Text, useColorScheme, View } from 'react-native';
+import {
+  Pressable,
+  StyleSheet,
+  Text,
+  useColorScheme,
+  View,
+} from 'react-native';
 import { Menu } from 'lucide-react-native';
 import { getTheme, Theme } from '../../../theme/colors';
 import { FONT_SIZE, FONT_WEIGHT } from '../../../theme/typography';
@@ -26,7 +32,13 @@ function initialsFor(name: string | null | undefined): string {
 
 // Avatar + name + belt row — split out of DashboardScreen to keep that
 // file under the 400-line component cap.
-function ProfileHeader({ displayName, belt, stripes, accent, onMenuPress }: Readonly<Props>) {
+function ProfileHeader({
+  displayName,
+  belt,
+  stripes,
+  accent,
+  onMenuPress,
+}: Readonly<Props>) {
   const scheme = useColorScheme();
   const theme = useMemo(() => getTheme(scheme), [scheme]);
   const styles = useMemo(() => createStyles(theme), [theme]);

@@ -1,5 +1,12 @@
 import React, { useMemo } from 'react';
-import { Linking, Pressable, StyleSheet, Text, useColorScheme, View } from 'react-native';
+import {
+  Linking,
+  Pressable,
+  StyleSheet,
+  Text,
+  useColorScheme,
+  View,
+} from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RouteProp } from '@react-navigation/native';
@@ -9,7 +16,10 @@ import { getTheme, Theme, UI_ACCENT } from '../../../theme/colors';
 import { FONT_SIZE, FONT_WEIGHT } from '../../../theme/typography';
 import type { InstructionalsStackParamList } from '../../../navigation/types';
 
-type Nav = NativeStackNavigationProp<InstructionalsStackParamList, 'InstructionalPlayer'>;
+type Nav = NativeStackNavigationProp<
+  InstructionalsStackParamList,
+  'InstructionalPlayer'
+>;
 
 type Route = RouteProp<InstructionalsStackParamList, 'InstructionalPlayer'>;
 
@@ -38,7 +48,8 @@ function InstructionalPlayerScreen() {
           hitSlop={12}
           onPress={() => {
             if (url) Linking.openURL(url);
-          }}>
+          }}
+        >
           <ExternalLink color={UI_ACCENT} size={22} />
         </Pressable>
       </View>
@@ -47,7 +58,9 @@ function InstructionalPlayerScreen() {
         <WebView source={{ uri: url }} style={styles.webview} />
       ) : (
         <View style={styles.centered}>
-          <Text style={styles.emptyText}>This video doesn't have a link yet.</Text>
+          <Text style={styles.emptyText}>
+            This video doesn't have a link yet.
+          </Text>
         </View>
       )}
     </View>

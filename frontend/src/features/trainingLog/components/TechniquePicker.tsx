@@ -10,7 +10,10 @@ import {
 import { X } from 'lucide-react-native';
 import { getTheme, Theme, UI_ACCENT } from '../../../theme/colors';
 import { FONT_SIZE, FONT_WEIGHT } from '../../../theme/typography';
-import { useCreateTechnique, useTechniques } from '../../techniques/hooks/useTechniques';
+import {
+  useCreateTechnique,
+  useTechniques,
+} from '../../techniques/hooks/useTechniques';
 
 interface Props {
   selectedIds: string[];
@@ -95,7 +98,8 @@ function TechniquePicker({ selectedIds, onChange }: Readonly<Props>) {
             <Pressable
               key={t.id}
               style={styles.dropdownRow}
-              onPress={() => addTechnique(t.id)}>
+              onPress={() => addTechnique(t.id)}
+            >
               <Text style={styles.dropdownText}>{t.name}</Text>
             </Pressable>
           ))}

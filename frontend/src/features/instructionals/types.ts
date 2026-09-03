@@ -1,6 +1,9 @@
 export type ProgressStatus = 'want_to_watch' | 'in_progress' | 'completed';
 
-export const PROGRESS_STATUS_OPTIONS: { value: ProgressStatus; label: string }[] = [
+export const PROGRESS_STATUS_OPTIONS: {
+  value: ProgressStatus;
+  label: string;
+}[] = [
   { value: 'want_to_watch', label: 'Want to Watch' },
   { value: 'in_progress', label: 'In Progress' },
   { value: 'completed', label: 'Completed' },
@@ -62,7 +65,10 @@ export interface InstructionalVideo {
   duration_minutes: number | null;
 }
 
-export type NewInstructionalVideo = Omit<InstructionalVideo, 'id' | 'instructional_id'>;
+export type NewInstructionalVideo = Omit<
+  InstructionalVideo,
+  'id' | 'instructional_id'
+>;
 
 export interface InstructionalProgress {
   video_id: string;

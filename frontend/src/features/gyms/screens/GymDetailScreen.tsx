@@ -12,7 +12,13 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RouteProp } from '@react-navigation/native';
 import { ChevronLeft, ChevronRight, Plus, Users } from 'lucide-react-native';
-import { getTheme, Theme, UI_ACCENT, UI_ACCENT_MUTED, UI_ACCENT_TEXT } from '../../../theme/colors';
+import {
+  getTheme,
+  Theme,
+  UI_ACCENT,
+  UI_ACCENT_MUTED,
+  UI_ACCENT_TEXT,
+} from '../../../theme/colors';
 import { FONT_SIZE, FONT_WEIGHT } from '../../../theme/typography';
 import { formatDisplayDate } from '../../../lib/dateFormat';
 import FloatingAddButton from '../../../components/FloatingAddButton';
@@ -47,7 +53,8 @@ function GymDetailScreen() {
       style={styles.classCard}
       onPress={() =>
         navigation.navigate('GymClassDetail', { gymId, classId: item.id })
-      }>
+      }
+    >
       <View style={styles.classMain}>
         <Text style={styles.classTitle}>{item.title}</Text>
         <Text style={styles.classMeta}>
@@ -101,14 +108,18 @@ function GymDetailScreen() {
         contentContainerStyle={styles.listContent}
         ListHeaderComponent={
           <View style={styles.infoSection}>
-            {gym?.description ? <Text style={styles.description}>{gym.description}</Text> : null}
+            {gym?.description ? (
+              <Text style={styles.description}>{gym.description}</Text>
+            ) : null}
 
             <Pressable
               style={styles.membersRow}
-              onPress={() => navigation.navigate('GymMembers', { gymId })}>
+              onPress={() => navigation.navigate('GymMembers', { gymId })}
+            >
               <Users color={theme.textSecondary} size={16} />
               <Text style={styles.membersText}>
-                {gym?.member_count ?? 0} member{gym?.member_count === 1 ? '' : 's'}
+                {gym?.member_count ?? 0} member
+                {gym?.member_count === 1 ? '' : 's'}
               </Text>
               <ChevronRight color={theme.textSecondary} size={16} />
             </Pressable>
@@ -119,7 +130,9 @@ function GymDetailScreen() {
                 <Text style={styles.inviteCode} selectable>
                   {gym.invite_code}
                 </Text>
-                <Text style={styles.inviteHint}>Long-press the code to copy and share it.</Text>
+                <Text style={styles.inviteHint}>
+                  Long-press the code to copy and share it.
+                </Text>
               </View>
             ) : null}
 
@@ -130,7 +143,8 @@ function GymDetailScreen() {
               {canPost ? (
                 <Pressable
                   style={styles.postButton}
-                  onPress={() => navigation.navigate('GymClassForm', { gymId })}>
+                  onPress={() => navigation.navigate('GymClassForm', { gymId })}
+                >
                   <Plus color={UI_ACCENT_TEXT} size={14} strokeWidth={2.5} />
                   <Text style={styles.postButtonText}>Post a Class</Text>
                 </Pressable>
@@ -152,7 +166,9 @@ function GymDetailScreen() {
       />
 
       {canPost ? (
-        <FloatingAddButton onPress={() => navigation.navigate('GymClassForm', { gymId })} />
+        <FloatingAddButton
+          onPress={() => navigation.navigate('GymClassForm', { gymId })}
+        />
       ) : null}
     </View>
   );

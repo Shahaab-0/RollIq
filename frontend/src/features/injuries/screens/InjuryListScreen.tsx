@@ -11,7 +11,12 @@ import {
 import { DrawerActions, useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { HeartPulse, Menu, Trash2 } from 'lucide-react-native';
-import { getTheme, Theme, UI_ACCENT, UI_ACCENT_MUTED } from '../../../theme/colors';
+import {
+  getTheme,
+  Theme,
+  UI_ACCENT,
+  UI_ACCENT_MUTED,
+} from '../../../theme/colors';
 import { FONT_SIZE, FONT_WEIGHT } from '../../../theme/typography';
 import { formatDisplayDate } from '../../../lib/dateFormat';
 import FloatingAddButton from '../../../components/FloatingAddButton';
@@ -44,24 +49,32 @@ function InjuryListScreen() {
     <Pressable
       key={item.id}
       style={styles.row}
-      onPress={() => navigation.navigate('InjuryForm', { injuryId: item.id })}>
+      onPress={() => navigation.navigate('InjuryForm', { injuryId: item.id })}
+    >
       <View style={styles.rowMain}>
         <Text style={styles.rowTitle}>{item.body_part}</Text>
         <Text style={styles.rowMeta}>
-          {formatDisplayDate(item.injury_date)} · {SEVERITY_LABEL[item.severity]}
+          {formatDisplayDate(item.injury_date)} ·{' '}
+          {SEVERITY_LABEL[item.severity]}
         </Text>
         <Text style={styles.rowDescription} numberOfLines={2}>
           {item.description}
         </Text>
       </View>
       <View style={styles.rowActions}>
-        <Text style={[styles.statusBadge, item.status === 'active' && styles.statusBadgeActive]}>
+        <Text
+          style={[
+            styles.statusBadge,
+            item.status === 'active' && styles.statusBadgeActive,
+          ]}
+        >
           {item.status}
         </Text>
         <Pressable
           hitSlop={8}
           style={styles.deleteIconButton}
-          onPress={() => deleteInjury.mutate(item.id)}>
+          onPress={() => deleteInjury.mutate(item.id)}
+        >
           <Trash2 color={theme.danger} size={16} />
         </Pressable>
       </View>
@@ -73,7 +86,8 @@ function InjuryListScreen() {
       <View style={styles.header}>
         <Pressable
           hitSlop={12}
-          onPress={() => navigation.dispatch(DrawerActions.openDrawer())}>
+          onPress={() => navigation.dispatch(DrawerActions.openDrawer())}
+        >
           <Menu color={theme.textPrimary} size={22} />
         </Pressable>
         <Text style={styles.title}>Injuries</Text>
@@ -111,7 +125,9 @@ function InjuryListScreen() {
         </ScrollView>
       )}
 
-      <FloatingAddButton onPress={() => navigation.navigate('InjuryForm', undefined)} />
+      <FloatingAddButton
+        onPress={() => navigation.navigate('InjuryForm', undefined)}
+      />
     </View>
   );
 }

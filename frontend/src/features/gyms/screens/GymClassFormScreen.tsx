@@ -14,9 +14,16 @@ import {
 import { useNavigation, useRoute } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RouteProp } from '@react-navigation/native';
-import DateTimePicker, { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
+import DateTimePicker, {
+  DateTimePickerAndroid,
+} from '@react-native-community/datetimepicker';
 import { ChevronLeft } from 'lucide-react-native';
-import { getTheme, Theme, UI_ACCENT, UI_ACCENT_TEXT } from '../../../theme/colors';
+import {
+  getTheme,
+  Theme,
+  UI_ACCENT,
+  UI_ACCENT_TEXT,
+} from '../../../theme/colors';
 import { FONT_SIZE, FONT_WEIGHT } from '../../../theme/typography';
 import { formatDisplayDate, toLocalDateString } from '../../../lib/dateFormat';
 import { useCreateGymClass } from '../hooks/useGyms';
@@ -63,7 +70,8 @@ function GymClassFormScreen() {
   return (
     <KeyboardAvoidingView
       style={styles.screen}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+    >
       <View style={styles.header}>
         <Pressable hitSlop={12} onPress={() => navigation.goBack()}>
           <ChevronLeft color={theme.textPrimary} size={24} />
@@ -109,8 +117,11 @@ function GymClassFormScreen() {
                   if (selected) setClassDate(toLocalDateString(selected));
                 },
               })
-            }>
-            <Text style={styles.androidDateText}>{formatDisplayDate(classDate)}</Text>
+            }
+          >
+            <Text style={styles.androidDateText}>
+              {formatDisplayDate(classDate)}
+            </Text>
           </Pressable>
         )}
 
@@ -127,8 +138,11 @@ function GymClassFormScreen() {
         <Pressable
           style={[styles.saveButton, saving && styles.saveButtonDisabled]}
           disabled={saving}
-          onPress={handleSave}>
-          <Text style={styles.saveButtonText}>{saving ? 'Posting…' : 'Post Class'}</Text>
+          onPress={handleSave}
+        >
+          <Text style={styles.saveButtonText}>
+            {saving ? 'Posting…' : 'Post Class'}
+          </Text>
         </Pressable>
       </ScrollView>
     </KeyboardAvoidingView>

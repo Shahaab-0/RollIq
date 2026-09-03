@@ -11,7 +11,12 @@ import {
 } from 'react-native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { ChevronLeft } from 'lucide-react-native';
-import { getTheme, Theme, UI_ACCENT, UI_ACCENT_TEXT } from '../../../theme/colors';
+import {
+  getTheme,
+  Theme,
+  UI_ACCENT,
+  UI_ACCENT_TEXT,
+} from '../../../theme/colors';
 import { FONT_SIZE, FONT_WEIGHT } from '../../../theme/typography';
 import { useForgotPassword } from '../hooks/useAuth';
 import type { AuthStackParamList } from '../../../navigation/types';
@@ -38,7 +43,8 @@ function ForgotPasswordScreen({ navigation }: Readonly<Props>) {
   return (
     <KeyboardAvoidingView
       style={styles.screen}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+    >
       <View style={styles.header}>
         <Pressable hitSlop={12} onPress={() => navigation.goBack()}>
           <ChevronLeft color={theme.textPrimary} size={24} />
@@ -62,9 +68,13 @@ function ForgotPasswordScreen({ navigation }: Readonly<Props>) {
         />
 
         <Pressable
-          style={[styles.button, forgotPassword.isPending && styles.buttonDisabled]}
+          style={[
+            styles.button,
+            forgotPassword.isPending && styles.buttonDisabled,
+          ]}
           disabled={forgotPassword.isPending || !email}
-          onPress={handleSend}>
+          onPress={handleSend}
+        >
           <Text style={styles.buttonText}>
             {forgotPassword.isPending ? 'Sending…' : 'Send Reset Code'}
           </Text>
@@ -72,7 +82,8 @@ function ForgotPasswordScreen({ navigation }: Readonly<Props>) {
 
         <Pressable
           style={styles.linkButton}
-          onPress={() => navigation.navigate('ResetPassword', { email })}>
+          onPress={() => navigation.navigate('ResetPassword', { email })}
+        >
           <Text style={styles.linkText}>Already have a code?</Text>
         </Pressable>
       </View>

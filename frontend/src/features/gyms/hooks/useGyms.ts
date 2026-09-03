@@ -22,7 +22,11 @@ export function useCreateGym() {
   return useMutation({
     mutationFn: (gym: NewGym) => gymsApi.createGym(gym),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['gyms'] }),
-    onError: error => showToast(getApiErrorMessage(error, 'Could not create this gym'), 'error'),
+    onError: error =>
+      showToast(
+        getApiErrorMessage(error, 'Could not create this gym'),
+        'error',
+      ),
     meta: { toastSuccess: 'Gym created' },
   });
 }
@@ -41,7 +45,10 @@ export function useJoinGym() {
     mutationFn: (inviteCode: string) => gymsApi.joinGym(inviteCode),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['gyms'] }),
     onError: error =>
-      showToast(getApiErrorMessage(error, 'Could not join with that code'), 'error'),
+      showToast(
+        getApiErrorMessage(error, 'Could not join with that code'),
+        'error',
+      ),
     meta: { toastSuccess: 'Joined gym' },
   });
 }
@@ -59,9 +66,13 @@ export function usePromoteMember(gymId: string) {
   return useMutation({
     mutationFn: ({ userId, role }: { userId: string; role: GymRole }) =>
       gymsApi.updateMemberRole(gymId, userId, role),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['gyms', gymId, 'members'] }),
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: ['gyms', gymId, 'members'] }),
     onError: error =>
-      showToast(getApiErrorMessage(error, "Could not update this member's role"), 'error'),
+      showToast(
+        getApiErrorMessage(error, "Could not update this member's role"),
+        'error',
+      ),
     meta: { toastSuccess: 'Role updated' },
   });
 }
@@ -83,7 +94,11 @@ export function useCreateGymClass(gymId: string) {
       queryClient.invalidateQueries({ queryKey: ['gyms', gymId] });
       queryClient.invalidateQueries({ queryKey: ['gyms'] });
     },
-    onError: error => showToast(getApiErrorMessage(error, 'Could not post this class'), 'error'),
+    onError: error =>
+      showToast(
+        getApiErrorMessage(error, 'Could not post this class'),
+        'error',
+      ),
     meta: { toastSuccess: 'Class posted' },
   });
 }
@@ -97,7 +112,11 @@ export function useDeleteGymClass(gymId: string) {
       queryClient.invalidateQueries({ queryKey: ['gyms', gymId] });
       queryClient.invalidateQueries({ queryKey: ['gyms'] });
     },
-    onError: error => showToast(getApiErrorMessage(error, 'Could not delete this class'), 'error'),
+    onError: error =>
+      showToast(
+        getApiErrorMessage(error, 'Could not delete this class'),
+        'error',
+      ),
     meta: { toastSuccess: 'Class deleted' },
   });
 }
@@ -113,12 +132,16 @@ export function useGymClassVideos(gymId: string, classId: string | undefined) {
 export function useCreateGymClassVideo(gymId: string, classId: string) {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (video: NewGymClassVideo) => gymsApi.createClassVideo(gymId, classId, video),
+    mutationFn: (video: NewGymClassVideo) =>
+      gymsApi.createClassVideo(gymId, classId, video),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['gyms', gymId, 'classes', classId, 'videos'] });
+      queryClient.invalidateQueries({
+        queryKey: ['gyms', gymId, 'classes', classId, 'videos'],
+      });
       queryClient.invalidateQueries({ queryKey: ['gyms', gymId, 'classes'] });
     },
-    onError: error => showToast(getApiErrorMessage(error, 'Could not add this video'), 'error'),
+    onError: error =>
+      showToast(getApiErrorMessage(error, 'Could not add this video'), 'error'),
     meta: { toastSuccess: 'Video added' },
   });
 }
@@ -126,12 +149,19 @@ export function useCreateGymClassVideo(gymId: string, classId: string) {
 export function useDeleteGymClassVideo(gymId: string, classId: string) {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (videoId: string) => gymsApi.deleteClassVideo(gymId, classId, videoId),
+    mutationFn: (videoId: string) =>
+      gymsApi.deleteClassVideo(gymId, classId, videoId),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['gyms', gymId, 'classes', classId, 'videos'] });
+      queryClient.invalidateQueries({
+        queryKey: ['gyms', gymId, 'classes', classId, 'videos'],
+      });
       queryClient.invalidateQueries({ queryKey: ['gyms', gymId, 'classes'] });
     },
-    onError: error => showToast(getApiErrorMessage(error, 'Could not remove this video'), 'error'),
+    onError: error =>
+      showToast(
+        getApiErrorMessage(error, 'Could not remove this video'),
+        'error',
+      ),
     meta: { toastSuccess: 'Video removed' },
   });
 }
@@ -147,10 +177,15 @@ export function useGymSchedule(gymId: string | undefined) {
 export function useCreateScheduleEntry(gymId: string) {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (entry: NewGymScheduleEntry) => gymsApi.createScheduleEntry(gymId, entry),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['gyms', gymId, 'schedule'] }),
+    mutationFn: (entry: NewGymScheduleEntry) =>
+      gymsApi.createScheduleEntry(gymId, entry),
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: ['gyms', gymId, 'schedule'] }),
     onError: error =>
-      showToast(getApiErrorMessage(error, 'Could not add this schedule slot'), 'error'),
+      showToast(
+        getApiErrorMessage(error, 'Could not add this schedule slot'),
+        'error',
+      ),
     meta: { toastSuccess: 'Schedule updated' },
   });
 }
@@ -158,10 +193,15 @@ export function useCreateScheduleEntry(gymId: string) {
 export function useDeleteScheduleEntry(gymId: string) {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (entryId: string) => gymsApi.deleteScheduleEntry(gymId, entryId),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['gyms', gymId, 'schedule'] }),
+    mutationFn: (entryId: string) =>
+      gymsApi.deleteScheduleEntry(gymId, entryId),
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: ['gyms', gymId, 'schedule'] }),
     onError: error =>
-      showToast(getApiErrorMessage(error, 'Could not remove this schedule slot'), 'error'),
+      showToast(
+        getApiErrorMessage(error, 'Could not remove this schedule slot'),
+        'error',
+      ),
     meta: { toastSuccess: 'Schedule slot removed' },
   });
 }
@@ -177,21 +217,33 @@ export function useGymAttendance(gymId: string, classId: string | undefined) {
 export function useMarkAttendance(gymId: string, classId: string) {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (userId: string) => gymsApi.markAttendance(gymId, classId, userId),
+    mutationFn: (userId: string) =>
+      gymsApi.markAttendance(gymId, classId, userId),
     onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: ['gyms', gymId, 'classes', classId, 'attendance'] }),
+      queryClient.invalidateQueries({
+        queryKey: ['gyms', gymId, 'classes', classId, 'attendance'],
+      }),
     onError: error =>
-      showToast(getApiErrorMessage(error, 'Could not mark attendance'), 'error'),
+      showToast(
+        getApiErrorMessage(error, 'Could not mark attendance'),
+        'error',
+      ),
   });
 }
 
 export function useUnmarkAttendance(gymId: string, classId: string) {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (userId: string) => gymsApi.unmarkAttendance(gymId, classId, userId),
+    mutationFn: (userId: string) =>
+      gymsApi.unmarkAttendance(gymId, classId, userId),
     onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: ['gyms', gymId, 'classes', classId, 'attendance'] }),
+      queryClient.invalidateQueries({
+        queryKey: ['gyms', gymId, 'classes', classId, 'attendance'],
+      }),
     onError: error =>
-      showToast(getApiErrorMessage(error, 'Could not update attendance'), 'error'),
+      showToast(
+        getApiErrorMessage(error, 'Could not update attendance'),
+        'error',
+      ),
   });
 }

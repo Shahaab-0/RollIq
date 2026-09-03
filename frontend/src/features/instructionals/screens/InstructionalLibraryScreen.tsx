@@ -12,17 +12,28 @@ import {
 import { DrawerActions, useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Menu, SlidersHorizontal } from 'lucide-react-native';
-import { getTheme, Theme, TOAST_TEXT, UI_ACCENT, UI_ACCENT_TEXT } from '../../../theme/colors';
+import {
+  getTheme,
+  Theme,
+  TOAST_TEXT,
+  UI_ACCENT,
+  UI_ACCENT_TEXT,
+} from '../../../theme/colors';
 import { FONT_SIZE, FONT_WEIGHT } from '../../../theme/typography';
 import FloatingAddButton from '../../../components/FloatingAddButton';
 import ErrorState from '../../../components/ErrorState';
 import { useInstructionals } from '../hooks/useInstructionals';
 import InstructionalCard from '../components/InstructionalCard';
-import InstructionalFilters, { type OverallStatus } from '../components/InstructionalFilters';
+import InstructionalFilters, {
+  type OverallStatus,
+} from '../components/InstructionalFilters';
 import type { InstructionalsStackParamList } from '../../../navigation/types';
 import type { Difficulty, Instructional } from '../types';
 
-type Nav = NativeStackNavigationProp<InstructionalsStackParamList, 'InstructionalLibrary'>;
+type Nav = NativeStackNavigationProp<
+  InstructionalsStackParamList,
+  'InstructionalLibrary'
+>;
 
 function overallStatus(item: Instructional): OverallStatus {
   if (item.video_count > 0 && item.completed_video_count === item.video_count) {
@@ -48,7 +59,9 @@ function InstructionalLibraryScreen() {
   const [difficulty, setDifficulty] = useState<Difficulty | null>(null);
   const [filtersVisible, setFiltersVisible] = useState(false);
 
-  const activeFilterCount = [category, instructor, status, difficulty].filter(Boolean).length;
+  const activeFilterCount = [category, instructor, status, difficulty].filter(
+    Boolean,
+  ).length;
 
   const categories = useMemo(
     () => Array.from(new Set(items.map(i => i.category))).sort(),
@@ -86,7 +99,8 @@ function InstructionalLibraryScreen() {
       <View style={styles.header}>
         <Pressable
           hitSlop={12}
-          onPress={() => navigation.dispatch(DrawerActions.openDrawer())}>
+          onPress={() => navigation.dispatch(DrawerActions.openDrawer())}
+        >
           <Menu color={theme.textPrimary} size={22} />
         </Pressable>
         <Text style={styles.title}>Instructionals</Text>
@@ -101,8 +115,12 @@ function InstructionalLibraryScreen() {
           placeholderTextColor={theme.textSecondary}
         />
         <Pressable
-          style={[styles.filterButton, activeFilterCount > 0 && styles.filterButtonActive]}
-          onPress={() => setFiltersVisible(true)}>
+          style={[
+            styles.filterButton,
+            activeFilterCount > 0 && styles.filterButtonActive,
+          ]}
+          onPress={() => setFiltersVisible(true)}
+        >
           <SlidersHorizontal
             color={activeFilterCount > 0 ? UI_ACCENT_TEXT : UI_ACCENT}
             size={20}
@@ -144,7 +162,9 @@ function InstructionalLibraryScreen() {
         <ErrorState />
       ) : filtered.length === 0 ? (
         <View style={styles.centered}>
-          <Text style={styles.emptyText}>No instructionals match your filters.</Text>
+          <Text style={styles.emptyText}>
+            No instructionals match your filters.
+          </Text>
         </View>
       ) : (
         <FlatList
@@ -155,7 +175,9 @@ function InstructionalLibraryScreen() {
         />
       )}
 
-      <FloatingAddButton onPress={() => navigation.navigate('InstructionalForm')} />
+      <FloatingAddButton
+        onPress={() => navigation.navigate('InstructionalForm')}
+      />
     </View>
   );
 }

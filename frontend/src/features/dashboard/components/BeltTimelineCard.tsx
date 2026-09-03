@@ -1,7 +1,13 @@
 import React, { useMemo } from 'react';
 import { StyleSheet, Text, useColorScheme, View } from 'react-native';
 import { Award } from 'lucide-react-native';
-import { BELT_COLORS, getTheme, Theme, UI_ACCENT, UI_ACCENT_MUTED } from '../../../theme/colors';
+import {
+  BELT_COLORS,
+  getTheme,
+  Theme,
+  UI_ACCENT,
+  UI_ACCENT_MUTED,
+} from '../../../theme/colors';
 import { FONT_SIZE, FONT_WEIGHT } from '../../../theme/typography';
 import { formatDisplayDate } from '../../../lib/dateFormat';
 import { BELT_LABELS } from '../../profile/types';
@@ -46,10 +52,17 @@ function BeltTimelineCard() {
             </View>
             <View style={styles.timelineContent}>
               <View style={styles.timelineBeltRow}>
-                <Text style={styles.timelineBelt}>{BELT_LABELS[entry.belt]}</Text>
+                <Text style={styles.timelineBelt}>
+                  {BELT_LABELS[entry.belt]}
+                </Text>
                 {entry.isCurrent ? (
                   <View style={styles.currentPill}>
-                    <View style={[styles.currentPillDot, { backgroundColor: BELT_COLORS[entry.belt] }]} />
+                    <View
+                      style={[
+                        styles.currentPillDot,
+                        { backgroundColor: BELT_COLORS[entry.belt] },
+                      ]}
+                    />
                     <Text style={styles.currentPillText}>Current</Text>
                   </View>
                 ) : null}

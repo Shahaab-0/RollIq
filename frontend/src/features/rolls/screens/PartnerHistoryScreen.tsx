@@ -1,5 +1,13 @@
 import React, { useMemo } from 'react';
-import { ActivityIndicator, FlatList, Pressable, StyleSheet, Text, useColorScheme, View } from 'react-native';
+import {
+  ActivityIndicator,
+  FlatList,
+  Pressable,
+  StyleSheet,
+  Text,
+  useColorScheme,
+  View,
+} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { ChevronLeft, Users } from 'lucide-react-native';
@@ -32,8 +40,8 @@ function PartnerHistoryScreen() {
       <View style={styles.rowMain}>
         <Text style={styles.rowTitle}>{item.partner_name}</Text>
         <Text style={styles.rowMeta}>
-          {item.roll_count} roll{item.roll_count === 1 ? '' : 's'} · {item.landed_total} landed ·{' '}
-          {item.received_total} received
+          {item.roll_count} roll{item.roll_count === 1 ? '' : 's'} ·{' '}
+          {item.landed_total} landed · {item.received_total} received
         </Text>
       </View>
       <Text style={styles.tapRate}>{tapRateLabel(item)}</Text>

@@ -14,7 +14,12 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { ChevronLeft } from 'lucide-react-native';
-import { getTheme, Theme, UI_ACCENT, UI_ACCENT_TEXT } from '../../../theme/colors';
+import {
+  getTheme,
+  Theme,
+  UI_ACCENT,
+  UI_ACCENT_TEXT,
+} from '../../../theme/colors';
 import { FONT_SIZE, FONT_WEIGHT } from '../../../theme/typography';
 import { useCreateGym } from '../hooks/useGyms';
 import type { HomeStackParamList } from '../../../navigation/types';
@@ -54,7 +59,8 @@ function GymFormScreen() {
   return (
     <KeyboardAvoidingView
       style={styles.screen}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+    >
       <View style={styles.header}>
         <Pressable hitSlop={12} onPress={() => navigation.goBack()}>
           <ChevronLeft color={theme.textPrimary} size={24} />
@@ -86,8 +92,11 @@ function GymFormScreen() {
         <Pressable
           style={[styles.saveButton, saving && styles.saveButtonDisabled]}
           disabled={saving}
-          onPress={handleSave}>
-          <Text style={styles.saveButtonText}>{saving ? 'Creating…' : 'Create Gym'}</Text>
+          onPress={handleSave}
+        >
+          <Text style={styles.saveButtonText}>
+            {saving ? 'Creating…' : 'Create Gym'}
+          </Text>
         </Pressable>
       </ScrollView>
     </KeyboardAvoidingView>

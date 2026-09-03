@@ -1,5 +1,11 @@
 import React, { useMemo } from 'react';
-import { Pressable, StyleSheet, Text, useColorScheme, View } from 'react-native';
+import {
+  Pressable,
+  StyleSheet,
+  Text,
+  useColorScheme,
+  View,
+} from 'react-native';
 import {
   getTheme,
   Theme,
@@ -35,14 +41,14 @@ function SessionTypeFields({
       <View style={styles.chipRow}>
         <Pressable
           style={[styles.chip, gi && styles.chipActive]}
-          onPress={() => onChangeGi(true)}>
-          <Text style={[styles.chipText, gi && styles.chipTextActive]}>
-            Gi
-          </Text>
+          onPress={() => onChangeGi(true)}
+        >
+          <Text style={[styles.chipText, gi && styles.chipTextActive]}>Gi</Text>
         </Pressable>
         <Pressable
           style={[styles.chip, !gi && styles.chipActive]}
-          onPress={() => onChangeGi(false)}>
+          onPress={() => onChangeGi(false)}
+        >
           <Text style={[styles.chipText, !gi && styles.chipTextActive]}>
             No-Gi
           </Text>
@@ -58,12 +64,14 @@ function SessionTypeFields({
               styles.chip,
               sessionType === option.value && styles.chipActive,
             ]}
-            onPress={() => onChangeSessionType(option.value)}>
+            onPress={() => onChangeSessionType(option.value)}
+          >
             <Text
               style={[
                 styles.chipText,
                 sessionType === option.value && styles.chipTextActive,
-              ]}>
+              ]}
+            >
               {option.label}
             </Text>
           </Pressable>

@@ -13,7 +13,9 @@ interface Props {
 // without this, a user with real logged data would see the same "Nothing
 // here yet" copy as someone who's never used the app, for what's actually
 // a network/server error.
-function ErrorState({ message = "Couldn't load this. Check your connection and try again." }: Readonly<Props>) {
+function ErrorState({
+  message = "Couldn't load this. Check your connection and try again.",
+}: Readonly<Props>) {
   const scheme = useColorScheme();
   const theme = useMemo(() => getTheme(scheme), [scheme]);
   const styles = useMemo(() => createStyles(theme), [theme]);

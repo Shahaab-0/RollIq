@@ -51,12 +51,16 @@ module.exports = {
   ReduceMotion: { System: 'system', Always: 'always', Never: 'never' },
   Extrapolation: { EXTEND: 'extend', CLAMP: 'clamp', IDENTITY: 'identity' },
   interpolate: () => 0,
-  runOnJS: fn => (...args) => fn(...args),
+  runOnJS:
+    fn =>
+    (...args) =>
+      fn(...args),
   runOnUI: fn => fn,
   useAnimatedProps: factory => (typeof factory === 'function' ? factory() : {}),
   useAnimatedStyle: factory => (typeof factory === 'function' ? factory() : {}),
   useAnimatedRef: () => React.useRef(null),
-  useDerivedValue: factory => useSharedValue(typeof factory === 'function' ? factory() : undefined),
+  useDerivedValue: factory =>
+    useSharedValue(typeof factory === 'function' ? factory() : undefined),
   useSharedValue,
   withSpring: (toValue, _config, callback) => {
     callback?.(true);

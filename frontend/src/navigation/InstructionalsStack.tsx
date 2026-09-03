@@ -11,10 +11,22 @@ const Stack = createNativeStackNavigator<InstructionalsStackParamList>();
 function InstructionalsStack() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="InstructionalLibrary" component={InstructionalLibraryScreen} />
-      <Stack.Screen name="InstructionalForm" component={InstructionalFormScreen} />
-      <Stack.Screen name="InstructionalVideoForm" component={InstructionalVideoFormScreen} />
-      <Stack.Screen name="InstructionalPlayer" component={InstructionalPlayerScreen} />
+      <Stack.Screen
+        name="InstructionalLibrary"
+        component={InstructionalLibraryScreen}
+      />
+      <Stack.Screen
+        name="InstructionalForm"
+        component={InstructionalFormScreen}
+      />
+      <Stack.Screen
+        name="InstructionalVideoForm"
+        component={InstructionalVideoFormScreen}
+      />
+      <Stack.Screen
+        name="InstructionalPlayer"
+        component={InstructionalPlayerScreen}
+      />
     </Stack.Navigator>
   );
 }

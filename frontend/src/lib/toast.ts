@@ -21,6 +21,9 @@ export function subscribeToast(fn: Listener): () => void {
   };
 }
 
-export function showToast(message: string, variant: ToastVariant = 'success'): void {
+export function showToast(
+  message: string,
+  variant: ToastVariant = 'success',
+): void {
   listener?.({ id: nextId++, message, variant });
 }

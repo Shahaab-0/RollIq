@@ -11,7 +11,10 @@ export async function createInjury(injury: NewInjury): Promise<Injury> {
   return data;
 }
 
-export async function updateInjury(id: string, changes: Partial<NewInjury>): Promise<Injury> {
+export async function updateInjury(
+  id: string,
+  changes: Partial<NewInjury>,
+): Promise<Injury> {
   const { data } = await apiClient.patch<Injury>(`/injuries/${id}`, changes);
   return data;
 }

@@ -11,7 +11,12 @@ import {
 } from 'react-native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { ChevronLeft } from 'lucide-react-native';
-import { getTheme, Theme, UI_ACCENT, UI_ACCENT_TEXT } from '../../../theme/colors';
+import {
+  getTheme,
+  Theme,
+  UI_ACCENT,
+  UI_ACCENT_TEXT,
+} from '../../../theme/colors';
 import { FONT_SIZE, FONT_WEIGHT } from '../../../theme/typography';
 import { useResetPassword } from '../hooks/useAuth';
 import type { AuthStackParamList } from '../../../navigation/types';
@@ -42,7 +47,8 @@ function ResetPasswordScreen({ navigation, route }: Readonly<Props>) {
   return (
     <KeyboardAvoidingView
       style={styles.screen}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+    >
       <View style={styles.header}>
         <Pressable hitSlop={12} onPress={() => navigation.goBack()}>
           <ChevronLeft color={theme.textPrimary} size={24} />
@@ -83,9 +89,13 @@ function ResetPasswordScreen({ navigation, route }: Readonly<Props>) {
         />
 
         <Pressable
-          style={[styles.button, (!canSubmit || resetPassword.isPending) && styles.buttonDisabled]}
+          style={[
+            styles.button,
+            (!canSubmit || resetPassword.isPending) && styles.buttonDisabled,
+          ]}
           disabled={!canSubmit || resetPassword.isPending}
-          onPress={handleReset}>
+          onPress={handleReset}
+        >
           <Text style={styles.buttonText}>
             {resetPassword.isPending ? 'Resetting…' : 'Reset Password'}
           </Text>

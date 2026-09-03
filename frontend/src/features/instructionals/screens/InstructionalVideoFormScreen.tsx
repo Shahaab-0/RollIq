@@ -15,12 +15,23 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RouteProp } from '@react-navigation/native';
 import { ChevronLeft } from 'lucide-react-native';
-import { getTheme, Theme, UI_ACCENT, UI_ACCENT_TEXT } from '../../../theme/colors';
+import {
+  getTheme,
+  Theme,
+  UI_ACCENT,
+  UI_ACCENT_TEXT,
+} from '../../../theme/colors';
 import { FONT_SIZE, FONT_WEIGHT } from '../../../theme/typography';
-import { useCreateVideo, useInstructionalVideos } from '../hooks/useInstructionals';
+import {
+  useCreateVideo,
+  useInstructionalVideos,
+} from '../hooks/useInstructionals';
 import type { InstructionalsStackParamList } from '../../../navigation/types';
 
-type Nav = NativeStackNavigationProp<InstructionalsStackParamList, 'InstructionalVideoForm'>;
+type Nav = NativeStackNavigationProp<
+  InstructionalsStackParamList,
+  'InstructionalVideoForm'
+>;
 type Route = RouteProp<InstructionalsStackParamList, 'InstructionalVideoForm'>;
 
 function InstructionalVideoFormScreen() {
@@ -49,7 +60,9 @@ function InstructionalVideoFormScreen() {
         title: title.trim(),
         sequence_number: existingVideos.length + 1,
         url: url || null,
-        duration_minutes: durationMinutes ? parseInt(durationMinutes, 10) : null,
+        duration_minutes: durationMinutes
+          ? parseInt(durationMinutes, 10)
+          : null,
       });
       setSaving(false);
       navigation.goBack();
@@ -62,7 +75,8 @@ function InstructionalVideoFormScreen() {
   return (
     <KeyboardAvoidingView
       style={styles.screen}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+    >
       <View style={styles.header}>
         <Pressable hitSlop={12} onPress={() => navigation.goBack()}>
           <ChevronLeft color={theme.textPrimary} size={24} />
@@ -104,8 +118,11 @@ function InstructionalVideoFormScreen() {
         <Pressable
           style={[styles.saveButton, saving && styles.saveButtonDisabled]}
           disabled={saving}
-          onPress={handleSave}>
-          <Text style={styles.saveButtonText}>{saving ? 'Saving…' : 'Add Video'}</Text>
+          onPress={handleSave}
+        >
+          <Text style={styles.saveButtonText}>
+            {saving ? 'Saving…' : 'Add Video'}
+          </Text>
         </Pressable>
       </ScrollView>
     </KeyboardAvoidingView>

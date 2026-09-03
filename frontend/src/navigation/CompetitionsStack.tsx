@@ -13,8 +13,14 @@ function CompetitionsStack() {
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="CompetitionList" component={CompetitionListScreen} />
       <Stack.Screen name="CompetitionForm" component={CompetitionFormScreen} />
-      <Stack.Screen name="CompetitionDetail" component={CompetitionDetailScreen} />
-      <Stack.Screen name="CompetitionMatchForm" component={CompetitionMatchFormScreen} />
+      <Stack.Screen
+        name="CompetitionDetail"
+        component={CompetitionDetailScreen}
+      />
+      <Stack.Screen
+        name="CompetitionMatchForm"
+        component={CompetitionMatchFormScreen}
+      />
     </Stack.Navigator>
   );
 }

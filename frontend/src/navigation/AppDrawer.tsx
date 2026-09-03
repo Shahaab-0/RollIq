@@ -1,5 +1,11 @@
 import React, { useMemo } from 'react';
-import { Pressable, StyleSheet, Text, useColorScheme, View } from 'react-native';
+import {
+  Pressable,
+  StyleSheet,
+  Text,
+  useColorScheme,
+  View,
+} from 'react-native';
 import {
   createDrawerNavigator,
   DrawerContentComponentProps,
@@ -42,9 +48,15 @@ function DrawerContent({ navigation, state }: DrawerContentComponentProps) {
               <Pressable
                 key={item.route}
                 style={[styles.card, active && styles.cardActive]}
-                onPress={() => navigation.navigate(item.route)}>
-                <Icon color={active ? UI_ACCENT : theme.textSecondary} size={20} />
-                <Text style={[styles.cardLabel, active && styles.cardLabelActive]}>
+                onPress={() => navigation.navigate(item.route)}
+              >
+                <Icon
+                  color={active ? UI_ACCENT : theme.textSecondary}
+                  size={20}
+                />
+                <Text
+                  style={[styles.cardLabel, active && styles.cardLabelActive]}
+                >
                   {item.label}
                 </Text>
               </Pressable>
@@ -56,7 +68,8 @@ function DrawerContent({ navigation, state }: DrawerContentComponentProps) {
       <Pressable
         style={styles.signOutButton}
         disabled={signOut.isPending}
-        onPress={() => signOut.mutate()}>
+        onPress={() => signOut.mutate()}
+      >
         <LogOut color={theme.danger} size={20} />
         <Text style={styles.signOutLabel}>
           {signOut.isPending ? 'Signing out…' : 'Sign Out'}
@@ -68,7 +81,10 @@ function DrawerContent({ navigation, state }: DrawerContentComponentProps) {
 
 function AppDrawer() {
   return (
-    <Drawer.Navigator screenOptions={{ headerShown: false }} drawerContent={DrawerContent}>
+    <Drawer.Navigator
+      screenOptions={{ headerShown: false }}
+      drawerContent={DrawerContent}
+    >
       <Drawer.Screen name="Main" component={AppTabs} />
       <Drawer.Screen name="Rolls" component={RollsStack} />
       <Drawer.Screen name="Injuries" component={InjuriesStack} />

@@ -1,7 +1,19 @@
 import React, { useMemo } from 'react';
-import { Pressable, StyleSheet, Text, useColorScheme, View } from 'react-native';
+import {
+  Pressable,
+  StyleSheet,
+  Text,
+  useColorScheme,
+  View,
+} from 'react-native';
 import type { LucideIcon } from 'lucide-react-native';
-import { getTheme, Theme, UI_ACCENT, UI_ACCENT_MUTED, UI_ACCENT_TEXT } from '../theme/colors';
+import {
+  getTheme,
+  Theme,
+  UI_ACCENT,
+  UI_ACCENT_MUTED,
+  UI_ACCENT_TEXT,
+} from '../theme/colors';
 import { FONT_SIZE, FONT_WEIGHT } from '../theme/typography';
 
 interface Props {
@@ -17,7 +29,13 @@ interface Props {
 // instead of a single line of gray centered text. The floating "+" button
 // is easy to miss on first open; this gives a first-time user something to
 // actually look at and a bigger, more obvious tap target to act on.
-function EmptyState({ icon: Icon, title, description, actionLabel, onAction }: Readonly<Props>) {
+function EmptyState({
+  icon: Icon,
+  title,
+  description,
+  actionLabel,
+  onAction,
+}: Readonly<Props>) {
   const scheme = useColorScheme();
   const theme = useMemo(() => getTheme(scheme), [scheme]);
   const styles = useMemo(() => createStyles(theme), [theme]);

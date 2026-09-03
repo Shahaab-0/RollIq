@@ -48,7 +48,8 @@ function TrainingLogScreen() {
       style={styles.row}
       onPress={() =>
         navigation.navigate('LogSessionForm', { sessionId: item.id })
-      }>
+      }
+    >
       <View style={styles.rowMain}>
         <Text style={styles.rowTitle}>
           {item.gi ? 'Gi' : 'No-Gi'} · {SESSION_TYPE_LABELS[item.session_type]}
@@ -66,7 +67,8 @@ function TrainingLogScreen() {
       <Pressable
         hitSlop={8}
         style={styles.deleteIconButton}
-        onPress={() => deleteSession.mutate(item.id)}>
+        onPress={() => deleteSession.mutate(item.id)}
+      >
         <Trash2 color={theme.danger} size={18} />
       </Pressable>
     </Pressable>
@@ -77,7 +79,8 @@ function TrainingLogScreen() {
       <View style={styles.header}>
         <Pressable
           hitSlop={12}
-          onPress={() => navigation.dispatch(DrawerActions.openDrawer())}>
+          onPress={() => navigation.dispatch(DrawerActions.openDrawer())}
+        >
           <Menu color={theme.textPrimary} size={22} />
         </Pressable>
         <Text style={styles.title}>Training Log</Text>
@@ -106,7 +109,9 @@ function TrainingLogScreen() {
         />
       )}
 
-      <FloatingAddButton onPress={() => navigation.navigate('LogSessionForm', undefined)} />
+      <FloatingAddButton
+        onPress={() => navigation.navigate('LogSessionForm', undefined)}
+      />
     </View>
   );
 }

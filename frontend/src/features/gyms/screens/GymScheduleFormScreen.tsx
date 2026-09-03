@@ -14,7 +14,9 @@ import {
 import { useNavigation, useRoute } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RouteProp } from '@react-navigation/native';
-import DateTimePicker, { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
+import DateTimePicker, {
+  DateTimePickerAndroid,
+} from '@react-native-community/datetimepicker';
 import { ChevronLeft } from 'lucide-react-native';
 import {
   getTheme,
@@ -35,7 +37,9 @@ type Route = RouteProp<HomeStackParamList, 'GymScheduleForm'>;
 const WEEKDAYS = [1, 2, 3, 4, 5, 6, 7];
 
 function timeToString(time: Date): string {
-  return `${String(time.getHours()).padStart(2, '0')}:${String(time.getMinutes()).padStart(2, '0')}:00`;
+  return `${String(time.getHours()).padStart(2, '0')}:${String(
+    time.getMinutes(),
+  ).padStart(2, '0')}:00`;
 }
 
 function defaultTime(hours: number): Date {
@@ -54,7 +58,12 @@ interface TimeFieldProps {
 // Shared iOS/Android time-picker pattern, factored out since this screen
 // needs it twice (start + end) -- same DateTimePicker/DateTimePickerAndroid
 // split used for date fields elsewhere in the app.
-function TimeField({ value, onChange, theme, styles }: Readonly<TimeFieldProps>) {
+function TimeField({
+  value,
+  onChange,
+  theme,
+  styles,
+}: Readonly<TimeFieldProps>) {
   if (Platform.OS === 'ios') {
     return (
       <View style={styles.iosTimeRow}>
@@ -82,8 +91,11 @@ function TimeField({ value, onChange, theme, styles }: Readonly<TimeFieldProps>)
             if (selected) onChange(selected);
           },
         })
-      }>
-      <Text style={styles.androidTimeText}>{formatDisplayTime(timeToString(value))}</Text>
+      }
+    >
+      <Text style={styles.androidTimeText}>
+        {formatDisplayTime(timeToString(value))}
+      </Text>
     </Pressable>
   );
 }
@@ -104,7 +116,10 @@ function GymScheduleFormScreen() {
   const [saving, setSaving] = useState(false);
 
   const handleSave = async () => {
-    if (endTime.getHours() * 60 + endTime.getMinutes() <= startTime.getHours() * 60 + startTime.getMinutes()) {
+    if (
+      endTime.getHours() * 60 + endTime.getMinutes() <=
+      startTime.getHours() * 60 + startTime.getMinutes()
+    ) {
       Alert.alert('Check the times', 'End time must be after the start time.');
       return;
     }
@@ -127,7 +142,8 @@ function GymScheduleFormScreen() {
   return (
     <KeyboardAvoidingView
       style={styles.screen}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+    >
       <View style={styles.header}>
         <Pressable hitSlop={12} onPress={() => navigation.goBack()}>
           <ChevronLeft color={theme.textPrimary} size={24} />
@@ -143,8 +159,14 @@ function GymScheduleFormScreen() {
             <Pressable
               key={day}
               style={[styles.chip, dayOfWeek === day && styles.chipActive]}
-              onPress={() => setDayOfWeek(day)}>
-              <Text style={[styles.chipText, dayOfWeek === day && styles.chipTextActive]}>
+              onPress={() => setDayOfWeek(day)}
+            >
+              <Text
+                style={[
+                  styles.chipText,
+                  dayOfWeek === day && styles.chipTextActive,
+                ]}
+              >
                 {WEEKDAY_LABELS[day].slice(0, 3)}
               </Text>
             </Pressable>
@@ -154,11 +176,21 @@ function GymScheduleFormScreen() {
         <View style={styles.timeRow}>
           <View style={styles.timeField}>
             <Text style={styles.label}>From</Text>
-            <TimeField value={startTime} onChange={setStartTime} theme={theme} styles={styles} />
+            <TimeField
+              value={startTime}
+              onChange={setStartTime}
+              theme={theme}
+              styles={styles}
+            />
           </View>
           <View style={styles.timeField}>
             <Text style={styles.label}>To</Text>
-            <TimeField value={endTime} onChange={setEndTime} theme={theme} styles={styles} />
+            <TimeField
+              value={endTime}
+              onChange={setEndTime}
+              theme={theme}
+              styles={styles}
+            />
           </View>
         </View>
 
@@ -174,8 +206,11 @@ function GymScheduleFormScreen() {
         <Pressable
           style={[styles.saveButton, saving && styles.saveButtonDisabled]}
           disabled={saving}
-          onPress={handleSave}>
-          <Text style={styles.saveButtonText}>{saving ? 'Saving…' : 'Add Slot'}</Text>
+          onPress={handleSave}
+        >
+          <Text style={styles.saveButtonText}>
+            {saving ? 'Saving…' : 'Add Slot'}
+          </Text>
         </Pressable>
       </ScrollView>
     </KeyboardAvoidingView>

@@ -1,6 +1,11 @@
 import { useMutation } from '@tanstack/react-query';
 import { useAppDispatch } from '../../../redux/hooks';
-import { signIn, signOut, signUp, sessionChanged } from '../../../redux/authSlice';
+import {
+  signIn,
+  signOut,
+  signUp,
+  sessionChanged,
+} from '../../../redux/authSlice';
 import * as authApi from '../../../api/auth';
 import { clearTokens } from '../../../api/tokenStorage';
 import { showToast } from '../../../lib/toast';
@@ -14,18 +19,22 @@ import type { AuthCredentials } from '../types';
 export function useSignIn() {
   const dispatch = useAppDispatch();
   return useMutation({
-    mutationFn: (credentials: AuthCredentials) => dispatch(signIn(credentials)).unwrap(),
+    mutationFn: (credentials: AuthCredentials) =>
+      dispatch(signIn(credentials)).unwrap(),
     onSuccess: () => showToast('Signed in', 'success'),
-    onError: error => showToast(getApiErrorMessage(error, 'Sign in failed'), 'error'),
+    onError: error =>
+      showToast(getApiErrorMessage(error, 'Sign in failed'), 'error'),
   });
 }
 
 export function useSignUp() {
   const dispatch = useAppDispatch();
   return useMutation({
-    mutationFn: (credentials: AuthCredentials) => dispatch(signUp(credentials)).unwrap(),
+    mutationFn: (credentials: AuthCredentials) =>
+      dispatch(signUp(credentials)).unwrap(),
     onSuccess: () => showToast('Account created', 'success'),
-    onError: error => showToast(getApiErrorMessage(error, 'Sign up failed'), 'error'),
+    onError: error =>
+      showToast(getApiErrorMessage(error, 'Sign up failed'), 'error'),
   });
 }
 
@@ -37,7 +46,8 @@ export function useSignOut() {
       return dispatch(signOut()).unwrap();
     },
     onSuccess: () => showToast('Signed out', 'success'),
-    onError: error => showToast(getApiErrorMessage(error, 'Could not sign out'), 'error'),
+    onError: error =>
+      showToast(getApiErrorMessage(error, 'Could not sign out'), 'error'),
   });
 }
 
@@ -45,7 +55,10 @@ export function useForgotPassword() {
   return useMutation({
     mutationFn: (email: string) => authApi.forgotPassword(email),
     onError: error =>
-      showToast(getApiErrorMessage(error, 'Could not send a reset code'), 'error'),
+      showToast(
+        getApiErrorMessage(error, 'Could not send a reset code'),
+        'error',
+      ),
   });
 }
 
@@ -60,8 +73,10 @@ export function useResetPassword() {
       code: string;
       newPassword: string;
     }) => authApi.resetPassword(email, code, newPassword),
-    onSuccess: () => showToast('Password reset — sign in with your new password', 'success'),
-    onError: error => showToast(getApiErrorMessage(error, 'Could not reset password'), 'error'),
+    onSuccess: () =>
+      showToast('Password reset — sign in with your new password', 'success'),
+    onError: error =>
+      showToast(getApiErrorMessage(error, 'Could not reset password'), 'error'),
   });
 }
 
@@ -79,6 +94,7 @@ export function useDeleteAccount() {
       dispatch(sessionChanged(null));
     },
     onSuccess: () => showToast('Account deleted', 'success'),
-    onError: error => showToast(getApiErrorMessage(error, 'Could not delete account'), 'error'),
+    onError: error =>
+      showToast(getApiErrorMessage(error, 'Could not delete account'), 'error'),
   });
 }

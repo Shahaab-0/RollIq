@@ -55,11 +55,10 @@ function RollTrackerScreen() {
   const renderItem = ({ item }: { item: Roll }) => (
     <Pressable
       style={styles.row}
-      onPress={() => navigation.navigate('LogRollForm', { rollId: item.id })}>
+      onPress={() => navigation.navigate('LogRollForm', { rollId: item.id })}
+    >
       <View style={styles.rowMain}>
-        <Text style={styles.rowTitle}>
-          {item.partner_name || 'Open roll'}
-        </Text>
+        <Text style={styles.rowTitle}>{item.partner_name || 'Open roll'}</Text>
         <Text style={styles.rowMeta}>
           {item.submissions_landed.length} landed ·{' '}
           {item.submissions_received.length} received ·{' '}
@@ -69,7 +68,8 @@ function RollTrackerScreen() {
       <Pressable
         hitSlop={8}
         style={styles.deleteIconButton}
-        onPress={() => deleteRoll.mutate(item.id)}>
+        onPress={() => deleteRoll.mutate(item.id)}
+      >
         <Trash2 color={theme.danger} size={18} />
       </Pressable>
     </Pressable>
@@ -80,13 +80,15 @@ function RollTrackerScreen() {
       <View style={styles.header}>
         <Pressable
           hitSlop={12}
-          onPress={() => navigation.dispatch(DrawerActions.openDrawer())}>
+          onPress={() => navigation.dispatch(DrawerActions.openDrawer())}
+        >
           <Menu color={theme.textPrimary} size={22} />
         </Pressable>
         <Text style={styles.title}>Roll Tracker</Text>
         <Pressable
           style={styles.partnersButton}
-          onPress={() => navigation.navigate('PartnerHistory')}>
+          onPress={() => navigation.navigate('PartnerHistory')}
+        >
           <Users color={UI_ACCENT} size={18} />
         </Pressable>
       </View>
@@ -127,7 +129,9 @@ function RollTrackerScreen() {
         />
       )}
 
-      <FloatingAddButton onPress={() => navigation.navigate('LogRollForm', undefined)} />
+      <FloatingAddButton
+        onPress={() => navigation.navigate('LogRollForm', undefined)}
+      />
     </View>
   );
 }

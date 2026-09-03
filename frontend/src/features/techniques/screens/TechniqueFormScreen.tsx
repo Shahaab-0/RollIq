@@ -45,7 +45,9 @@ function TechniqueFormScreen() {
 
   const techniqueId = route.params?.techniqueId;
   const { data: techniques = [] } = useTechniques();
-  const existing = techniqueId ? techniques.find(t => t.id === techniqueId) : undefined;
+  const existing = techniqueId
+    ? techniques.find(t => t.id === techniqueId)
+    : undefined;
   const createTechnique = useCreateTechnique();
   const updateTechnique = useUpdateTechnique();
   const deleteTechnique = useDeleteTechnique();
@@ -107,7 +109,8 @@ function TechniqueFormScreen() {
   return (
     <KeyboardAvoidingView
       style={styles.screen}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+    >
       <View style={styles.header}>
         <Pressable hitSlop={12} onPress={() => navigation.goBack()}>
           <ChevronLeft color={theme.textPrimary} size={24} />
@@ -126,7 +129,8 @@ function TechniqueFormScreen() {
             </Text>
             <Pressable
               style={styles.drillButton}
-              onPress={() => incrementDrillCount.mutate(existing.id)}>
+              onPress={() => incrementDrillCount.mutate(existing.id)}
+            >
               <Repeat color={UI_ACCENT} size={16} />
               <Text style={styles.drillButtonText}>+1 Drill</Text>
             </Pressable>
@@ -148,12 +152,14 @@ function TechniqueFormScreen() {
             <Pressable
               key={preset}
               style={[styles.chip, position === preset && styles.chipActive]}
-              onPress={() => setPosition(preset)}>
+              onPress={() => setPosition(preset)}
+            >
               <Text
                 style={[
                   styles.chipText,
                   position === preset && styles.chipTextActive,
-                ]}>
+                ]}
+              >
                 {preset}
               </Text>
             </Pressable>
@@ -185,7 +191,8 @@ function TechniqueFormScreen() {
                   name: name || 'Technique',
                   url: resourceUrl,
                 })
-              }>
+              }
+            >
               <PlayCircle color={UI_ACCENT} size={20} />
             </Pressable>
           ) : null}
@@ -204,7 +211,8 @@ function TechniqueFormScreen() {
         <Pressable
           style={[styles.saveButton, saving && styles.saveButtonDisabled]}
           disabled={saving}
-          onPress={handleSave}>
+          onPress={handleSave}
+        >
           <Text style={styles.saveButtonText}>
             {saving ? 'Saving…' : existing ? 'Save Changes' : 'Add Technique'}
           </Text>

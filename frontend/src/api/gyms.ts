@@ -29,7 +29,9 @@ export async function getGym(gymId: string): Promise<Gym> {
 }
 
 export async function joinGym(inviteCode: string): Promise<Gym> {
-  const { data } = await apiClient.post<Gym>('/gyms/join', { invite_code: inviteCode });
+  const { data } = await apiClient.post<Gym>('/gyms/join', {
+    invite_code: inviteCode,
+  });
   return data;
 }
 
@@ -43,25 +45,42 @@ export async function updateMemberRole(
   userId: string,
   role: GymRole,
 ): Promise<GymMember> {
-  const { data } = await apiClient.patch<GymMember>(`/gyms/${gymId}/members/${userId}`, { role });
+  const { data } = await apiClient.patch<GymMember>(
+    `/gyms/${gymId}/members/${userId}`,
+    { role },
+  );
   return data;
 }
 
 export async function listClasses(gymId: string): Promise<GymClassEntry[]> {
-  const { data } = await apiClient.get<GymClassEntry[]>(`/gyms/${gymId}/classes`);
+  const { data } = await apiClient.get<GymClassEntry[]>(
+    `/gyms/${gymId}/classes`,
+  );
   return data;
 }
 
-export async function createClass(gymId: string, entry: NewGymClassEntry): Promise<GymClassEntry> {
-  const { data } = await apiClient.post<GymClassEntry>(`/gyms/${gymId}/classes`, entry);
+export async function createClass(
+  gymId: string,
+  entry: NewGymClassEntry,
+): Promise<GymClassEntry> {
+  const { data } = await apiClient.post<GymClassEntry>(
+    `/gyms/${gymId}/classes`,
+    entry,
+  );
   return data;
 }
 
-export async function deleteClass(gymId: string, classId: string): Promise<void> {
+export async function deleteClass(
+  gymId: string,
+  classId: string,
+): Promise<void> {
   await apiClient.delete(`/gyms/${gymId}/classes/${classId}`);
 }
 
-export async function listClassVideos(gymId: string, classId: string): Promise<GymClassVideo[]> {
+export async function listClassVideos(
+  gymId: string,
+  classId: string,
+): Promise<GymClassVideo[]> {
   const { data } = await apiClient.get<GymClassVideo[]>(
     `/gyms/${gymId}/classes/${classId}/videos`,
   );
@@ -89,7 +108,9 @@ export async function deleteClassVideo(
 }
 
 export async function listSchedule(gymId: string): Promise<GymScheduleEntry[]> {
-  const { data } = await apiClient.get<GymScheduleEntry[]>(`/gyms/${gymId}/schedule`);
+  const { data } = await apiClient.get<GymScheduleEntry[]>(
+    `/gyms/${gymId}/schedule`,
+  );
   return data;
 }
 
@@ -97,15 +118,24 @@ export async function createScheduleEntry(
   gymId: string,
   entry: NewGymScheduleEntry,
 ): Promise<GymScheduleEntry> {
-  const { data } = await apiClient.post<GymScheduleEntry>(`/gyms/${gymId}/schedule`, entry);
+  const { data } = await apiClient.post<GymScheduleEntry>(
+    `/gyms/${gymId}/schedule`,
+    entry,
+  );
   return data;
 }
 
-export async function deleteScheduleEntry(gymId: string, entryId: string): Promise<void> {
+export async function deleteScheduleEntry(
+  gymId: string,
+  entryId: string,
+): Promise<void> {
   await apiClient.delete(`/gyms/${gymId}/schedule/${entryId}`);
 }
 
-export async function listAttendance(gymId: string, classId: string): Promise<GymAttendee[]> {
+export async function listAttendance(
+  gymId: string,
+  classId: string,
+): Promise<GymAttendee[]> {
   const { data } = await apiClient.get<GymAttendee[]>(
     `/gyms/${gymId}/classes/${classId}/attendance`,
   );
@@ -125,5 +155,7 @@ export async function unmarkAttendance(
   classId: string,
   userId: string,
 ): Promise<void> {
-  await apiClient.delete(`/gyms/${gymId}/classes/${classId}/attendance/${userId}`);
+  await apiClient.delete(
+    `/gyms/${gymId}/classes/${classId}/attendance/${userId}`,
+  );
 }

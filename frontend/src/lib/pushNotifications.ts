@@ -7,7 +7,10 @@ import {
   onTokenRefresh,
   requestPermission,
 } from '@react-native-firebase/messaging';
-import { registerDeviceToken, unregisterDeviceToken } from '../api/deviceTokens';
+import {
+  registerDeviceToken,
+  unregisterDeviceToken,
+} from '../api/deviceTokens';
 import { showToast } from './toast';
 
 // Firebase only initializes successfully once GoogleService-Info.plist /
@@ -34,7 +37,8 @@ export async function registerForPushNotifications(): Promise<void> {
     if (Platform.OS === 'ios') {
       const status = await requestPermission(messaging);
       const allowed =
-        status === AuthorizationStatus.AUTHORIZED || status === AuthorizationStatus.PROVISIONAL;
+        status === AuthorizationStatus.AUTHORIZED ||
+        status === AuthorizationStatus.PROVISIONAL;
       if (!allowed) return;
     } else {
       const granted = await ensureAndroidPermission();
@@ -46,9 +50,10 @@ export async function registerForPushNotifications(): Promise<void> {
 
     unsubscribeTokenRefresh?.();
     unsubscribeTokenRefresh = onTokenRefresh(messaging, refreshedToken => {
-      registerDeviceToken(refreshedToken, Platform.OS === 'ios' ? 'ios' : 'android').catch(
-        () => {},
-      );
+      registerDeviceToken(
+        refreshedToken,
+        Platform.OS === 'ios' ? 'ios' : 'android',
+      ).catch(() => {});
     });
 
     unsubscribeForegroundMessage?.();

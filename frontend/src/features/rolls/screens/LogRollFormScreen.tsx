@@ -23,7 +23,12 @@ import {
   UI_ACCENT_TEXT,
 } from '../../../theme/colors';
 import { FONT_SIZE, FONT_WEIGHT } from '../../../theme/typography';
-import { useCreateRoll, useDeleteRoll, useRolls, useUpdateRoll } from '../hooks/useRolls';
+import {
+  useCreateRoll,
+  useDeleteRoll,
+  useRolls,
+  useUpdateRoll,
+} from '../hooks/useRolls';
 import TagInput from '../../../components/TagInput';
 import type { RollsStackParamList } from '../../../navigation/types';
 
@@ -107,7 +112,8 @@ function LogRollFormScreen() {
   return (
     <KeyboardAvoidingView
       style={styles.screen}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+    >
       <View style={styles.header}>
         <Pressable hitSlop={12} onPress={() => navigation.goBack()}>
           <ChevronLeft color={theme.textPrimary} size={24} />
@@ -161,12 +167,14 @@ function LogRollFormScreen() {
                 styles.effortDot,
                 effort === level && styles.effortDotActive,
               ]}
-              onPress={() => setEffort(level)}>
+              onPress={() => setEffort(level)}
+            >
               <Text
                 style={[
                   styles.effortText,
                   effort === level && styles.effortTextActive,
-                ]}>
+                ]}
+              >
                 {level}
               </Text>
             </Pressable>
@@ -186,7 +194,8 @@ function LogRollFormScreen() {
         <Pressable
           style={[styles.saveButton, saving && styles.saveButtonDisabled]}
           disabled={saving}
-          onPress={handleSave}>
+          onPress={handleSave}
+        >
           <Text style={styles.saveButtonText}>
             {saving ? 'Saving…' : existing ? 'Save Changes' : 'Log Roll'}
           </Text>

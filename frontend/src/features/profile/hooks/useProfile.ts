@@ -11,12 +11,16 @@ export function useProfile() {
 export function useUpdateProfile() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (changes: Partial<Omit<Profile, 'id'>>) => updateProfile(changes),
+    mutationFn: (changes: Partial<Omit<Profile, 'id'>>) =>
+      updateProfile(changes),
     onSuccess: updated => {
       queryClient.setQueryData(['profile'], updated);
     },
     onError: error =>
-      showToast(getApiErrorMessage(error, 'Could not save your profile'), 'error'),
+      showToast(
+        getApiErrorMessage(error, 'Could not save your profile'),
+        'error',
+      ),
     meta: { toastSuccess: 'Profile saved' },
   });
 }

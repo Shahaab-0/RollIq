@@ -74,7 +74,8 @@ function BeltHistorySection({ onPromotionAdded }: Readonly<Props>) {
         <Pressable
           hitSlop={8}
           style={styles.addPromotionButton}
-          onPress={() => setShowAddPromotion(v => !v)}>
+          onPress={() => setShowAddPromotion(v => !v)}
+        >
           <Plus color={UI_ACCENT} size={16} strokeWidth={2.5} />
         </Pressable>
       </View>
@@ -98,7 +99,8 @@ function BeltHistorySection({ onPromotionAdded }: Readonly<Props>) {
             <Pressable
               hitSlop={8}
               style={styles.deleteIconButton}
-              onPress={() => deletePromotion.mutate(promotion.id)}>
+              onPress={() => deletePromotion.mutate(promotion.id)}
+            >
               <Trash2 color={theme.danger} size={16} />
             </Pressable>
           </View>
@@ -121,9 +123,11 @@ function BeltHistorySection({ onPromotionAdded }: Readonly<Props>) {
                       borderColor: BELT_COLORS[option.value],
                     },
                   ]}
-                  onPress={() => setNewPromotionBelt(option.value)}>
+                  onPress={() => setNewPromotionBelt(option.value)}
+                >
                   <Text
-                    style={[styles.chipText, active && styles.chipTextActive]}>
+                    style={[styles.chipText, active && styles.chipTextActive]}
+                  >
                     {option.label}
                   </Text>
                 </Pressable>
@@ -158,7 +162,8 @@ function BeltHistorySection({ onPromotionAdded }: Readonly<Props>) {
                     }
                   },
                 })
-              }>
+              }
+            >
               <Text style={styles.androidDateText}>
                 {formatDisplayDate(newPromotionDate)}
               </Text>

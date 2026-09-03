@@ -28,7 +28,10 @@ export interface GymClassEntry {
   video_count: number;
 }
 
-export type NewGymClassEntry = Pick<GymClassEntry, 'title' | 'description' | 'class_date'>;
+export type NewGymClassEntry = Pick<
+  GymClassEntry,
+  'title' | 'description' | 'class_date'
+>;
 
 export interface GymClassVideo {
   id: string;
@@ -38,7 +41,10 @@ export interface GymClassVideo {
   sequence_number: number;
 }
 
-export type NewGymClassVideo = Pick<GymClassVideo, 'url' | 'techniques' | 'sequence_number'>;
+export type NewGymClassVideo = Pick<
+  GymClassVideo,
+  'url' | 'techniques' | 'sequence_number'
+>;
 
 // ISO-8601 day-of-week numbering: 1=Monday..7=Sunday, matching the backend.
 export const WEEKDAY_LABELS: Record<number, string> = {

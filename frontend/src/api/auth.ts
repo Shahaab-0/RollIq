@@ -17,13 +17,25 @@ function toSession(dto: AuthResponseDto): Session {
   };
 }
 
-export async function signUp(email: string, password: string): Promise<Session> {
-  const { data } = await apiClient.post<AuthResponseDto>('/auth/signup', { email, password });
+export async function signUp(
+  email: string,
+  password: string,
+): Promise<Session> {
+  const { data } = await apiClient.post<AuthResponseDto>('/auth/signup', {
+    email,
+    password,
+  });
   return toSession(data);
 }
 
-export async function signIn(email: string, password: string): Promise<Session> {
-  const { data } = await apiClient.post<AuthResponseDto>('/auth/signin', { email, password });
+export async function signIn(
+  email: string,
+  password: string,
+): Promise<Session> {
+  const { data } = await apiClient.post<AuthResponseDto>('/auth/signin', {
+    email,
+    password,
+  });
   return toSession(data);
 }
 

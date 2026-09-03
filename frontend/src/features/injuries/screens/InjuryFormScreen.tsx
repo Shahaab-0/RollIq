@@ -14,7 +14,9 @@ import {
 import { useNavigation, useRoute } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RouteProp } from '@react-navigation/native';
-import DateTimePicker, { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
+import DateTimePicker, {
+  DateTimePickerAndroid,
+} from '@react-native-community/datetimepicker';
 import { ChevronLeft } from 'lucide-react-native';
 import {
   getTheme,
@@ -25,7 +27,12 @@ import {
 } from '../../../theme/colors';
 import { FONT_SIZE, FONT_WEIGHT } from '../../../theme/typography';
 import { formatDisplayDate, toLocalDateString } from '../../../lib/dateFormat';
-import { useCreateInjury, useDeleteInjury, useInjuries, useUpdateInjury } from '../hooks/useInjuries';
+import {
+  useCreateInjury,
+  useDeleteInjury,
+  useInjuries,
+  useUpdateInjury,
+} from '../hooks/useInjuries';
 import { SEVERITY_OPTIONS, STATUS_OPTIONS } from '../types';
 import type { InjuriesStackParamList } from '../../../navigation/types';
 import type { InjuryStatus, Severity } from '../types';
@@ -52,11 +59,18 @@ function InjuryFormScreen() {
   const [injuryDate, setInjuryDate] = useState(
     existing?.injury_date ?? toLocalDateString(new Date()),
   );
-  const [severity, setSeverity] = useState<Severity>(existing?.severity ?? 'mild');
-  const [status, setStatus] = useState<InjuryStatus>(existing?.status ?? 'active');
+  const [severity, setSeverity] = useState<Severity>(
+    existing?.severity ?? 'mild',
+  );
+  const [status, setStatus] = useState<InjuryStatus>(
+    existing?.status ?? 'active',
+  );
   const [notes, setNotes] = useState(existing?.notes ?? '');
   const [saving, setSaving] = useState(false);
-  const dateObj = useMemo(() => new Date(`${injuryDate}T00:00:00`), [injuryDate]);
+  const dateObj = useMemo(
+    () => new Date(`${injuryDate}T00:00:00`),
+    [injuryDate],
+  );
 
   const handleSave = async () => {
     if (!bodyPart.trim()) {
@@ -110,12 +124,15 @@ function InjuryFormScreen() {
   return (
     <KeyboardAvoidingView
       style={styles.screen}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+    >
       <View style={styles.header}>
         <Pressable hitSlop={12} onPress={() => navigation.goBack()}>
           <ChevronLeft color={theme.textPrimary} size={24} />
         </Pressable>
-        <Text style={styles.headerTitle}>{existing ? 'Edit Injury' : 'Log Injury'}</Text>
+        <Text style={styles.headerTitle}>
+          {existing ? 'Edit Injury' : 'Log Injury'}
+        </Text>
         <View style={styles.headerSpacer} />
       </View>
 
@@ -166,8 +183,11 @@ function InjuryFormScreen() {
                   if (selected) setInjuryDate(toLocalDateString(selected));
                 },
               })
-            }>
-            <Text style={styles.androidDateText}>{formatDisplayDate(injuryDate)}</Text>
+            }
+          >
+            <Text style={styles.androidDateText}>
+              {formatDisplayDate(injuryDate)}
+            </Text>
           </Pressable>
         )}
 
@@ -176,9 +196,18 @@ function InjuryFormScreen() {
           {SEVERITY_OPTIONS.map(option => (
             <Pressable
               key={option.value}
-              style={[styles.chip, severity === option.value && styles.chipActive]}
-              onPress={() => setSeverity(option.value)}>
-              <Text style={[styles.chipText, severity === option.value && styles.chipTextActive]}>
+              style={[
+                styles.chip,
+                severity === option.value && styles.chipActive,
+              ]}
+              onPress={() => setSeverity(option.value)}
+            >
+              <Text
+                style={[
+                  styles.chipText,
+                  severity === option.value && styles.chipTextActive,
+                ]}
+              >
                 {option.label}
               </Text>
             </Pressable>
@@ -190,9 +219,18 @@ function InjuryFormScreen() {
           {STATUS_OPTIONS.map(option => (
             <Pressable
               key={option.value}
-              style={[styles.chip, status === option.value && styles.chipActive]}
-              onPress={() => setStatus(option.value)}>
-              <Text style={[styles.chipText, status === option.value && styles.chipTextActive]}>
+              style={[
+                styles.chip,
+                status === option.value && styles.chipActive,
+              ]}
+              onPress={() => setStatus(option.value)}
+            >
+              <Text
+                style={[
+                  styles.chipText,
+                  status === option.value && styles.chipTextActive,
+                ]}
+              >
                 {option.label}
               </Text>
             </Pressable>
@@ -212,7 +250,8 @@ function InjuryFormScreen() {
         <Pressable
           style={[styles.saveButton, saving && styles.saveButtonDisabled]}
           disabled={saving}
-          onPress={handleSave}>
+          onPress={handleSave}
+        >
           <Text style={styles.saveButtonText}>
             {saving ? 'Saving…' : existing ? 'Save Changes' : 'Log Injury'}
           </Text>

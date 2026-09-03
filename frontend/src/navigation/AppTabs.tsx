@@ -51,7 +51,8 @@ function AppTabs() {
         },
         tabBarIcon: ({ color, size }) =>
           renderTabIcon(route.name as keyof AppTabsParamList, color, size),
-      })}>
+      })}
+    >
       <Tab.Screen name="Home" component={HomeStack} />
       <Tab.Screen name="Log" component={LogStack} />
       <Tab.Screen name="Techniques" component={TechniquesStack} />

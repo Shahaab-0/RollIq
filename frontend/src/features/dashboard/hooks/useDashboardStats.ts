@@ -73,7 +73,11 @@ function computeWeek(dates: Set<string>): WeekDay[] {
   return keys.map((key, i) => {
     const day = new Date(monday);
     day.setDate(monday.getDate() + i);
-    return { key, label: labels[i], trained: dates.has(toLocalDateString(day)) };
+    return {
+      key,
+      label: labels[i],
+      trained: dates.has(toLocalDateString(day)),
+    };
   });
 }
 
@@ -118,19 +122,30 @@ function computeStats(sessions: Session[], rolls: Roll[]) {
   const dateSet = new Set(sessions.map(s => s.date));
   const { current, best } = computeStreaks(dateSet);
 
-  const matMinutes = sessions.reduce((sum, s) => sum + (s.duration_minutes ?? 0), 0);
+  const matMinutes = sessions.reduce(
+    (sum, s) => sum + (s.duration_minutes ?? 0),
+    0,
+  );
   const thisYear = new Date().getFullYear();
   const classesThisYear = sessions.filter(
     s => new Date(`${s.date}T00:00:00`).getFullYear() === thisYear,
   ).length;
 
-  const landed = rolls.reduce((sum, r) => sum + (r.submissions_landed?.length ?? 0), 0);
-  const received = rolls.reduce((sum, r) => sum + (r.submissions_received?.length ?? 0), 0);
+  const landed = rolls.reduce(
+    (sum, r) => sum + (r.submissions_landed?.length ?? 0),
+    0,
+  );
+  const received = rolls.reduce(
+    (sum, r) => sum + (r.submissions_received?.length ?? 0),
+    0,
+  );
   const total = landed + received;
 
   const recentActivity = sessions.slice(0, 2).map(s => ({
     id: s.id,
-    text: `${s.gi ? 'Gi' : 'No-Gi'} · ${SESSION_TYPE_LABELS[s.session_type] ?? s.session_type}`,
+    text: `${s.gi ? 'Gi' : 'No-Gi'} · ${
+      SESSION_TYPE_LABELS[s.session_type] ?? s.session_type
+    }`,
     when: formatRelativeDay(s.date),
   }));
 
@@ -180,7 +195,10 @@ export function useDashboardStats() {
   return {
     ...stats,
     loading: sessionsQuery.isLoading || rollsQuery.isLoading,
-    error: sessionsQuery.error || rollsQuery.error ? 'Failed to load dashboard' : null,
+    error:
+      sessionsQuery.error || rollsQuery.error
+        ? 'Failed to load dashboard'
+        : null,
     refresh,
   };
 }

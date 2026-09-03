@@ -18,11 +18,17 @@ import { formatDisplayDate } from '../../../lib/dateFormat';
 import FloatingAddButton from '../../../components/FloatingAddButton';
 import ErrorState from '../../../components/ErrorState';
 import EmptyState from '../../../components/EmptyState';
-import { useCompetitions, useDeleteCompetition } from '../hooks/useCompetitions';
+import {
+  useCompetitions,
+  useDeleteCompetition,
+} from '../hooks/useCompetitions';
 import type { CompetitionsStackParamList } from '../../../navigation/types';
 import type { Competition } from '../types';
 
-type Nav = NativeStackNavigationProp<CompetitionsStackParamList, 'CompetitionList'>;
+type Nav = NativeStackNavigationProp<
+  CompetitionsStackParamList,
+  'CompetitionList'
+>;
 
 function recordLabel(item: Competition): string {
   const parts = [`${item.wins}W`, `${item.losses}L`];
@@ -56,7 +62,10 @@ function CompetitionListScreen() {
   const renderItem = ({ item }: { item: Competition }) => (
     <Pressable
       style={styles.row}
-      onPress={() => navigation.navigate('CompetitionDetail', { competitionId: item.id })}>
+      onPress={() =>
+        navigation.navigate('CompetitionDetail', { competitionId: item.id })
+      }
+    >
       <View style={styles.rowMain}>
         <Text style={styles.rowTitle}>{item.name}</Text>
         <Text style={styles.rowMeta}>
@@ -75,7 +84,8 @@ function CompetitionListScreen() {
         <Pressable
           hitSlop={8}
           style={styles.deleteIconButton}
-          onPress={() => confirmDelete(item)}>
+          onPress={() => confirmDelete(item)}
+        >
           <Trash2 color={theme.danger} size={16} />
         </Pressable>
       </View>
@@ -87,7 +97,8 @@ function CompetitionListScreen() {
       <View style={styles.header}>
         <Pressable
           hitSlop={12}
-          onPress={() => navigation.dispatch(DrawerActions.openDrawer())}>
+          onPress={() => navigation.dispatch(DrawerActions.openDrawer())}
+        >
           <Menu color={theme.textPrimary} size={22} />
         </Pressable>
         <Text style={styles.title}>Competitions</Text>
@@ -116,7 +127,9 @@ function CompetitionListScreen() {
         />
       )}
 
-      <FloatingAddButton onPress={() => navigation.navigate('CompetitionForm', undefined)} />
+      <FloatingAddButton
+        onPress={() => navigation.navigate('CompetitionForm', undefined)}
+      />
     </View>
   );
 }

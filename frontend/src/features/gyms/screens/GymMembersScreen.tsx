@@ -12,7 +12,12 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RouteProp } from '@react-navigation/native';
 import { ChevronLeft } from 'lucide-react-native';
-import { getTheme, Theme, UI_ACCENT, UI_ACCENT_MUTED } from '../../../theme/colors';
+import {
+  getTheme,
+  Theme,
+  UI_ACCENT,
+  UI_ACCENT_MUTED,
+} from '../../../theme/colors';
 import { FONT_SIZE, FONT_WEIGHT } from '../../../theme/typography';
 import { formatDisplayDate } from '../../../lib/dateFormat';
 import ErrorState from '../../../components/ErrorState';
@@ -41,7 +46,9 @@ function GymMembersScreen() {
     <View style={styles.row}>
       <View style={styles.rowMain}>
         <Text style={styles.memberId}>{item.display_name}</Text>
-        <Text style={styles.joined}>Joined {formatDisplayDate(item.joined_at.slice(0, 10))}</Text>
+        <Text style={styles.joined}>
+          Joined {formatDisplayDate(item.joined_at.slice(0, 10))}
+        </Text>
       </View>
       <Text style={styles.roleBadge}>{item.role}</Text>
       {isOwner && item.role !== 'owner' ? (
@@ -52,7 +59,8 @@ function GymMembersScreen() {
               userId: item.user_id,
               role: item.role === 'trainer' ? 'member' : 'trainer',
             })
-          }>
+          }
+        >
           <Text style={styles.promoteButtonText}>
             {item.role === 'trainer' ? 'Demote' : 'Promote'}
           </Text>

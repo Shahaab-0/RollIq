@@ -17,14 +17,20 @@ export function useBeltPromotions() {
 export function useCreatePromotion() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (promotion: { belt: Belt; promoted_on: string; notes?: string | null }) =>
-      beltPromotionsApi.createPromotion(promotion),
+    mutationFn: (promotion: {
+      belt: Belt;
+      promoted_on: string;
+      notes?: string | null;
+    }) => beltPromotionsApi.createPromotion(promotion),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['beltPromotions'] });
       queryClient.invalidateQueries({ queryKey: ['profile'] });
     },
     onError: error =>
-      showToast(getApiErrorMessage(error, 'Could not log this promotion'), 'error'),
+      showToast(
+        getApiErrorMessage(error, 'Could not log this promotion'),
+        'error',
+      ),
     meta: { toastSuccess: 'Promotion logged' },
   });
 }
@@ -37,8 +43,11 @@ export function useCreatePromotion() {
 export function useLogMilestone() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (milestone: { belt: Belt; stripes: number; promoted_on?: string }) =>
-      beltPromotionsApi.logMilestone(milestone),
+    mutationFn: (milestone: {
+      belt: Belt;
+      stripes: number;
+      promoted_on?: string;
+    }) => beltPromotionsApi.logMilestone(milestone),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['beltPromotions'] });
     },
@@ -53,7 +62,10 @@ export function useDeletePromotion() {
       queryClient.invalidateQueries({ queryKey: ['beltPromotions'] });
     },
     onError: error =>
-      showToast(getApiErrorMessage(error, 'Could not delete this promotion'), 'error'),
+      showToast(
+        getApiErrorMessage(error, 'Could not delete this promotion'),
+        'error',
+      ),
     meta: { toastSuccess: 'Promotion deleted' },
   });
 }

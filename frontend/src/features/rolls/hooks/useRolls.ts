@@ -9,7 +9,10 @@ export function useRolls() {
 }
 
 export function usePartnerHistory() {
-  return useQuery({ queryKey: ['rolls', 'partners'], queryFn: rollsApi.listPartnerHistory });
+  return useQuery({
+    queryKey: ['rolls', 'partners'],
+    queryFn: rollsApi.listPartnerHistory,
+  });
 }
 
 export function useCreateRoll() {
@@ -17,7 +20,8 @@ export function useCreateRoll() {
   return useMutation({
     mutationFn: (roll: NewRoll) => rollsApi.createRoll(roll),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['rolls'] }),
-    onError: error => showToast(getApiErrorMessage(error, 'Could not save this roll'), 'error'),
+    onError: error =>
+      showToast(getApiErrorMessage(error, 'Could not save this roll'), 'error'),
     meta: { toastSuccess: 'Roll logged' },
   });
 }
@@ -28,7 +32,8 @@ export function useUpdateRoll() {
     mutationFn: ({ id, changes }: { id: string; changes: Partial<NewRoll> }) =>
       rollsApi.updateRoll(id, changes),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['rolls'] }),
-    onError: error => showToast(getApiErrorMessage(error, 'Could not save this roll'), 'error'),
+    onError: error =>
+      showToast(getApiErrorMessage(error, 'Could not save this roll'), 'error'),
     meta: { toastSuccess: 'Roll updated' },
   });
 }
@@ -38,7 +43,11 @@ export function useDeleteRoll() {
   return useMutation({
     mutationFn: (id: string) => rollsApi.deleteRoll(id),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['rolls'] }),
-    onError: error => showToast(getApiErrorMessage(error, 'Could not delete this roll'), 'error'),
+    onError: error =>
+      showToast(
+        getApiErrorMessage(error, 'Could not delete this roll'),
+        'error',
+      ),
     meta: { toastSuccess: 'Roll deleted' },
   });
 }

@@ -18,7 +18,12 @@ import { ChevronLeft } from 'lucide-react-native';
 import DateTimePicker, {
   DateTimePickerAndroid,
 } from '@react-native-community/datetimepicker';
-import { getTheme, Theme, UI_ACCENT, UI_ACCENT_TEXT } from '../../../theme/colors';
+import {
+  getTheme,
+  Theme,
+  UI_ACCENT,
+  UI_ACCENT_TEXT,
+} from '../../../theme/colors';
 import { FONT_SIZE, FONT_WEIGHT } from '../../../theme/typography';
 import { toLocalDateString } from '../../../lib/dateFormat';
 import {
@@ -62,7 +67,9 @@ function LogSessionFormScreen() {
 
   const sessionId = route.params?.sessionId;
   const { data: sessions = [] } = useSessions();
-  const existing = sessionId ? sessions.find(s => s.id === sessionId) : undefined;
+  const existing = sessionId
+    ? sessions.find(s => s.id === sessionId)
+    : undefined;
   const createSession = useCreateSession();
   const updateSession = useUpdateSession();
   const deleteSession = useDeleteSession();
@@ -130,7 +137,10 @@ function LogSessionFormScreen() {
       return;
     }
     try {
-      await replaceSessionTechniques.mutateAsync({ sessionId: saved.id, techniqueIds });
+      await replaceSessionTechniques.mutateAsync({
+        sessionId: saved.id,
+        techniqueIds,
+      });
     } catch {
       // toast already shown -- the session itself still saved, so proceed
     }
@@ -160,7 +170,8 @@ function LogSessionFormScreen() {
   return (
     <KeyboardAvoidingView
       style={styles.screen}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+    >
       <View style={styles.header}>
         <Pressable hitSlop={12} onPress={() => navigation.goBack()}>
           <ChevronLeft color={theme.textPrimary} size={24} />
@@ -199,7 +210,8 @@ function LogSessionFormScreen() {
                   if (selected) setDate(toLocalDateString(selected));
                 },
               })
-            }>
+            }
+          >
             <Text style={styles.androidDateText}>
               {formatDisplayDate(date)}
             </Text>
@@ -224,7 +236,10 @@ function LogSessionFormScreen() {
         />
 
         <Text style={styles.label}>Techniques covered</Text>
-        <TechniquePicker selectedIds={techniqueIds} onChange={setTechniqueIds} />
+        <TechniquePicker
+          selectedIds={techniqueIds}
+          onChange={setTechniqueIds}
+        />
 
         <SessionProgressFields
           roundsCount={roundsCount}
@@ -259,7 +274,8 @@ function LogSessionFormScreen() {
         <Pressable
           style={[styles.saveButton, saving && styles.saveButtonDisabled]}
           disabled={saving}
-          onPress={handleSave}>
+          onPress={handleSave}
+        >
           <Text style={styles.saveButtonText}>
             {saving ? 'Saving…' : existing ? 'Save Changes' : 'Log Session'}
           </Text>

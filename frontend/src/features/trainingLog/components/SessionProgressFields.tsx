@@ -86,12 +86,14 @@ function SessionProgressFields({
               styles.ratingDot,
               productivityRating === level && styles.ratingDotActive,
             ]}
-            onPress={() => onChangeProductivityRating(level)}>
+            onPress={() => onChangeProductivityRating(level)}
+          >
             <Text
               style={[
                 styles.chipText,
                 productivityRating === level && styles.chipTextActive,
-              ]}>
+              ]}
+            >
               {level}
             </Text>
           </Pressable>

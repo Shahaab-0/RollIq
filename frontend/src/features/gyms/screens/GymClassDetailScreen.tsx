@@ -12,7 +12,13 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RouteProp } from '@react-navigation/native';
 import { Check, ChevronLeft } from 'lucide-react-native';
-import { getTheme, Theme, UI_ACCENT, UI_ACCENT_MUTED, UI_ACCENT_TEXT } from '../../../theme/colors';
+import {
+  getTheme,
+  Theme,
+  UI_ACCENT,
+  UI_ACCENT_MUTED,
+  UI_ACCENT_TEXT,
+} from '../../../theme/colors';
 import { FONT_SIZE, FONT_WEIGHT } from '../../../theme/typography';
 import { formatDisplayDate } from '../../../lib/dateFormat';
 import FloatingAddButton from '../../../components/FloatingAddButton';
@@ -48,7 +54,10 @@ function GymClassDetailScreen() {
   const entry = classes.find(c => c.id === classId);
   const canManage = gym?.my_role === 'owner' || gym?.my_role === 'trainer';
 
-  const { data: attendance = [] } = useGymAttendance(gymId, canManage ? classId : undefined);
+  const { data: attendance = [] } = useGymAttendance(
+    gymId,
+    canManage ? classId : undefined,
+  );
   const markAttendance = useMarkAttendance(gymId, classId);
   const unmarkAttendance = useUnmarkAttendance(gymId, classId);
 
@@ -99,7 +108,9 @@ function GymClassDetailScreen() {
           ListHeaderComponent={
             entry ? (
               <View style={styles.infoSection}>
-                <Text style={styles.classDate}>{formatDisplayDate(entry.class_date)}</Text>
+                <Text style={styles.classDate}>
+                  {formatDisplayDate(entry.class_date)}
+                </Text>
                 {entry.description ? (
                   <Text style={styles.description}>{entry.description}</Text>
                 ) : null}
@@ -124,14 +135,20 @@ function GymClassDetailScreen() {
                     <Pressable
                       key={attendee.user_id}
                       style={styles.attendeeRow}
-                      onPress={() => toggleAttendee(attendee)}>
-                      <Text style={styles.attendeeName}>{attendee.display_name}</Text>
+                      onPress={() => toggleAttendee(attendee)}
+                    >
+                      <Text style={styles.attendeeName}>
+                        {attendee.display_name}
+                      </Text>
                       <View
                         style={[
                           styles.attendeeCheck,
                           attendee.present && styles.attendeeCheckActive,
-                        ]}>
-                        {attendee.present ? <Check color={UI_ACCENT_TEXT} size={16} /> : null}
+                        ]}
+                      >
+                        {attendee.present ? (
+                          <Check color={UI_ACCENT_TEXT} size={16} />
+                        ) : null}
                       </View>
                     </Pressable>
                   ))
@@ -144,7 +161,9 @@ function GymClassDetailScreen() {
 
       {canManage ? (
         <FloatingAddButton
-          onPress={() => navigation.navigate('GymClassVideoForm', { gymId, classId })}
+          onPress={() =>
+            navigation.navigate('GymClassVideoForm', { gymId, classId })
+          }
         />
       ) : null}
     </View>

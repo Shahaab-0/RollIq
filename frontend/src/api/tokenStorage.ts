@@ -40,5 +40,9 @@ export async function getStoredTokens(): Promise<StoredTokens | null> {
 }
 
 export async function clearTokens(): Promise<void> {
-  await AsyncStorage.removeMany([ACCESS_TOKEN_KEY, REFRESH_TOKEN_KEY, EXPIRES_AT_KEY]);
+  await AsyncStorage.removeMany([
+    ACCESS_TOKEN_KEY,
+    REFRESH_TOKEN_KEY,
+    EXPIRES_AT_KEY,
+  ]);
 }

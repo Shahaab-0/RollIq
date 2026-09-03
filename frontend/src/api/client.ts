@@ -1,6 +1,11 @@
 import axios from 'axios';
 import { API_BASE_URL } from '@env';
-import { clearTokens, getAccessToken, getRefreshToken, saveTokens } from './tokenStorage';
+import {
+  clearTokens,
+  getAccessToken,
+  getRefreshToken,
+  saveTokens,
+} from './tokenStorage';
 import { store } from '../redux/store';
 import { sessionChanged } from '../redux/authSlice';
 
@@ -41,22 +46,37 @@ async function refreshAccessToken(): Promise<string | null> {
 // /auth/refresh itself, recursive). Every other endpoint -- including
 // /auth/me -- is a normal protected endpoint that legitimately 401s when
 // the access token expires and should go through refresh-and-retry.
-const CREDENTIAL_PATHS = ['/auth/signin', '/auth/signup', '/auth/refresh', '/auth/signout'];
+const CREDENTIAL_PATHS = [
+  '/auth/signin',
+  '/auth/signup',
+  '/auth/refresh',
+  '/auth/signout',
+];
 
 apiClient.interceptors.response.use(
   response => response,
   async error => {
     const originalRequest = error.config;
-    const isCredentialEndpoint = CREDENTIAL_PATHS.some(path => originalRequest?.url?.startsWith(path));
+    const isCredentialEndpoint = CREDENTIAL_PATHS.some(path =>
+      originalRequest?.url?.startsWith(path),
+    );
 
-    if (error.response?.status === 401 && originalRequest && !originalRequest._retried && !isCredentialEndpoint) {
+    if (
+      error.response?.status === 401 &&
+      originalRequest &&
+      !originalRequest._retried &&
+      !isCredentialEndpoint
+    ) {
       originalRequest._retried = true;
       refreshPromise = refreshPromise ?? refreshAccessToken();
       const newAccessToken = await refreshPromise;
       refreshPromise = null;
 
       if (newAccessToken) {
-        originalRequest.headers.set('Authorization', `Bearer ${newAccessToken}`);
+        originalRequest.headers.set(
+          'Authorization',
+          `Bearer ${newAccessToken}`,
+        );
         return apiClient(originalRequest);
       }
 

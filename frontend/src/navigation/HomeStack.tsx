@@ -27,7 +27,10 @@ function HomeStack() {
       <Stack.Screen name="GymScheduleForm" component={GymScheduleFormScreen} />
       <Stack.Screen name="GymClassForm" component={GymClassFormScreen} />
       <Stack.Screen name="GymClassDetail" component={GymClassDetailScreen} />
-      <Stack.Screen name="GymClassVideoForm" component={GymClassVideoFormScreen} />
+      <Stack.Screen
+        name="GymClassVideoForm"
+        component={GymClassVideoFormScreen}
+      />
       <Stack.Screen name="GymVideoPlayer" component={GymVideoPlayerScreen} />
     </Stack.Navigator>
   );

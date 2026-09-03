@@ -14,9 +14,16 @@ import {
 import { useNavigation, useRoute } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RouteProp } from '@react-navigation/native';
-import DateTimePicker, { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
+import DateTimePicker, {
+  DateTimePickerAndroid,
+} from '@react-native-community/datetimepicker';
 import { ChevronLeft } from 'lucide-react-native';
-import { getTheme, Theme, UI_ACCENT, UI_ACCENT_TEXT } from '../../../theme/colors';
+import {
+  getTheme,
+  Theme,
+  UI_ACCENT,
+  UI_ACCENT_TEXT,
+} from '../../../theme/colors';
 import { FONT_SIZE, FONT_WEIGHT } from '../../../theme/typography';
 import { formatDisplayDate, toLocalDateString } from '../../../lib/dateFormat';
 import {
@@ -27,7 +34,10 @@ import {
 } from '../hooks/useCompetitions';
 import type { CompetitionsStackParamList } from '../../../navigation/types';
 
-type Nav = NativeStackNavigationProp<CompetitionsStackParamList, 'CompetitionForm'>;
+type Nav = NativeStackNavigationProp<
+  CompetitionsStackParamList,
+  'CompetitionForm'
+>;
 type Route = RouteProp<CompetitionsStackParamList, 'CompetitionForm'>;
 
 function CompetitionFormScreen() {
@@ -39,7 +49,9 @@ function CompetitionFormScreen() {
 
   const competitionId = route.params?.competitionId;
   const { data: competitions = [] } = useCompetitions();
-  const existing = competitionId ? competitions.find(c => c.id === competitionId) : undefined;
+  const existing = competitionId
+    ? competitions.find(c => c.id === competitionId)
+    : undefined;
   const createCompetition = useCreateCompetition();
   const updateCompetition = useUpdateCompetition();
   const deleteCompetition = useDeleteCompetition();
@@ -48,12 +60,19 @@ function CompetitionFormScreen() {
   const [competitionDate, setCompetitionDate] = useState(
     existing?.competition_date ?? toLocalDateString(new Date()),
   );
-  const [weightCategory, setWeightCategory] = useState(existing?.weight_category ?? '');
-  const [beltDivision, setBeltDivision] = useState(existing?.belt_division ?? '');
+  const [weightCategory, setWeightCategory] = useState(
+    existing?.weight_category ?? '',
+  );
+  const [beltDivision, setBeltDivision] = useState(
+    existing?.belt_division ?? '',
+  );
   const [location, setLocation] = useState(existing?.location ?? '');
   const [notes, setNotes] = useState(existing?.notes ?? '');
   const [saving, setSaving] = useState(false);
-  const dateObj = useMemo(() => new Date(`${competitionDate}T00:00:00`), [competitionDate]);
+  const dateObj = useMemo(
+    () => new Date(`${competitionDate}T00:00:00`),
+    [competitionDate],
+  );
 
   const handleSave = async () => {
     if (!name.trim()) {
@@ -61,7 +80,10 @@ function CompetitionFormScreen() {
       return;
     }
     if (!weightCategory.trim()) {
-      Alert.alert('Weight category required', 'What weight category did you compete in?');
+      Alert.alert(
+        'Weight category required',
+        'What weight category did you compete in?',
+      );
       return;
     }
     setSaving(true);
@@ -111,12 +133,15 @@ function CompetitionFormScreen() {
   return (
     <KeyboardAvoidingView
       style={styles.screen}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+    >
       <View style={styles.header}>
         <Pressable hitSlop={12} onPress={() => navigation.goBack()}>
           <ChevronLeft color={theme.textPrimary} size={24} />
         </Pressable>
-        <Text style={styles.headerTitle}>{existing ? 'Edit Competition' : 'Log Competition'}</Text>
+        <Text style={styles.headerTitle}>
+          {existing ? 'Edit Competition' : 'Log Competition'}
+        </Text>
         <View style={styles.headerSpacer} />
       </View>
 
@@ -157,8 +182,11 @@ function CompetitionFormScreen() {
                   if (selected) setCompetitionDate(toLocalDateString(selected));
                 },
               })
-            }>
-            <Text style={styles.androidDateText}>{formatDisplayDate(competitionDate)}</Text>
+            }
+          >
+            <Text style={styles.androidDateText}>
+              {formatDisplayDate(competitionDate)}
+            </Text>
           </Pressable>
         )}
 
@@ -202,7 +230,8 @@ function CompetitionFormScreen() {
         <Pressable
           style={[styles.saveButton, saving && styles.saveButtonDisabled]}
           disabled={saving}
-          onPress={handleSave}>
+          onPress={handleSave}
+        >
           <Text style={styles.saveButtonText}>
             {saving ? 'Saving…' : existing ? 'Save Changes' : 'Log Competition'}
           </Text>

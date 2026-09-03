@@ -1,5 +1,12 @@
 import React, { useMemo } from 'react';
-import { Linking, Pressable, StyleSheet, Text, useColorScheme, View } from 'react-native';
+import {
+  Linking,
+  Pressable,
+  StyleSheet,
+  Text,
+  useColorScheme,
+  View,
+} from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RouteProp } from '@react-navigation/native';
@@ -36,7 +43,8 @@ function GymVideoPlayerScreen() {
           hitSlop={12}
           onPress={() => {
             if (url) Linking.openURL(url);
-          }}>
+          }}
+        >
           <ExternalLink color={UI_ACCENT} size={22} />
         </Pressable>
       </View>
@@ -45,7 +53,9 @@ function GymVideoPlayerScreen() {
         <WebView source={{ uri: url }} style={styles.webview} />
       ) : (
         <View style={styles.centered}>
-          <Text style={styles.emptyText}>This video doesn't have a link yet.</Text>
+          <Text style={styles.emptyText}>
+            This video doesn't have a link yet.
+          </Text>
         </View>
       )}
     </View>

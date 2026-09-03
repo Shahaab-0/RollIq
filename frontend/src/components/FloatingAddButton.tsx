@@ -18,7 +18,8 @@ function FloatingAddButton({ onPress }: Readonly<Props>) {
     <Pressable
       style={[styles.button, { bottom: insets.bottom + 20 }]}
       hitSlop={8}
-      onPress={onPress}>
+      onPress={onPress}
+    >
       <Plus color={UI_ACCENT_TEXT} size={26} strokeWidth={2.5} />
     </Pressable>
   );

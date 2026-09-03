@@ -26,7 +26,10 @@ import { useCreateInstructional } from '../hooks/useInstructionals';
 import { CATEGORY_PRESETS, DIFFICULTY_OPTIONS, Difficulty } from '../types';
 import type { InstructionalsStackParamList } from '../../../navigation/types';
 
-type Nav = NativeStackNavigationProp<InstructionalsStackParamList, 'InstructionalForm'>;
+type Nav = NativeStackNavigationProp<
+  InstructionalsStackParamList,
+  'InstructionalForm'
+>;
 
 function InstructionalFormScreen() {
   const scheme = useColorScheme();
@@ -85,7 +88,8 @@ function InstructionalFormScreen() {
   return (
     <KeyboardAvoidingView
       style={styles.screen}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+    >
       <View style={styles.header}>
         <Pressable hitSlop={12} onPress={() => navigation.goBack()}>
           <ChevronLeft color={theme.textPrimary} size={24} />
@@ -119,8 +123,14 @@ function InstructionalFormScreen() {
             <Pressable
               key={preset}
               style={[styles.chip, category === preset && styles.chipActive]}
-              onPress={() => setCategory(preset)}>
-              <Text style={[styles.chipText, category === preset && styles.chipTextActive]}>
+              onPress={() => setCategory(preset)}
+            >
+              <Text
+                style={[
+                  styles.chipText,
+                  category === preset && styles.chipTextActive,
+                ]}
+              >
                 {preset}
               </Text>
             </Pressable>
@@ -139,10 +149,18 @@ function InstructionalFormScreen() {
           {DIFFICULTY_OPTIONS.map(option => (
             <Pressable
               key={option.value}
-              style={[styles.chip, difficulty === option.value && styles.chipActive]}
-              onPress={() => setDifficulty(option.value)}>
+              style={[
+                styles.chip,
+                difficulty === option.value && styles.chipActive,
+              ]}
+              onPress={() => setDifficulty(option.value)}
+            >
               <Text
-                style={[styles.chipText, difficulty === option.value && styles.chipTextActive]}>
+                style={[
+                  styles.chipText,
+                  difficulty === option.value && styles.chipTextActive,
+                ]}
+              >
                 {option.label}
               </Text>
             </Pressable>
@@ -191,8 +209,11 @@ function InstructionalFormScreen() {
         <Pressable
           style={[styles.saveButton, saving && styles.saveButtonDisabled]}
           disabled={saving}
-          onPress={handleSave}>
-          <Text style={styles.saveButtonText}>{saving ? 'Saving…' : 'Add Instructional'}</Text>
+          onPress={handleSave}
+        >
+          <Text style={styles.saveButtonText}>
+            {saving ? 'Saving…' : 'Add Instructional'}
+          </Text>
         </Pressable>
       </ScrollView>
     </KeyboardAvoidingView>

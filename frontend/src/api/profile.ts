@@ -6,7 +6,9 @@ export async function getProfile(): Promise<Profile> {
   return data;
 }
 
-export async function updateProfile(changes: Partial<Omit<Profile, 'id'>>): Promise<Profile> {
+export async function updateProfile(
+  changes: Partial<Omit<Profile, 'id'>>,
+): Promise<Profile> {
   const { data } = await apiClient.patch<Profile>('/profile/me', changes);
   return data;
 }

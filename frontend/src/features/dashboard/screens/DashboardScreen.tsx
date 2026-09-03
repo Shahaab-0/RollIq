@@ -28,7 +28,10 @@ import { useDashboardStats } from '../hooks/useDashboardStats';
 import ProfileHeader from '../components/ProfileHeader';
 import BeltTimelineCard from '../components/BeltTimelineCard';
 import GymTilesRow from '../../gyms/components/GymTilesRow';
-import type { AppTabsParamList, HomeStackParamList } from '../../../navigation/types';
+import type {
+  AppTabsParamList,
+  HomeStackParamList,
+} from '../../../navigation/types';
 
 // Dashboard lives inside HomeStack (nested under the "Home" tab) but also
 // navigates across tabs (e.g. "Log Session" -> the Log tab) -- the
@@ -66,7 +69,10 @@ function DashboardScreen() {
   // Memoized alongside styles rather than built as a literal style object
   // inline in JSX (CLAUDE.md's no-inline-styles rule) -- belt color varies
   // per user, so it can't live in the theme-only createStyles() call above.
-  const dayDotFilledStyle = useMemo(() => ({ backgroundColor: accent }), [accent]);
+  const dayDotFilledStyle = useMemo(
+    () => ({ backgroundColor: accent }),
+    [accent],
+  );
 
   if (stats.loading && !stats.recentActivity.length) {
     return (
@@ -79,7 +85,8 @@ function DashboardScreen() {
     <View style={[styles.screen, { paddingTop: insets.top }]}>
       <ScrollView
         contentContainerStyle={styles.scrollContent}
-        showsVerticalScrollIndicator={false}>
+        showsVerticalScrollIndicator={false}
+      >
         <ProfileHeader
           displayName={profile?.display_name}
           belt={belt}
@@ -88,18 +95,25 @@ function DashboardScreen() {
           onMenuPress={() => navigation.dispatch(DrawerActions.openDrawer())}
         />
 
-        {stats.error ? <Text style={styles.errorText}>{stats.error}</Text> : null}
+        {stats.error ? (
+          <Text style={styles.errorText}>{stats.error}</Text>
+        ) : null}
 
         <View style={styles.card}>
           <View style={styles.weekHeaderRow}>
-            <Text style={[styles.cardTitle, styles.weekHeaderTitle]}>This week</Text>
+            <Text style={[styles.cardTitle, styles.weekHeaderTitle]}>
+              This week
+            </Text>
             <Text style={styles.streakInline}>{stats.currentStreak} 🔥</Text>
           </View>
           <View style={styles.weekRow}>
             {stats.week.map(day => (
               <View key={day.key} style={styles.dayColumn}>
                 <View
-                  style={[styles.dayDot, day.trained ? dayDotFilledStyle : styles.dayDotEmpty]}
+                  style={[
+                    styles.dayDot,
+                    day.trained ? dayDotFilledStyle : styles.dayDotEmpty,
+                  ]}
                 />
                 <Text style={styles.dayLabel}>{day.label}</Text>
               </View>
@@ -112,25 +126,40 @@ function DashboardScreen() {
         <View style={styles.actionsRow}>
           <Pressable
             style={styles.actionButton}
-            onPress={() => navigation.navigate('Log', { screen: 'TrainingLog' })}>
+            onPress={() =>
+              navigation.navigate('Log', { screen: 'TrainingLog' })
+            }
+          >
             <Plus color={UI_ACCENT_TEXT} size={18} strokeWidth={2.5} />
             <Text style={styles.actionButtonTextPrimary}>Log Session</Text>
           </Pressable>
         </View>
 
         <View style={styles.statsRow}>
-          <StatCard label="mat hours" value={String(stats.matHours)} styles={styles} />
-          <StatCard label="classes / yr" value={String(stats.classesThisYear)} styles={styles} />
+          <StatCard
+            label="mat hours"
+            value={String(stats.matHours)}
+            styles={styles}
+          />
+          <StatCard
+            label="classes / yr"
+            value={String(stats.classesThisYear)}
+            styles={styles}
+          />
           <StatCard
             label="sub success"
-            value={stats.subSuccessPct === null ? '--' : `${stats.subSuccessPct}%`}
+            value={
+              stats.subSuccessPct === null ? '--' : `${stats.subSuccessPct}%`
+            }
             styles={styles}
           />
         </View>
 
         <View style={styles.card}>
           <View style={styles.activityHeaderRow}>
-            <Text style={[styles.cardTitle, styles.activityHeaderTitle]}>Recent activity</Text>
+            <Text style={[styles.cardTitle, styles.activityHeaderTitle]}>
+              Recent activity
+            </Text>
             <Pressable
               hitSlop={8}
               style={styles.activityAddButton}
@@ -140,7 +169,8 @@ function DashboardScreen() {
                   params: undefined,
                   initial: false,
                 })
-              }>
+              }
+            >
               <Plus color={UI_ACCENT} size={18} strokeWidth={2.5} />
             </Pressable>
           </View>
@@ -152,7 +182,8 @@ function DashboardScreen() {
               <View style={styles.miniEmptyText}>
                 <Text style={styles.miniEmptyTitle}>No sessions yet</Text>
                 <Text style={styles.miniEmptyDesc}>
-                  Tap + to log your first session and start building your history.
+                  Tap + to log your first session and start building your
+                  history.
                 </Text>
               </View>
             </View>
@@ -167,7 +198,8 @@ function DashboardScreen() {
                       params: { sessionId: item.id },
                       initial: false,
                     })
-                  }>
+                  }
+                >
                   <View style={styles.activityIconBadge}>
                     <History color={UI_ACCENT} size={16} />
                   </View>

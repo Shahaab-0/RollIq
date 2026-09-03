@@ -5,7 +5,10 @@ import { getApiErrorMessage } from '../../../lib/apiError';
 import type { NewInjury } from '../types';
 
 export function useInjuries() {
-  return useQuery({ queryKey: ['injuries'], queryFn: injuriesApi.listInjuries });
+  return useQuery({
+    queryKey: ['injuries'],
+    queryFn: injuriesApi.listInjuries,
+  });
 }
 
 export function useCreateInjury() {
@@ -13,7 +16,11 @@ export function useCreateInjury() {
   return useMutation({
     mutationFn: (injury: NewInjury) => injuriesApi.createInjury(injury),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['injuries'] }),
-    onError: error => showToast(getApiErrorMessage(error, 'Could not save this injury'), 'error'),
+    onError: error =>
+      showToast(
+        getApiErrorMessage(error, 'Could not save this injury'),
+        'error',
+      ),
     meta: { toastSuccess: 'Injury logged' },
   });
 }
@@ -21,10 +28,19 @@ export function useCreateInjury() {
 export function useUpdateInjury() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, changes }: { id: string; changes: Partial<NewInjury> }) =>
-      injuriesApi.updateInjury(id, changes),
+    mutationFn: ({
+      id,
+      changes,
+    }: {
+      id: string;
+      changes: Partial<NewInjury>;
+    }) => injuriesApi.updateInjury(id, changes),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['injuries'] }),
-    onError: error => showToast(getApiErrorMessage(error, 'Could not save this injury'), 'error'),
+    onError: error =>
+      showToast(
+        getApiErrorMessage(error, 'Could not save this injury'),
+        'error',
+      ),
     meta: { toastSuccess: 'Injury updated' },
   });
 }
@@ -34,7 +50,11 @@ export function useDeleteInjury() {
   return useMutation({
     mutationFn: (id: string) => injuriesApi.deleteInjury(id),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['injuries'] }),
-    onError: error => showToast(getApiErrorMessage(error, 'Could not delete this injury'), 'error'),
+    onError: error =>
+      showToast(
+        getApiErrorMessage(error, 'Could not delete this injury'),
+        'error',
+      ),
     meta: { toastSuccess: 'Injury deleted' },
   });
 }

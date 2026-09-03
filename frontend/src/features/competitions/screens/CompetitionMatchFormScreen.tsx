@@ -33,7 +33,10 @@ import { RESULT_OPTIONS } from '../types';
 import type { CompetitionsStackParamList } from '../../../navigation/types';
 import type { MatchResult } from '../types';
 
-type Nav = NativeStackNavigationProp<CompetitionsStackParamList, 'CompetitionMatchForm'>;
+type Nav = NativeStackNavigationProp<
+  CompetitionsStackParamList,
+  'CompetitionMatchForm'
+>;
 type Route = RouteProp<CompetitionsStackParamList, 'CompetitionMatchForm'>;
 
 const RESULT_COLOR: Record<MatchResult, keyof Theme> = {
@@ -55,9 +58,15 @@ function CompetitionMatchFormScreen() {
       Object.fromEntries(
         RESULT_OPTIONS.map(option => {
           const accent = theme[RESULT_COLOR[option.value]] as string;
-          return [option.value, { backgroundColor: accent, borderColor: accent }];
+          return [
+            option.value,
+            { backgroundColor: accent, borderColor: accent },
+          ];
         }),
-      ) as Record<MatchResult, { backgroundColor: string; borderColor: string }>,
+      ) as Record<
+        MatchResult,
+        { backgroundColor: string; borderColor: string }
+      >,
     [theme],
   );
   const navigation = useNavigation<Nav>();
@@ -70,7 +79,9 @@ function CompetitionMatchFormScreen() {
   const updateMatch = useUpdateMatch(competitionId);
   const deleteMatch = useDeleteMatch(competitionId);
 
-  const [opponentName, setOpponentName] = useState(existing?.opponent_name ?? '');
+  const [opponentName, setOpponentName] = useState(
+    existing?.opponent_name ?? '',
+  );
   const [result, setResult] = useState<MatchResult>(existing?.result ?? 'win');
   const [method, setMethod] = useState(existing?.method ?? '');
   const [notes, setNotes] = useState(existing?.notes ?? '');
@@ -123,12 +134,15 @@ function CompetitionMatchFormScreen() {
   return (
     <KeyboardAvoidingView
       style={styles.screen}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+    >
       <View style={styles.header}>
         <Pressable hitSlop={12} onPress={() => navigation.goBack()}>
           <ChevronLeft color={theme.textPrimary} size={24} />
         </Pressable>
-        <Text style={styles.headerTitle}>{existing ? 'Edit Match' : 'Log Match'}</Text>
+        <Text style={styles.headerTitle}>
+          {existing ? 'Edit Match' : 'Log Match'}
+        </Text>
         <View style={styles.headerSpacer} />
       </View>
 
@@ -149,9 +163,15 @@ function CompetitionMatchFormScreen() {
             return (
               <Pressable
                 key={option.value}
-                style={[styles.chip, active && resultChipActiveStyle[option.value]]}
-                onPress={() => setResult(option.value)}>
-                <Text style={[styles.chipText, active && styles.chipTextActive]}>
+                style={[
+                  styles.chip,
+                  active && resultChipActiveStyle[option.value],
+                ]}
+                onPress={() => setResult(option.value)}
+              >
+                <Text
+                  style={[styles.chipText, active && styles.chipTextActive]}
+                >
                   {option.label}
                 </Text>
               </Pressable>
@@ -181,7 +201,8 @@ function CompetitionMatchFormScreen() {
         <Pressable
           style={[styles.saveButton, saving && styles.saveButtonDisabled]}
           disabled={saving}
-          onPress={handleSave}>
+          onPress={handleSave}
+        >
           <Text style={styles.saveButtonText}>
             {saving ? 'Saving…' : existing ? 'Save Changes' : 'Log Match'}
           </Text>

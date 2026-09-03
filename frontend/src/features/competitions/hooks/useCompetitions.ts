@@ -5,16 +5,24 @@ import { getApiErrorMessage } from '../../../lib/apiError';
 import type { NewCompetition, NewCompetitionMatch } from '../types';
 
 export function useCompetitions() {
-  return useQuery({ queryKey: ['competitions'], queryFn: competitionsApi.listCompetitions });
+  return useQuery({
+    queryKey: ['competitions'],
+    queryFn: competitionsApi.listCompetitions,
+  });
 }
 
 export function useCreateCompetition() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (competition: NewCompetition) => competitionsApi.createCompetition(competition),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['competitions'] }),
+    mutationFn: (competition: NewCompetition) =>
+      competitionsApi.createCompetition(competition),
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: ['competitions'] }),
     onError: error =>
-      showToast(getApiErrorMessage(error, 'Could not save this competition'), 'error'),
+      showToast(
+        getApiErrorMessage(error, 'Could not save this competition'),
+        'error',
+      ),
     meta: { toastSuccess: 'Competition logged' },
   });
 }
@@ -22,11 +30,20 @@ export function useCreateCompetition() {
 export function useUpdateCompetition() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, changes }: { id: string; changes: Partial<NewCompetition> }) =>
-      competitionsApi.updateCompetition(id, changes),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['competitions'] }),
+    mutationFn: ({
+      id,
+      changes,
+    }: {
+      id: string;
+      changes: Partial<NewCompetition>;
+    }) => competitionsApi.updateCompetition(id, changes),
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: ['competitions'] }),
     onError: error =>
-      showToast(getApiErrorMessage(error, 'Could not save this competition'), 'error'),
+      showToast(
+        getApiErrorMessage(error, 'Could not save this competition'),
+        'error',
+      ),
     meta: { toastSuccess: 'Competition updated' },
   });
 }
@@ -35,9 +52,13 @@ export function useDeleteCompetition() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (id: string) => competitionsApi.deleteCompetition(id),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['competitions'] }),
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: ['competitions'] }),
     onError: error =>
-      showToast(getApiErrorMessage(error, 'Could not delete this competition'), 'error'),
+      showToast(
+        getApiErrorMessage(error, 'Could not delete this competition'),
+        'error',
+      ),
     meta: { toastSuccess: 'Competition deleted' },
   });
 }
@@ -56,10 +77,16 @@ export function useCreateMatch(competitionId: string) {
     mutationFn: (match: NewCompetitionMatch) =>
       competitionsApi.createMatch(competitionId, match),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['competitions', competitionId, 'matches'] });
+      queryClient.invalidateQueries({
+        queryKey: ['competitions', competitionId, 'matches'],
+      });
       queryClient.invalidateQueries({ queryKey: ['competitions'] });
     },
-    onError: error => showToast(getApiErrorMessage(error, 'Could not save this match'), 'error'),
+    onError: error =>
+      showToast(
+        getApiErrorMessage(error, 'Could not save this match'),
+        'error',
+      ),
     meta: { toastSuccess: 'Match logged' },
   });
 }
@@ -75,10 +102,16 @@ export function useUpdateMatch(competitionId: string) {
       changes: Partial<NewCompetitionMatch>;
     }) => competitionsApi.updateMatch(competitionId, matchId, changes),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['competitions', competitionId, 'matches'] });
+      queryClient.invalidateQueries({
+        queryKey: ['competitions', competitionId, 'matches'],
+      });
       queryClient.invalidateQueries({ queryKey: ['competitions'] });
     },
-    onError: error => showToast(getApiErrorMessage(error, 'Could not save this match'), 'error'),
+    onError: error =>
+      showToast(
+        getApiErrorMessage(error, 'Could not save this match'),
+        'error',
+      ),
     meta: { toastSuccess: 'Match updated' },
   });
 }
@@ -86,13 +119,19 @@ export function useUpdateMatch(competitionId: string) {
 export function useDeleteMatch(competitionId: string) {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (matchId: string) => competitionsApi.deleteMatch(competitionId, matchId),
+    mutationFn: (matchId: string) =>
+      competitionsApi.deleteMatch(competitionId, matchId),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['competitions', competitionId, 'matches'] });
+      queryClient.invalidateQueries({
+        queryKey: ['competitions', competitionId, 'matches'],
+      });
       queryClient.invalidateQueries({ queryKey: ['competitions'] });
     },
     onError: error =>
-      showToast(getApiErrorMessage(error, 'Could not delete this match'), 'error'),
+      showToast(
+        getApiErrorMessage(error, 'Could not delete this match'),
+        'error',
+      ),
     meta: { toastSuccess: 'Match deleted' },
   });
 }

@@ -1,5 +1,13 @@
 import React, { useMemo } from 'react';
-import { Modal, Pressable, ScrollView, StyleSheet, Text, useColorScheme, View } from 'react-native';
+import {
+  Modal,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  useColorScheme,
+  View,
+} from 'react-native';
 import { X } from 'lucide-react-native';
 import {
   getTheme,
@@ -59,7 +67,12 @@ function InstructionalFilters({
   const styles = useMemo(() => createStyles(theme), [theme]);
 
   return (
-    <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
+    <Modal
+      visible={visible}
+      transparent
+      animationType="slide"
+      onRequestClose={onClose}
+    >
       <View style={styles.backdrop}>
         <Pressable style={styles.backdropTouchable} onPress={onClose} />
         <View style={styles.sheet}>
@@ -70,7 +83,10 @@ function InstructionalFilters({
             </Pressable>
           </View>
 
-          <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
+          <ScrollView
+            contentContainerStyle={styles.content}
+            showsVerticalScrollIndicator={false}
+          >
             <FilterSection title="Status" theme={theme} styles={styles}>
               {STATUS_FILTER_OPTIONS.map(option => (
                 <Chip
@@ -78,7 +94,9 @@ function InstructionalFilters({
                   label={option.label}
                   active={selectedStatus === option.value}
                   onPress={() =>
-                    onChangeStatus(selectedStatus === option.value ? null : option.value)
+                    onChangeStatus(
+                      selectedStatus === option.value ? null : option.value,
+                    )
                   }
                   styles={styles}
                 />
@@ -92,7 +110,9 @@ function InstructionalFilters({
                   label={option.label}
                   active={selectedDifficulty === option.value}
                   onPress={() =>
-                    onChangeDifficulty(selectedDifficulty === option.value ? null : option.value)
+                    onChangeDifficulty(
+                      selectedDifficulty === option.value ? null : option.value,
+                    )
                   }
                   styles={styles}
                 />
@@ -106,7 +126,11 @@ function InstructionalFilters({
                     key={value}
                     label={value}
                     active={selectedCategory === value}
-                    onPress={() => onChangeCategory(selectedCategory === value ? null : value)}
+                    onPress={() =>
+                      onChangeCategory(
+                        selectedCategory === value ? null : value,
+                      )
+                    }
                     styles={styles}
                   />
                 ))}
@@ -120,7 +144,11 @@ function InstructionalFilters({
                     key={value}
                     label={value}
                     active={selectedInstructor === value}
-                    onPress={() => onChangeInstructor(selectedInstructor === value ? null : value)}
+                    onPress={() =>
+                      onChangeInstructor(
+                        selectedInstructor === value ? null : value,
+                      )
+                    }
                     styles={styles}
                   />
                 ))}
@@ -167,8 +195,13 @@ interface ChipProps {
 
 function Chip({ label, active, onPress, styles }: Readonly<ChipProps>) {
   return (
-    <Pressable style={[styles.chip, active && styles.chipActive]} onPress={onPress}>
-      <Text style={[styles.chipText, active && styles.chipTextActive]}>{label}</Text>
+    <Pressable
+      style={[styles.chip, active && styles.chipActive]}
+      onPress={onPress}
+    >
+      <Text style={[styles.chipText, active && styles.chipTextActive]}>
+        {label}
+      </Text>
     </Pressable>
   );
 }

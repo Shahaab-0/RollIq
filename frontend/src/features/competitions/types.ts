@@ -35,4 +35,7 @@ export interface CompetitionMatch {
   notes: string | null;
 }
 
-export type NewCompetitionMatch = Omit<CompetitionMatch, 'id' | 'competition_id'>;
+export type NewCompetitionMatch = Omit<
+  CompetitionMatch,
+  'id' | 'competition_id'
+>;

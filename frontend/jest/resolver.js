@@ -18,14 +18,18 @@ module.exports = (request, options) => {
   ) {
     resolvedOptions = {
       ...resolvedOptions,
-      extensions: resolvedOptions.extensions?.filter(ext => !ext.includes('native')),
+      extensions: resolvedOptions.extensions?.filter(
+        ext => !ext.includes('native'),
+      ),
     };
   }
 
   return resolvedOptions.defaultResolver(request, {
     ...resolvedOptions,
     packageFilter: pkg => {
-      const filteredPkg = originalPackageFilter ? originalPackageFilter(pkg) : pkg;
+      const filteredPkg = originalPackageFilter
+        ? originalPackageFilter(pkg)
+        : pkg;
       if (filteredPkg.name === 'react-native') {
         delete filteredPkg.exports;
       }

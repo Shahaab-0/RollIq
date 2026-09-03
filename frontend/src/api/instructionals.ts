@@ -16,11 +16,16 @@ export async function listInstructionals(): Promise<Instructional[]> {
 export async function createInstructional(
   instructional: NewInstructional,
 ): Promise<Instructional> {
-  const { data } = await apiClient.post<Instructional>('/instructionals', instructional);
+  const { data } = await apiClient.post<Instructional>(
+    '/instructionals',
+    instructional,
+  );
   return data;
 }
 
-export async function listVideos(instructionalId: string): Promise<InstructionalVideo[]> {
+export async function listVideos(
+  instructionalId: string,
+): Promise<InstructionalVideo[]> {
   const { data } = await apiClient.get<InstructionalVideo[]>(
     `/instructionals/${instructionalId}/videos`,
   );
@@ -39,7 +44,9 @@ export async function createVideo(
 }
 
 export async function listProgress(): Promise<InstructionalProgress[]> {
-  const { data } = await apiClient.get<InstructionalProgress[]>('/instructional-progress');
+  const { data } = await apiClient.get<InstructionalProgress[]>(
+    '/instructional-progress',
+  );
   return data;
 }
 

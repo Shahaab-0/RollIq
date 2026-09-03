@@ -11,7 +11,12 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { ChevronDown, ChevronUp } from 'lucide-react-native';
-import { getTheme, Theme, UI_ACCENT, UI_ACCENT_MUTED } from '../../../theme/colors';
+import {
+  getTheme,
+  Theme,
+  UI_ACCENT,
+  UI_ACCENT_MUTED,
+} from '../../../theme/colors';
 import { FONT_SIZE, FONT_WEIGHT } from '../../../theme/typography';
 import {
   useInstructionalProgress,
@@ -70,7 +75,9 @@ function InstructionalCard({ instructional }: Readonly<Props>) {
           <Text style={styles.meta}>
             {instructional.instructor} · {instructional.category}
           </Text>
-          <Text style={styles.difficultyBadge}>{DIFFICULTY_LABEL[instructional.difficulty]}</Text>
+          <Text style={styles.difficultyBadge}>
+            {DIFFICULTY_LABEL[instructional.difficulty]}
+          </Text>
         </View>
         <View style={styles.headerRight}>
           <Text style={styles.badge}>{badgeLabel}</Text>
@@ -97,7 +104,9 @@ function InstructionalCard({ instructional }: Readonly<Props>) {
                   key={video.id}
                   video={video}
                   status={videoStatus}
-                  onChangeStatus={status => setProgress.mutate({ videoId: video.id, status })}
+                  onChangeStatus={status =>
+                    setProgress.mutate({ videoId: video.id, status })
+                  }
                   onClearStatus={() => removeProgress.mutate(video.id)}
                   onWatch={() =>
                     navigation.navigate('InstructionalPlayer', {
@@ -115,7 +124,8 @@ function InstructionalCard({ instructional }: Readonly<Props>) {
               navigation.navigate('InstructionalVideoForm', {
                 instructionalId: instructional.id,
               })
-            }>
+            }
+          >
             <Text style={styles.addVideoText}>+ Add Video</Text>
           </Pressable>
         </View>

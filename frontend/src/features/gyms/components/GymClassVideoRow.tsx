@@ -1,7 +1,19 @@
 import React, { useMemo } from 'react';
-import { Pressable, StyleSheet, Text, useColorScheme, View } from 'react-native';
+import {
+  Pressable,
+  StyleSheet,
+  Text,
+  useColorScheme,
+  View,
+} from 'react-native';
 import { Play, Trash2 } from 'lucide-react-native';
-import { getTheme, Theme, UI_ACCENT, UI_ACCENT_MUTED, UI_ACCENT_TEXT } from '../../../theme/colors';
+import {
+  getTheme,
+  Theme,
+  UI_ACCENT,
+  UI_ACCENT_MUTED,
+  UI_ACCENT_TEXT,
+} from '../../../theme/colors';
 import { FONT_SIZE, FONT_WEIGHT } from '../../../theme/typography';
 import type { GymClassVideo } from '../types';
 
@@ -14,7 +26,12 @@ interface Props {
 
 // Presentational -- GymClassDetailScreen owns the query/mutation and passes
 // callbacks down, same split as InstructionalVideoRow.
-function GymClassVideoRow({ video, canManage, onWatch, onDelete }: Readonly<Props>) {
+function GymClassVideoRow({
+  video,
+  canManage,
+  onWatch,
+  onDelete,
+}: Readonly<Props>) {
   const scheme = useColorScheme();
   const theme = useMemo(() => getTheme(scheme), [scheme]);
   const styles = useMemo(() => createStyles(theme), [theme]);

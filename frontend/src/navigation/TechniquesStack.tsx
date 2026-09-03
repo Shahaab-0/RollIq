@@ -10,9 +10,15 @@ const Stack = createNativeStackNavigator<TechniquesStackParamList>();
 function TechniquesStack() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="TechniqueLibrary" component={TechniqueLibraryScreen} />
+      <Stack.Screen
+        name="TechniqueLibrary"
+        component={TechniqueLibraryScreen}
+      />
       <Stack.Screen name="TechniqueForm" component={TechniqueFormScreen} />
-      <Stack.Screen name="TechniqueVideoPlayer" component={TechniqueVideoPlayerScreen} />
+      <Stack.Screen
+        name="TechniqueVideoPlayer"
+        component={TechniqueVideoPlayerScreen}
+      />
     </Stack.Navigator>
   );
 }

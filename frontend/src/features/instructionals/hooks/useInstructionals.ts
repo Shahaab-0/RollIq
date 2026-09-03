@@ -2,7 +2,11 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import * as instructionalsApi from '../../../api/instructionals';
 import { showToast } from '../../../lib/toast';
 import { getApiErrorMessage } from '../../../lib/apiError';
-import type { NewInstructional, NewInstructionalVideo, ProgressStatus } from '../types';
+import type {
+  NewInstructional,
+  NewInstructionalVideo,
+  ProgressStatus,
+} from '../types';
 
 export function useInstructionals() {
   return useQuery({
@@ -16,9 +20,13 @@ export function useCreateInstructional() {
   return useMutation({
     mutationFn: (instructional: NewInstructional) =>
       instructionalsApi.createInstructional(instructional),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['instructionals'] }),
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: ['instructionals'] }),
     onError: error =>
-      showToast(getApiErrorMessage(error, 'Could not add this instructional'), 'error'),
+      showToast(
+        getApiErrorMessage(error, 'Could not add this instructional'),
+        'error',
+      ),
     meta: { toastSuccess: 'Instructional added' },
   });
 }
@@ -37,10 +45,13 @@ export function useCreateVideo(instructionalId: string) {
     mutationFn: (video: NewInstructionalVideo) =>
       instructionalsApi.createVideo(instructionalId, video),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['instructionals', instructionalId, 'videos'] });
+      queryClient.invalidateQueries({
+        queryKey: ['instructionals', instructionalId, 'videos'],
+      });
       queryClient.invalidateQueries({ queryKey: ['instructionals'] });
     },
-    onError: error => showToast(getApiErrorMessage(error, 'Could not add this video'), 'error'),
+    onError: error =>
+      showToast(getApiErrorMessage(error, 'Could not add this video'), 'error'),
     meta: { toastSuccess: 'Video added' },
   });
 }
@@ -68,7 +79,11 @@ export function useSetProgress() {
       queryClient.invalidateQueries({ queryKey: ['instructionalProgress'] });
       queryClient.invalidateQueries({ queryKey: ['instructionals'] });
     },
-    onError: error => showToast(getApiErrorMessage(error, 'Could not update progress'), 'error'),
+    onError: error =>
+      showToast(
+        getApiErrorMessage(error, 'Could not update progress'),
+        'error',
+      ),
     // No success toast -- the status chip highlighting is feedback enough
     // for a tap this frequent.
   });
@@ -82,6 +97,10 @@ export function useRemoveProgress() {
       queryClient.invalidateQueries({ queryKey: ['instructionalProgress'] });
       queryClient.invalidateQueries({ queryKey: ['instructionals'] });
     },
-    onError: error => showToast(getApiErrorMessage(error, 'Could not update progress'), 'error'),
+    onError: error =>
+      showToast(
+        getApiErrorMessage(error, 'Could not update progress'),
+        'error',
+      ),
   });
 }

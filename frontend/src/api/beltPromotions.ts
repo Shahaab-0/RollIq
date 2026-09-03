@@ -11,7 +11,10 @@ export async function createPromotion(promotion: {
   promoted_on: string;
   notes?: string | null;
 }): Promise<BeltPromotion> {
-  const { data } = await apiClient.post<BeltPromotion>('/belt-promotions', promotion);
+  const { data } = await apiClient.post<BeltPromotion>(
+    '/belt-promotions',
+    promotion,
+  );
   return data;
 }
 
@@ -20,7 +23,10 @@ export async function logMilestone(milestone: {
   stripes: number;
   promoted_on?: string;
 }): Promise<BeltPromotion> {
-  const { data } = await apiClient.post<BeltPromotion>('/belt-promotions/milestone', milestone);
+  const { data } = await apiClient.post<BeltPromotion>(
+    '/belt-promotions/milestone',
+    milestone,
+  );
   return data;
 }
 

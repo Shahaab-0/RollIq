@@ -6,7 +6,9 @@ export async function listTechniques(): Promise<Technique[]> {
   return data;
 }
 
-export async function createTechnique(technique: NewTechnique): Promise<Technique> {
+export async function createTechnique(
+  technique: NewTechnique,
+): Promise<Technique> {
   const { data } = await apiClient.post<Technique>('/techniques', technique);
   return data;
 }
@@ -15,7 +17,10 @@ export async function updateTechnique(
   id: string,
   changes: Partial<NewTechnique>,
 ): Promise<Technique> {
-  const { data } = await apiClient.patch<Technique>(`/techniques/${id}`, changes);
+  const { data } = await apiClient.patch<Technique>(
+    `/techniques/${id}`,
+    changes,
+  );
   return data;
 }
 
@@ -29,8 +34,16 @@ export async function deleteTechnique(id: string): Promise<void> {
 }
 
 export async function importFundamentals(
-  seeds: { name: string; position: string; notes: string; resource_url: string | null }[],
+  seeds: {
+    name: string;
+    position: string;
+    notes: string;
+    resource_url: string | null;
+  }[],
 ): Promise<Technique[]> {
-  const { data } = await apiClient.post<Technique[]>('/techniques/import', seeds);
+  const { data } = await apiClient.post<Technique[]>(
+    '/techniques/import',
+    seeds,
+  );
   return data;
 }

@@ -1,5 +1,12 @@
 import React, { useMemo } from 'react';
-import { Linking, Pressable, StyleSheet, Text, useColorScheme, View } from 'react-native';
+import {
+  Linking,
+  Pressable,
+  StyleSheet,
+  Text,
+  useColorScheme,
+  View,
+} from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RouteProp } from '@react-navigation/native';
@@ -9,7 +16,10 @@ import { getTheme, Theme, UI_ACCENT } from '../../../theme/colors';
 import { FONT_SIZE, FONT_WEIGHT } from '../../../theme/typography';
 import type { TechniquesStackParamList } from '../../../navigation/types';
 
-type Nav = NativeStackNavigationProp<TechniquesStackParamList, 'TechniqueVideoPlayer'>;
+type Nav = NativeStackNavigationProp<
+  TechniquesStackParamList,
+  'TechniqueVideoPlayer'
+>;
 type Route = RouteProp<TechniquesStackParamList, 'TechniqueVideoPlayer'>;
 
 // Same "frame the real page, never host the video" approach as

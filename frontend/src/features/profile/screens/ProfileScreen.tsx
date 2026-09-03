@@ -60,9 +60,7 @@ function ProfileScreen() {
   const [homeGym, setHomeGym] = useState('');
   const [saving, setSaving] = useState(false);
 
-  const [pendingBeltChange, setPendingBeltChange] = useState<Belt | null>(
-    null,
-  );
+  const [pendingBeltChange, setPendingBeltChange] = useState<Belt | null>(null);
   const [pendingBeltDate, setPendingBeltDate] = useState(
     toLocalDateString(new Date()),
   );
@@ -105,8 +103,7 @@ function ProfileScreen() {
       setPendingBeltDate(toLocalDateString(new Date()));
       setPendingBeltChange(belt);
     } else if (stripesGained) {
-      const beltLabel =
-        BELT_OPTIONS.find(o => o.value === belt)?.label ?? belt;
+      const beltLabel = BELT_OPTIONS.find(o => o.value === belt)?.label ?? belt;
       try {
         await logMilestone.mutateAsync({ belt, stripes });
         Alert.alert(
@@ -174,12 +171,14 @@ function ProfileScreen() {
   return (
     <KeyboardAvoidingView
       style={styles.screen}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+    >
       <ScrollView contentContainerStyle={styles.content}>
         <View style={styles.header}>
           <Pressable
             hitSlop={12}
-            onPress={() => navigation.dispatch(DrawerActions.openDrawer())}>
+            onPress={() => navigation.dispatch(DrawerActions.openDrawer())}
+          >
             <Menu color={theme.textPrimary} size={22} />
           </Pressable>
           <Text style={styles.title}>Profile</Text>
@@ -209,8 +208,11 @@ function ProfileScreen() {
                     borderColor: BELT_COLORS[option.value],
                   },
                 ]}
-                onPress={() => setBelt(option.value)}>
-                <Text style={[styles.chipText, active && styles.chipTextActive]}>
+                onPress={() => setBelt(option.value)}
+              >
+                <Text
+                  style={[styles.chipText, active && styles.chipTextActive]}
+                >
                   {option.label}
                 </Text>
               </Pressable>
@@ -223,13 +225,18 @@ function ProfileScreen() {
           {STRIPE_OPTIONS.map(count => (
             <Pressable
               key={count}
-              style={[styles.stripeDot, stripes === count && styles.stripeDotActive]}
-              onPress={() => setStripes(count)}>
+              style={[
+                styles.stripeDot,
+                stripes === count && styles.stripeDotActive,
+              ]}
+              onPress={() => setStripes(count)}
+            >
               <Text
                 style={[
                   styles.chipText,
                   stripes === count && styles.chipTextActive,
-                ]}>
+                ]}
+              >
                 {count}
               </Text>
             </Pressable>
@@ -245,8 +252,14 @@ function ProfileScreen() {
           <View style={styles.chipRow}>
             <Pressable
               style={[styles.chip, homeGym === '' && styles.chipActive]}
-              onPress={() => setHomeGym('')}>
-              <Text style={[styles.chipText, homeGym === '' && styles.chipTextActive]}>
+              onPress={() => setHomeGym('')}
+            >
+              <Text
+                style={[
+                  styles.chipText,
+                  homeGym === '' && styles.chipTextActive,
+                ]}
+              >
                 None
               </Text>
             </Pressable>
@@ -256,8 +269,11 @@ function ProfileScreen() {
                 <Pressable
                   key={gym.id}
                   style={[styles.chip, active && styles.chipActive]}
-                  onPress={() => setHomeGym(gym.name)}>
-                  <Text style={[styles.chipText, active && styles.chipTextActive]}>
+                  onPress={() => setHomeGym(gym.name)}
+                >
+                  <Text
+                    style={[styles.chipText, active && styles.chipTextActive]}
+                  >
                     {gym.name}
                   </Text>
                 </Pressable>
@@ -276,22 +292,34 @@ function ProfileScreen() {
         <Pressable
           style={[styles.saveButton, saving && styles.saveButtonDisabled]}
           disabled={saving}
-          onPress={handleSave}>
+          onPress={handleSave}
+        >
           <Text style={styles.saveButtonText}>
             {saving ? 'Saving…' : 'Save Changes'}
           </Text>
         </Pressable>
 
-        <Pressable style={styles.signOutButton} onPress={() => signOut.mutate()}>
+        <Pressable
+          style={styles.signOutButton}
+          onPress={() => signOut.mutate()}
+        >
           <Text style={styles.signOutButtonText}>Sign Out</Text>
         </Pressable>
 
         <View style={styles.legalRow}>
-          <Pressable onPress={() => Linking.openURL(`${LEGAL_BASE_URL}/legal/privacy.html`)}>
+          <Pressable
+            onPress={() =>
+              Linking.openURL(`${LEGAL_BASE_URL}/legal/privacy.html`)
+            }
+          >
             <Text style={styles.legalLink}>Privacy Policy</Text>
           </Pressable>
           <Text style={styles.legalDivider}>·</Text>
-          <Pressable onPress={() => Linking.openURL(`${LEGAL_BASE_URL}/legal/terms.html`)}>
+          <Pressable
+            onPress={() =>
+              Linking.openURL(`${LEGAL_BASE_URL}/legal/terms.html`)
+            }
+          >
             <Text style={styles.legalLink}>Terms of Service</Text>
           </Pressable>
         </View>
@@ -299,7 +327,8 @@ function ProfileScreen() {
         <Pressable
           style={styles.deleteAccountButton}
           disabled={deleteAccount.isPending}
-          onPress={handleDeleteAccount}>
+          onPress={handleDeleteAccount}
+        >
           <Text style={styles.deleteAccountButtonText}>
             {deleteAccount.isPending ? 'Deleting…' : 'Delete Account'}
           </Text>

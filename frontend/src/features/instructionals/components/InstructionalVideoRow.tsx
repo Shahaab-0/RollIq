@@ -1,5 +1,11 @@
 import React, { useMemo } from 'react';
-import { Pressable, StyleSheet, Text, useColorScheme, View } from 'react-native';
+import {
+  Pressable,
+  StyleSheet,
+  Text,
+  useColorScheme,
+  View,
+} from 'react-native';
 import { Play } from 'lucide-react-native';
 import {
   getTheme,
@@ -9,7 +15,11 @@ import {
   UI_ACCENT_TEXT,
 } from '../../../theme/colors';
 import { FONT_SIZE, FONT_WEIGHT } from '../../../theme/typography';
-import { PROGRESS_STATUS_OPTIONS, type InstructionalVideo, type ProgressStatus } from '../types';
+import {
+  PROGRESS_STATUS_OPTIONS,
+  type InstructionalVideo,
+  type ProgressStatus,
+} from '../types';
 
 interface Props {
   video: InstructionalVideo;
@@ -44,8 +54,13 @@ function InstructionalVideoRow({
               <Pressable
                 key={option.value}
                 style={[styles.chip, active && styles.chipActive]}
-                onPress={() => (active ? onClearStatus() : onChangeStatus(option.value))}>
-                <Text style={[styles.chipText, active && styles.chipTextActive]}>
+                onPress={() =>
+                  active ? onClearStatus() : onChangeStatus(option.value)
+                }
+              >
+                <Text
+                  style={[styles.chipText, active && styles.chipTextActive]}
+                >
                   {option.label}
                 </Text>
               </Pressable>

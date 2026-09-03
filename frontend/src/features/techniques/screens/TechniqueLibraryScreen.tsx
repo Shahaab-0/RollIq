@@ -21,7 +21,12 @@ import {
   Repeat,
   Trash2,
 } from 'lucide-react-native';
-import { getTheme, Theme, UI_ACCENT, UI_ACCENT_TEXT } from '../../../theme/colors';
+import {
+  getTheme,
+  Theme,
+  UI_ACCENT,
+  UI_ACCENT_TEXT,
+} from '../../../theme/colors';
 import { FONT_SIZE, FONT_WEIGHT } from '../../../theme/typography';
 import FloatingAddButton from '../../../components/FloatingAddButton';
 import ErrorState from '../../../components/ErrorState';
@@ -36,7 +41,10 @@ import { POSITION_PRESETS } from '../types';
 import type { TechniquesStackParamList } from '../../../navigation/types';
 import type { Technique } from '../types';
 
-type Nav = NativeStackNavigationProp<TechniquesStackParamList, 'TechniqueLibrary'>;
+type Nav = NativeStackNavigationProp<
+  TechniquesStackParamList,
+  'TechniqueLibrary'
+>;
 
 if (
   Platform.OS === 'android' &&
@@ -117,7 +125,8 @@ function TechniqueLibraryScreen() {
       style={styles.row}
       onPress={() =>
         navigation.navigate('TechniqueForm', { techniqueId: item.id })
-      }>
+      }
+    >
       <View style={styles.rowMain}>
         <Text style={styles.rowTitle}>{item.name}</Text>
         <Text style={styles.rowMeta}>{item.drill_count} drills logged</Text>
@@ -132,20 +141,23 @@ function TechniqueLibraryScreen() {
                 name: item.name,
                 url: item.resource_url as string,
               })
-            }>
+            }
+          >
             <PlayCircle color={UI_ACCENT} size={18} />
           </Pressable>
         ) : null}
         <Pressable
           hitSlop={8}
           style={styles.drillButton}
-          onPress={() => incrementDrillCount.mutate(item.id)}>
+          onPress={() => incrementDrillCount.mutate(item.id)}
+        >
           <Repeat color={UI_ACCENT} size={18} />
         </Pressable>
         <Pressable
           hitSlop={8}
           style={styles.deleteIconButton}
-          onPress={() => deleteTechnique.mutate(item.id)}>
+          onPress={() => deleteTechnique.mutate(item.id)}
+        >
           <Trash2 color={theme.danger} size={18} />
         </Pressable>
       </View>
@@ -157,7 +169,8 @@ function TechniqueLibraryScreen() {
       <View style={styles.header}>
         <Pressable
           hitSlop={12}
-          onPress={() => navigation.dispatch(DrawerActions.openDrawer())}>
+          onPress={() => navigation.dispatch(DrawerActions.openDrawer())}
+        >
           <Menu color={theme.textPrimary} size={22} />
         </Pressable>
         <Text style={styles.title}>Technique Journal</Text>
@@ -175,29 +188,35 @@ function TechniqueLibraryScreen() {
             No techniques logged yet — tap + to add one.
           </Text>
           <Pressable
-            style={[styles.importButton, importing && styles.importButtonDisabled]}
+            style={[
+              styles.importButton,
+              importing && styles.importButtonDisabled,
+            ]}
             disabled={importing}
-            onPress={handleImportFundamentals}>
+            onPress={handleImportFundamentals}
+          >
             <Text style={styles.importButtonText}>
               {importing ? 'Importing…' : 'Import Fundamentals'}
             </Text>
           </Pressable>
           <Text style={styles.importHint}>
-            Adds {FUNDAMENTALS_SEED.length} beginner-friendly techniques to
-            get you started — you can edit, drill, or delete any of them.
+            Adds {FUNDAMENTALS_SEED.length} beginner-friendly techniques to get
+            you started — you can edit, drill, or delete any of them.
           </Text>
         </View>
       ) : (
         <ScrollView
           contentContainerStyle={styles.listContent}
-          showsVerticalScrollIndicator={false}>
+          showsVerticalScrollIndicator={false}
+        >
           {groups.map(group => {
             const isCollapsed = collapsed.has(group.position);
             return (
               <View key={group.position} style={styles.section}>
                 <Pressable
                   style={styles.sectionHeader}
-                  onPress={() => toggleGroup(group.position)}>
+                  onPress={() => toggleGroup(group.position)}
+                >
                   <Text style={styles.sectionHeaderText}>
                     {group.position} ({group.techniques.length})
                   </Text>
@@ -218,7 +237,9 @@ function TechniqueLibraryScreen() {
         </ScrollView>
       )}
 
-      <FloatingAddButton onPress={() => navigation.navigate('TechniqueForm', undefined)} />
+      <FloatingAddButton
+        onPress={() => navigation.navigate('TechniqueForm', undefined)}
+      />
     </View>
   );
 }

@@ -14,7 +14,12 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { ChevronLeft } from 'lucide-react-native';
-import { getTheme, Theme, UI_ACCENT, UI_ACCENT_TEXT } from '../../../theme/colors';
+import {
+  getTheme,
+  Theme,
+  UI_ACCENT,
+  UI_ACCENT_TEXT,
+} from '../../../theme/colors';
 import { FONT_SIZE, FONT_WEIGHT } from '../../../theme/typography';
 import { useJoinGym } from '../hooks/useGyms';
 import type { HomeStackParamList } from '../../../navigation/types';
@@ -33,7 +38,10 @@ function GymJoinScreen() {
 
   const handleJoin = async () => {
     if (!inviteCode.trim()) {
-      Alert.alert('Code required', 'Enter the invite code your gym shared with you.');
+      Alert.alert(
+        'Code required',
+        'Enter the invite code your gym shared with you.',
+      );
       return;
     }
     setJoining(true);
@@ -50,7 +58,8 @@ function GymJoinScreen() {
   return (
     <KeyboardAvoidingView
       style={styles.screen}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+    >
       <View style={styles.header}>
         <Pressable hitSlop={12} onPress={() => navigation.goBack()}>
           <ChevronLeft color={theme.textPrimary} size={24} />
@@ -74,8 +83,11 @@ function GymJoinScreen() {
         <Pressable
           style={[styles.saveButton, joining && styles.saveButtonDisabled]}
           disabled={joining}
-          onPress={handleJoin}>
-          <Text style={styles.saveButtonText}>{joining ? 'Joining…' : 'Join Gym'}</Text>
+          onPress={handleJoin}
+        >
+          <Text style={styles.saveButtonText}>
+            {joining ? 'Joining…' : 'Join Gym'}
+          </Text>
         </Pressable>
       </ScrollView>
     </KeyboardAvoidingView>

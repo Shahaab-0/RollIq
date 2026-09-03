@@ -10,7 +10,12 @@ import {
   View,
 } from 'react-native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { getTheme, Theme, UI_ACCENT, UI_ACCENT_TEXT } from '../../../theme/colors';
+import {
+  getTheme,
+  Theme,
+  UI_ACCENT,
+  UI_ACCENT_TEXT,
+} from '../../../theme/colors';
 import { FONT_SIZE, FONT_WEIGHT } from '../../../theme/typography';
 import { useSignIn } from '../hooks/useAuth';
 import type { AuthStackParamList } from '../../../navigation/types';
@@ -29,7 +34,8 @@ function SignInScreen({ navigation }: Readonly<Props>) {
   return (
     <KeyboardAvoidingView
       style={styles.screen}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+    >
       <View style={styles.content}>
         <Text style={styles.title}>Welcome back</Text>
         <Text style={styles.subtitle}>Sign in to track your training</Text>
@@ -55,7 +61,8 @@ function SignInScreen({ navigation }: Readonly<Props>) {
         <Pressable
           style={[styles.button, signIn.isPending && styles.buttonDisabled]}
           disabled={signIn.isPending}
-          onPress={() => signIn.mutate({ email, password })}>
+          onPress={() => signIn.mutate({ email, password })}
+        >
           <Text style={styles.buttonText}>
             {signIn.isPending ? 'Signing in…' : 'Sign In'}
           </Text>
@@ -63,15 +70,18 @@ function SignInScreen({ navigation }: Readonly<Props>) {
 
         <Pressable
           style={styles.linkButton}
-          onPress={() => navigation.navigate('ForgotPassword')}>
+          onPress={() => navigation.navigate('ForgotPassword')}
+        >
           <Text style={styles.linkText}>Forgot password?</Text>
         </Pressable>
 
         <Pressable
           style={styles.linkButton}
-          onPress={() => navigation.navigate('SignUp')}>
+          onPress={() => navigation.navigate('SignUp')}
+        >
           <Text style={styles.linkText}>
-            Don't have an account? <Text style={styles.linkTextAccent}>Sign up</Text>
+            Don't have an account?{' '}
+            <Text style={styles.linkTextAccent}>Sign up</Text>
           </Text>
         </Pressable>
       </View>

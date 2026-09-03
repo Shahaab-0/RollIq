@@ -1,5 +1,9 @@
 import { apiClient } from './client';
-import type { NewRoll, PartnerHistoryEntry, Roll } from '../features/rolls/types';
+import type {
+  NewRoll,
+  PartnerHistoryEntry,
+  Roll,
+} from '../features/rolls/types';
 
 export async function listRolls(): Promise<Roll[]> {
   const { data } = await apiClient.get<Roll[]>('/rolls');
@@ -11,7 +15,10 @@ export async function createRoll(roll: NewRoll): Promise<Roll> {
   return data;
 }
 
-export async function updateRoll(id: string, changes: Partial<NewRoll>): Promise<Roll> {
+export async function updateRoll(
+  id: string,
+  changes: Partial<NewRoll>,
+): Promise<Roll> {
   const { data } = await apiClient.patch<Roll>(`/rolls/${id}`, changes);
   return data;
 }
@@ -21,6 +28,8 @@ export async function deleteRoll(id: string): Promise<void> {
 }
 
 export async function listPartnerHistory(): Promise<PartnerHistoryEntry[]> {
-  const { data } = await apiClient.get<PartnerHistoryEntry[]>('/rolls/partners');
+  const { data } = await apiClient.get<PartnerHistoryEntry[]>(
+    '/rolls/partners',
+  );
   return data;
 }
