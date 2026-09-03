@@ -10,6 +10,7 @@ import {
 } from '../hooks/useCompetitions';
 import { RESULT_OPTIONS, type MatchResult } from '../types';
 import Button from '@/components/ui/Button';
+import Card from '@/components/ui/Card';
 import Input from '@/components/ui/Input';
 import Textarea from '@/components/ui/Textarea';
 import Chip from '@/components/ui/Chip';
@@ -105,41 +106,43 @@ export default function CompetitionMatchForm({
   }
 
   return (
-    <div className="flex w-full max-w-2xl flex-col gap-4">
+    <div className="flex w-full max-w-2xl flex-col gap-5">
       <h1 className="text-2xl font-extrabold tracking-tight text-text-primary">{existing ? 'Edit Match' : 'Log Match'}</h1>
 
-      <div>
-        <label className="mb-1 block text-xs font-semibold text-text-secondary">Opponent</label>
-        <Input value={opponentName} onChange={e => setOpponentName(e.target.value)} placeholder="Opponent's name" />
-      </div>
-
-      <div>
-        <label className="mb-1 block text-xs font-semibold text-text-secondary">Result</label>
-        <div className="flex flex-wrap gap-2">
-          {RESULT_OPTIONS.map(option => (
-            <Chip
-              key={option.value}
-              active={result === option.value}
-              activeColor={RESULT_COLOR_VAR[option.value]}
-              onClick={() => setResult(option.value)}
-            >
-              {option.label}
-            </Chip>
-          ))}
+      <Card className="flex flex-col gap-4">
+        <div>
+          <label className="mb-1 block text-xs font-semibold text-text-secondary">Opponent</label>
+          <Input value={opponentName} onChange={e => setOpponentName(e.target.value)} placeholder="Opponent's name" />
         </div>
-      </div>
 
-      <div>
-        <label className="mb-1 block text-xs font-semibold text-text-secondary">Method</label>
-        <Input value={method} onChange={e => setMethod(e.target.value)} placeholder="e.g. Submission - Armbar, Points, Decision" />
-      </div>
+        <div>
+          <label className="mb-1 block text-xs font-semibold text-text-secondary">Result</label>
+          <div className="flex flex-wrap gap-2">
+            {RESULT_OPTIONS.map(option => (
+              <Chip
+                key={option.value}
+                active={result === option.value}
+                activeColor={RESULT_COLOR_VAR[option.value]}
+                onClick={() => setResult(option.value)}
+              >
+                {option.label}
+              </Chip>
+            ))}
+          </div>
+        </div>
 
-      <div>
-        <label className="mb-1 block text-xs font-semibold text-text-secondary">Notes</label>
-        <Textarea rows={4} value={notes} onChange={e => setNotes(e.target.value)} placeholder="Optional" />
-      </div>
+        <div>
+          <label className="mb-1 block text-xs font-semibold text-text-secondary">Method</label>
+          <Input value={method} onChange={e => setMethod(e.target.value)} placeholder="e.g. Submission - Armbar, Points, Decision" />
+        </div>
 
-      <Button disabled={saving || !opponentName.trim()} onClick={handleSave} className="mt-2">
+        <div>
+          <label className="mb-1 block text-xs font-semibold text-text-secondary">Notes</label>
+          <Textarea rows={4} value={notes} onChange={e => setNotes(e.target.value)} placeholder="Optional" />
+        </div>
+      </Card>
+
+      <Button disabled={saving || !opponentName.trim()} onClick={handleSave}>
         {saving ? 'Saving…' : existing ? 'Save Changes' : 'Log Match'}
       </Button>
 

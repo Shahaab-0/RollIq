@@ -21,6 +21,22 @@ function sortByPosition(items: Technique[]): Technique[] {
   });
 }
 
+function TechniquesSkeleton() {
+  return (
+    <div className="flex w-full animate-pulse flex-col gap-5">
+      <div className="flex items-center justify-between">
+        <div className="h-8 w-56 rounded-lg bg-surface-alt" />
+        <div className="h-11 w-40 rounded-xl bg-surface-alt" />
+      </div>
+      <div className="overflow-hidden rounded-2xl border border-border">
+        {Array.from({ length: 5 }).map((_, i) => (
+          <div key={i} className="h-12 border-b border-border bg-surface-alt last:border-0" />
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export default function TechniquesPage() {
   const router = useRouter();
   const { data: items = [], isLoading } = useTechniques();
@@ -29,9 +45,13 @@ export default function TechniquesPage() {
 
   const sorted = sortByPosition(items);
 
+  if (isLoading) {
+    return <TechniquesSkeleton />;
+  }
+
   return (
-    <div className="flex w-full max-w-5xl flex-col gap-5">
-      <div className="flex items-center justify-between">
+    <div className="flex w-full flex-col gap-5">
+      <div className="flex flex-wrap items-center justify-between gap-3">
         <h1 className="text-2xl font-extrabold tracking-tight text-text-primary">Technique Journal</h1>
         <Link href="/techniques/new">
           <Button className="flex items-center gap-2">
@@ -41,9 +61,7 @@ export default function TechniquesPage() {
         </Link>
       </div>
 
-      {isLoading ? (
-        <p className="text-sm text-text-secondary">Loading…</p>
-      ) : items.length === 0 ? (
+      {items.length === 0 ? (
         <EmptyState
           icon={BookOpen}
           title="No techniques logged yet"
@@ -64,7 +82,7 @@ export default function TechniquesPage() {
               <Tr key={item.id} onClick={() => router.push(`/techniques/${item.id}`)}>
                 <Td className="font-semibold">{item.name}</Td>
                 <Td className="text-text-secondary">{item.position}</Td>
-                <Td className="text-text-secondary">{item.drill_count}</Td>
+                <Td className="font-mono text-text-secondary tabular-nums">{item.drill_count}</Td>
                 <Td>
                   <TableRowActions>
                     {item.resource_url ? (
@@ -73,6 +91,7 @@ export default function TechniquesPage() {
                         target="_blank"
                         rel="noopener noreferrer"
                         onClick={e => e.stopPropagation()}
+                        aria-label={`Open resource for ${item.name}`}
                         className="rounded-lg border border-accent p-1.5 text-accent hover:bg-accent-muted"
                       >
                         <PlayCircle size={15} />
@@ -83,6 +102,7 @@ export default function TechniquesPage() {
                         e.stopPropagation();
                         incrementDrillCount.mutate(item.id);
                       }}
+                      aria-label={`Log a drill for ${item.name}`}
                       className="rounded-lg border border-accent p-1.5 text-accent hover:bg-accent-muted"
                     >
                       <Repeat size={15} />
@@ -92,6 +112,7 @@ export default function TechniquesPage() {
                         e.stopPropagation();
                         deleteTechnique.mutate(item.id);
                       }}
+                      aria-label={`Delete ${item.name}`}
                       className="rounded-lg border border-danger p-1.5 text-danger hover:bg-danger/10"
                     >
                       <Trash2 size={15} />

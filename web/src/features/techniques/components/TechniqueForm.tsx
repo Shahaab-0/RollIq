@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { useCreateTechnique, useDeleteTechnique, useTechniques, useUpdateTechnique } from '../hooks/useTechniques';
 import { POSITION_PRESETS } from '../types';
 import Button from '@/components/ui/Button';
+import Card from '@/components/ui/Card';
 import Input from '@/components/ui/Input';
 import Textarea from '@/components/ui/Textarea';
 import Chip from '@/components/ui/Chip';
@@ -88,50 +89,55 @@ export default function TechniqueForm({ techniqueId }: Readonly<{ techniqueId?: 
   }
 
   return (
-    <div className="flex w-full max-w-2xl flex-col gap-4">
-      <h1 className="text-2xl font-extrabold tracking-tight text-text-primary">
-        {existing ? 'Edit Technique' : 'New Technique'}
-      </h1>
-
-      {existing ? <p className="text-sm text-text-secondary">{existing.drill_count} drills logged</p> : null}
-
+    <div className="flex w-full max-w-2xl flex-col gap-5">
       <div>
-        <label className="mb-1 block text-xs font-semibold text-text-secondary">Name</label>
-        <Input value={name} onChange={e => setName(e.target.value)} placeholder="e.g. Scissor Sweep" />
+        <h1 className="text-2xl font-extrabold tracking-tight text-text-primary">
+          {existing ? 'Edit Technique' : 'New Technique'}
+        </h1>
+        {existing ? (
+          <p className="mt-1 font-mono text-sm tabular-nums text-text-secondary">{existing.drill_count} drills logged</p>
+        ) : null}
       </div>
 
-      <div>
-        <label className="mb-1 block text-xs font-semibold text-text-secondary">Position</label>
-        <div className="mb-2 flex flex-wrap gap-2">
-          {POSITION_PRESETS.map(preset => (
-            <Chip key={preset} active={position === preset} onClick={() => setPosition(preset)}>
-              {preset}
-            </Chip>
-          ))}
+      <Card className="flex flex-col gap-4">
+        <div>
+          <label className="mb-1 block text-xs font-semibold text-text-secondary">Name</label>
+          <Input value={name} onChange={e => setName(e.target.value)} placeholder="e.g. Scissor Sweep" />
         </div>
-        <Input value={position} onChange={e => setPosition(e.target.value)} placeholder="Or type your own" />
-      </div>
 
-      <div>
-        <label className="mb-1 block text-xs font-semibold text-text-secondary">Resource link</label>
-        <Input
-          value={resourceUrl}
-          onChange={e => setResourceUrl(e.target.value)}
-          placeholder="Optional (YouTube, BJJ Fanatics, etc.)"
-        />
-      </div>
+        <div>
+          <label className="mb-1 block text-xs font-semibold text-text-secondary">Position</label>
+          <div className="mb-2 flex flex-wrap gap-2">
+            {POSITION_PRESETS.map(preset => (
+              <Chip key={preset} active={position === preset} onClick={() => setPosition(preset)}>
+                {preset}
+              </Chip>
+            ))}
+          </div>
+          <Input value={position} onChange={e => setPosition(e.target.value)} placeholder="Or type your own" />
+        </div>
 
-      <div>
-        <label className="mb-1 block text-xs font-semibold text-text-secondary">Notes</label>
-        <Textarea
-          rows={4}
-          value={notes}
-          onChange={e => setNotes(e.target.value)}
-          placeholder="Key details, setups, common mistakes…"
-        />
-      </div>
+        <div>
+          <label className="mb-1 block text-xs font-semibold text-text-secondary">Resource link</label>
+          <Input
+            value={resourceUrl}
+            onChange={e => setResourceUrl(e.target.value)}
+            placeholder="Optional (YouTube, BJJ Fanatics, etc.)"
+          />
+        </div>
 
-      <Button disabled={saving || !name.trim() || !position.trim()} onClick={handleSave} className="mt-2">
+        <div>
+          <label className="mb-1 block text-xs font-semibold text-text-secondary">Notes</label>
+          <Textarea
+            rows={4}
+            value={notes}
+            onChange={e => setNotes(e.target.value)}
+            placeholder="Key details, setups, common mistakes…"
+          />
+        </div>
+      </Card>
+
+      <Button disabled={saving || !name.trim() || !position.trim()} onClick={handleSave}>
         {saving ? 'Saving…' : existing ? 'Save Changes' : 'Add Technique'}
       </Button>
 

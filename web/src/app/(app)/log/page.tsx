@@ -12,14 +12,34 @@ import { Table, Thead, Tbody, Tr, Th, Td, TableRowActions } from '@/components/u
 
 const SESSION_TYPE_LABELS = Object.fromEntries(SESSION_TYPE_OPTIONS.map(o => [o.value, o.label]));
 
+function TrainingLogSkeleton() {
+  return (
+    <div className="flex w-full animate-pulse flex-col gap-5">
+      <div className="flex items-center justify-between">
+        <div className="h-8 w-48 rounded-lg bg-surface-alt" />
+        <div className="h-11 w-36 rounded-xl bg-surface-alt" />
+      </div>
+      <div className="overflow-hidden rounded-2xl border border-border">
+        {Array.from({ length: 5 }).map((_, i) => (
+          <div key={i} className="h-12 border-b border-border bg-surface-alt last:border-0" />
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export default function TrainingLogPage() {
   const router = useRouter();
   const { data: sessions = [], isLoading } = useSessions();
   const deleteSession = useDeleteSession();
 
+  if (isLoading) {
+    return <TrainingLogSkeleton />;
+  }
+
   return (
-    <div className="flex w-full max-w-5xl flex-col gap-5">
-      <div className="flex items-center justify-between">
+    <div className="flex w-full flex-col gap-5">
+      <div className="flex flex-wrap items-center justify-between gap-3">
         <h1 className="text-2xl font-extrabold tracking-tight text-text-primary">Training Log</h1>
         <Link href="/log/new">
           <Button className="flex items-center gap-2">
@@ -29,9 +49,7 @@ export default function TrainingLogPage() {
         </Link>
       </div>
 
-      {isLoading ? (
-        <p className="text-sm text-text-secondary">Loading…</p>
-      ) : sessions.length === 0 ? (
+      {sessions.length === 0 ? (
         <EmptyState
           icon={ClipboardList}
           title="No sessions yet"
@@ -55,7 +73,7 @@ export default function TrainingLogPage() {
                 <Td className="font-semibold">{formatDisplayDate(item.date)}</Td>
                 <Td>{SESSION_TYPE_LABELS[item.session_type]}</Td>
                 <Td>{item.gi ? 'Gi' : 'No-Gi'}</Td>
-                <Td>
+                <Td className="font-mono tabular-nums">
                   {item.duration_minutes ? `${item.duration_minutes} min` : '—'}
                   {item.rounds_count ? ` · ${item.rounds_count} rounds` : ''}
                 </Td>
@@ -67,6 +85,7 @@ export default function TrainingLogPage() {
                         e.stopPropagation();
                         deleteSession.mutate(item.id);
                       }}
+                      aria-label={`Delete session on ${formatDisplayDate(item.date)}`}
                       className="rounded-lg border border-danger p-1.5 text-danger hover:bg-danger/10"
                     >
                       <Trash2 size={15} />

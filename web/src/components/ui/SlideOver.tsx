@@ -39,6 +39,7 @@ export default function SlideOver({ children }: Readonly<{ children: React.React
         }`}
       />
       <div
+        style={{ overscrollBehavior: 'contain' }}
         className={`relative flex h-full w-full max-w-[460px] flex-col overflow-y-auto bg-surface p-6 shadow-xl transition-transform duration-200 ${
           mounted ? 'translate-x-0' : 'translate-x-full'
         }`}

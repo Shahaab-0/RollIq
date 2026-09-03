@@ -6,6 +6,7 @@ import { useBeltPromotions, useCreatePromotion, useDeletePromotion } from '../ho
 import { formatDisplayDate, toLocalDateString } from '@/lib/dateFormat';
 import { BELT_COLOR_VAR, BELT_OPTIONS, type Belt } from '../types';
 import Button from '@/components/ui/Button';
+import Card from '@/components/ui/Card';
 import Input from '@/components/ui/Input';
 import Chip from '@/components/ui/Chip';
 
@@ -42,7 +43,7 @@ export default function BeltHistorySection({ onPromotionAdded }: Readonly<Props>
         <button
           type="button"
           onClick={() => setShowAddPromotion(v => !v)}
-          className="rounded-lg border border-accent p-2 text-accent hover:bg-accent-muted"
+          className="rounded-lg border border-accent p-2 text-accent transition hover:bg-accent-muted"
         >
           <Plus size={16} strokeWidth={2.5} />
         </button>
@@ -53,10 +54,7 @@ export default function BeltHistorySection({ onPromotionAdded }: Readonly<Props>
       ) : (
         <div className="flex flex-col gap-2">
           {[...promotions].reverse().map(promotion => (
-            <div
-              key={promotion.id}
-              className="flex items-center justify-between rounded-xl border border-border bg-surface p-3"
-            >
+            <Card key={promotion.id} className="flex items-center justify-between p-3">
               <div>
                 <p className="text-sm font-semibold text-text-primary">
                   {BELT_OPTIONS.find(o => o.value === promotion.belt)?.label ?? promotion.belt} Belt
@@ -66,11 +64,12 @@ export default function BeltHistorySection({ onPromotionAdded }: Readonly<Props>
               </div>
               <button
                 onClick={() => deletePromotion.mutate(promotion.id)}
-                className="rounded-lg border border-danger p-2 text-danger hover:bg-danger/10"
+                aria-label="Delete this belt promotion"
+                className="rounded-lg border border-danger p-2 text-danger transition hover:bg-danger/10"
               >
                 <Trash2 size={16} />
               </button>
-            </div>
+            </Card>
           ))}
         </div>
       )}

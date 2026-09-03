@@ -14,11 +14,15 @@ interface Props {
 // indirection to reach for, unlike mobile).
 export default function GymClassVideoRow({ video, canManage, onDelete }: Readonly<Props>) {
   return (
-    <div className="flex flex-col gap-2.5 rounded-2xl border border-border bg-surface p-3.5">
+    <div className="flex flex-col gap-2.5 rounded-2xl border border-border bg-surface p-3.5 shadow-sm">
       <div className="flex items-center justify-between">
         <p className="text-sm font-semibold text-text-primary">Video {video.sequence_number}</p>
         {canManage ? (
-          <button onClick={onDelete} className="rounded-lg border border-danger p-2 text-danger hover:bg-danger/10">
+          <button
+            onClick={onDelete}
+            aria-label={`Delete video ${video.sequence_number}`}
+            className="rounded-lg border border-danger p-2 text-danger hover:bg-danger/10"
+          >
             <Trash2 size={16} />
           </button>
         ) : null}
@@ -39,7 +43,7 @@ export default function GymClassVideoRow({ video, canManage, onDelete }: Readonl
           href={video.url}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex w-fit items-center gap-1.5 rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-accent-text"
+          className="flex w-fit items-center gap-1.5 rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-accent-text shadow-sm transition hover:opacity-90 active:scale-[0.98]"
         >
           <Play size={16} />
           Watch

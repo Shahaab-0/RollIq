@@ -48,11 +48,27 @@ export default function InstructionalsPage() {
   }, [items, search, category, instructor, status, difficulty]);
 
   const selectClass =
-    'rounded-xl border border-border bg-surface px-3 py-2 text-sm text-text-primary focus:border-accent focus:outline-none';
+    'rounded-xl border border-border bg-surface px-3 py-2 text-sm text-text-primary transition focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20';
+
+  if (isLoading) {
+    return (
+      <div className="flex w-full animate-pulse flex-col gap-5">
+        <div className="flex items-center justify-between">
+          <div className="h-8 w-44 rounded-lg bg-surface-alt" />
+          <div className="h-11 w-44 rounded-xl bg-surface-alt" />
+        </div>
+        <div className="grid grid-cols-1 items-start gap-4 xl:grid-cols-2">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div key={i} className="h-20 rounded-2xl border border-border bg-surface-alt" />
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="flex w-full max-w-5xl flex-col gap-5">
-      <div className="flex items-center justify-between">
+    <div className="flex w-full flex-col gap-5">
+      <div className="flex flex-wrap items-center justify-between gap-3">
         <h1 className="text-2xl font-extrabold tracking-tight text-text-primary">Instructionals</h1>
         <Link href="/instructionals/new">
           <Button className="flex items-center gap-2">
@@ -117,9 +133,7 @@ export default function InstructionalsPage() {
         ) : null}
       </div>
 
-      {isLoading ? (
-        <p className="text-sm text-text-secondary">Loading…</p>
-      ) : filtered.length === 0 ? (
+      {filtered.length === 0 ? (
         <p className="text-sm text-text-secondary">No instructionals match your filters.</p>
       ) : (
         <div className="grid grid-cols-1 items-start gap-4 xl:grid-cols-2">
