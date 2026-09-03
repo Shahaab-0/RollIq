@@ -28,5 +28,7 @@ module.exports = {
   },
   // react-navigation's own docs call for this -- gesture-handler's native
   // module has nothing to bind to under Jest otherwise.
-  setupFiles: ['<rootDir>/node_modules/react-native-gesture-handler/jestSetup.js'],
+  setupFiles: [
+    '<rootDir>/node_modules/react-native-gesture-handler/jestSetup.js',
+  ],
 };

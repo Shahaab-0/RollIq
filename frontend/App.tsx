@@ -6,7 +6,11 @@
  */
 
 import { Provider } from 'react-redux';
-import { MutationCache, QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import {
+  MutationCache,
+  QueryClient,
+  QueryClientProvider,
+} from '@tanstack/react-query';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import * as Sentry from '@sentry/react-native';
 import { SENTRY_DSN } from '@env';
