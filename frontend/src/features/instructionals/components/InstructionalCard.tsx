@@ -11,13 +11,8 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { ChevronDown, ChevronUp } from 'lucide-react-native';
-import {
-  getTheme,
-  Theme,
-  UI_ACCENT,
-  UI_ACCENT_MUTED,
-} from '../../../theme/colors';
-import { FONT_SIZE, FONT_WEIGHT } from '../../../theme/typography';
+import { getTheme, Theme } from '../../../theme/colors';
+import { FONT_SIZE, FONT_WEIGHT, FONT_FAMILY } from '../../../theme/typography';
 import {
   useInstructionalProgress,
   useInstructionalVideos,
@@ -92,7 +87,7 @@ function InstructionalCard({ instructional }: Readonly<Props>) {
       {expanded ? (
         <View style={styles.body}>
           {isLoading ? (
-            <ActivityIndicator color={UI_ACCENT} style={styles.loading} />
+            <ActivityIndicator color={theme.accent} style={styles.loading} />
           ) : videos.length === 0 ? (
             <Text style={styles.emptyVideos}>No videos yet.</Text>
           ) : (
@@ -159,6 +154,7 @@ function createStyles(theme: Theme) {
       color: theme.textPrimary,
       fontSize: FONT_SIZE.base,
       fontWeight: FONT_WEIGHT.semibold,
+      fontFamily: FONT_FAMILY.semibold,
     },
     meta: {
       color: theme.textSecondary,
@@ -169,6 +165,7 @@ function createStyles(theme: Theme) {
       color: theme.textSecondary,
       fontSize: FONT_SIZE.tiny,
       fontWeight: FONT_WEIGHT.semibold,
+      fontFamily: FONT_FAMILY.semibold,
       borderWidth: 1,
       borderColor: theme.border,
       paddingHorizontal: 8,
@@ -181,10 +178,11 @@ function createStyles(theme: Theme) {
       gap: 6,
     },
     badge: {
-      color: UI_ACCENT,
+      color: theme.accent,
       fontSize: FONT_SIZE.tiny,
       fontWeight: FONT_WEIGHT.semibold,
-      backgroundColor: UI_ACCENT_MUTED,
+      fontFamily: FONT_FAMILY.semibold,
+      backgroundColor: theme.accentMuted,
       paddingHorizontal: 8,
       paddingVertical: 4,
       borderRadius: 10,
@@ -206,12 +204,13 @@ function createStyles(theme: Theme) {
       paddingVertical: 10,
       borderRadius: 10,
       borderWidth: 1,
-      borderColor: UI_ACCENT,
+      borderColor: theme.accent,
       alignItems: 'center',
     },
     addVideoText: {
-      color: UI_ACCENT,
+      color: theme.accent,
       fontWeight: FONT_WEIGHT.semibold,
+      fontFamily: FONT_FAMILY.semibold,
       fontSize: FONT_SIZE.label,
     },
   });

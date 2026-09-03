@@ -12,14 +12,8 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RouteProp } from '@react-navigation/native';
 import { ChevronLeft, ChevronRight, Plus, Users } from 'lucide-react-native';
-import {
-  getTheme,
-  Theme,
-  UI_ACCENT,
-  UI_ACCENT_MUTED,
-  UI_ACCENT_TEXT,
-} from '../../../theme/colors';
-import { FONT_SIZE, FONT_WEIGHT } from '../../../theme/typography';
+import { getTheme, Theme } from '../../../theme/colors';
+import { FONT_SIZE, FONT_WEIGHT, FONT_FAMILY } from '../../../theme/typography';
 import { formatDisplayDate } from '../../../lib/dateFormat';
 import FloatingAddButton from '../../../components/FloatingAddButton';
 import ErrorState from '../../../components/ErrorState';
@@ -69,7 +63,7 @@ function GymDetailScreen() {
   if (gymLoading && !gym) {
     return (
       <View style={[styles.screen, styles.centered]}>
-        <ActivityIndicator color={UI_ACCENT} />
+        <ActivityIndicator color={theme.accent} />
       </View>
     );
   }
@@ -145,7 +139,7 @@ function GymDetailScreen() {
                   style={styles.postButton}
                   onPress={() => navigation.navigate('GymClassForm', { gymId })}
                 >
-                  <Plus color={UI_ACCENT_TEXT} size={14} strokeWidth={2.5} />
+                  <Plus color={theme.accentText} size={14} strokeWidth={2.5} />
                   <Text style={styles.postButtonText}>Post a Class</Text>
                 </Pressable>
               ) : null}
@@ -198,6 +192,7 @@ function createStyles(theme: Theme) {
       color: theme.textPrimary,
       fontSize: FONT_SIZE.lg,
       fontWeight: FONT_WEIGHT.bold,
+      fontFamily: FONT_FAMILY.bold,
       textAlign: 'center',
     },
     headerSpacer: {
@@ -232,9 +227,10 @@ function createStyles(theme: Theme) {
       color: theme.textPrimary,
       fontSize: FONT_SIZE.label,
       fontWeight: FONT_WEIGHT.semibold,
+      fontFamily: FONT_FAMILY.semibold,
     },
     inviteCard: {
-      backgroundColor: UI_ACCENT_MUTED,
+      backgroundColor: theme.accentMuted,
       borderRadius: 12,
       padding: 14,
       gap: 4,
@@ -243,13 +239,15 @@ function createStyles(theme: Theme) {
       color: theme.textSecondary,
       fontSize: FONT_SIZE.tiny,
       fontWeight: FONT_WEIGHT.semibold,
+      fontFamily: FONT_FAMILY.semibold,
       textTransform: 'uppercase',
       letterSpacing: 0.5,
     },
     inviteCode: {
-      color: UI_ACCENT,
+      color: theme.accent,
       fontSize: FONT_SIZE.xl,
       fontWeight: FONT_WEIGHT.extrabold,
+      fontFamily: FONT_FAMILY.extrabold,
       letterSpacing: 2,
     },
     inviteHint: {
@@ -266,20 +264,22 @@ function createStyles(theme: Theme) {
       color: theme.textPrimary,
       fontSize: FONT_SIZE.base,
       fontWeight: FONT_WEIGHT.bold,
+      fontFamily: FONT_FAMILY.bold,
     },
     postButton: {
       flexDirection: 'row',
       alignItems: 'center',
       gap: 4,
-      backgroundColor: UI_ACCENT,
+      backgroundColor: theme.accent,
       borderRadius: 10,
       paddingHorizontal: 12,
       paddingVertical: 8,
     },
     postButtonText: {
-      color: UI_ACCENT_TEXT,
+      color: theme.accentText,
       fontSize: FONT_SIZE.tiny,
       fontWeight: FONT_WEIGHT.semibold,
+      fontFamily: FONT_FAMILY.semibold,
     },
     classCard: {
       flexDirection: 'row',
@@ -300,6 +300,7 @@ function createStyles(theme: Theme) {
       color: theme.textPrimary,
       fontSize: FONT_SIZE.base,
       fontWeight: FONT_WEIGHT.semibold,
+      fontFamily: FONT_FAMILY.semibold,
     },
     classMeta: {
       color: theme.textSecondary,

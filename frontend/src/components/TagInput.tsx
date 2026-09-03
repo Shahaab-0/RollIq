@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import { X } from 'lucide-react-native';
 import { getTheme, Theme } from '../theme/colors';
-import { FONT_SIZE, FONT_WEIGHT } from '../theme/typography';
+import { FONT_SIZE, FONT_WEIGHT, FONT_FAMILY } from '../theme/typography';
 
 interface Props {
   values: string[];
@@ -88,6 +88,7 @@ function createStyles(theme: Theme) {
       color: theme.textPrimary,
       fontSize: FONT_SIZE.label,
       fontWeight: FONT_WEIGHT.semibold,
+      fontFamily: FONT_FAMILY.semibold,
     },
     input: {
       backgroundColor: theme.surface,

@@ -7,14 +7,8 @@ import {
   View,
 } from 'react-native';
 import { Play, Trash2 } from 'lucide-react-native';
-import {
-  getTheme,
-  Theme,
-  UI_ACCENT,
-  UI_ACCENT_MUTED,
-  UI_ACCENT_TEXT,
-} from '../../../theme/colors';
-import { FONT_SIZE, FONT_WEIGHT } from '../../../theme/typography';
+import { getTheme, Theme } from '../../../theme/colors';
+import { FONT_SIZE, FONT_WEIGHT, FONT_FAMILY } from '../../../theme/typography';
 import type { GymClassVideo } from '../types';
 
 interface Props {
@@ -58,7 +52,7 @@ function GymClassVideoRow({
       ) : null}
 
       <Pressable style={styles.watchButton} onPress={onWatch}>
-        <Play color={UI_ACCENT_TEXT} size={16} />
+        <Play color={theme.accentText} size={16} />
         <Text style={styles.watchButtonText}>Watch</Text>
       </Pressable>
     </View>
@@ -84,6 +78,7 @@ function createStyles(theme: Theme) {
       color: theme.textPrimary,
       fontSize: FONT_SIZE.label,
       fontWeight: FONT_WEIGHT.semibold,
+      fontFamily: FONT_FAMILY.semibold,
     },
     deleteButton: {
       padding: 8,
@@ -100,28 +95,30 @@ function createStyles(theme: Theme) {
       paddingHorizontal: 10,
       paddingVertical: 6,
       borderRadius: 14,
-      backgroundColor: UI_ACCENT_MUTED,
+      backgroundColor: theme.accentMuted,
     },
     chipText: {
-      color: UI_ACCENT,
+      color: theme.accent,
       fontSize: FONT_SIZE.tiny,
       fontWeight: FONT_WEIGHT.semibold,
+      fontFamily: FONT_FAMILY.semibold,
     },
     watchButton: {
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'center',
       gap: 6,
-      backgroundColor: UI_ACCENT,
+      backgroundColor: theme.accent,
       borderRadius: 10,
       paddingVertical: 10,
       alignSelf: 'flex-start',
       paddingHorizontal: 16,
     },
     watchButtonText: {
-      color: UI_ACCENT_TEXT,
+      color: theme.accentText,
       fontSize: FONT_SIZE.label,
       fontWeight: FONT_WEIGHT.semibold,
+      fontFamily: FONT_FAMILY.semibold,
     },
   });
 }

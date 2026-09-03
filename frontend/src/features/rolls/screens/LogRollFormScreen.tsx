@@ -15,14 +15,8 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RouteProp } from '@react-navigation/native';
 import { ChevronLeft } from 'lucide-react-native';
-import {
-  getTheme,
-  Theme,
-  UI_ACCENT,
-  UI_ACCENT_MUTED,
-  UI_ACCENT_TEXT,
-} from '../../../theme/colors';
-import { FONT_SIZE, FONT_WEIGHT } from '../../../theme/typography';
+import { getTheme, Theme } from '../../../theme/colors';
+import { FONT_SIZE, FONT_WEIGHT, FONT_FAMILY } from '../../../theme/typography';
 import {
   useCreateRoll,
   useDeleteRoll,
@@ -229,6 +223,7 @@ function createStyles(theme: Theme) {
       color: theme.textPrimary,
       fontSize: FONT_SIZE.lg,
       fontWeight: FONT_WEIGHT.bold,
+      fontFamily: FONT_FAMILY.bold,
     },
     headerSpacer: {
       width: 24,
@@ -242,6 +237,7 @@ function createStyles(theme: Theme) {
       color: theme.textSecondary,
       fontSize: FONT_SIZE.label,
       fontWeight: FONT_WEIGHT.semibold,
+      fontFamily: FONT_FAMILY.semibold,
       marginTop: 12,
       marginBottom: 4,
     },
@@ -269,23 +265,24 @@ function createStyles(theme: Theme) {
       borderRadius: 20,
       alignItems: 'center',
       justifyContent: 'center',
-      backgroundColor: UI_ACCENT_MUTED,
+      backgroundColor: theme.accentMuted,
       borderWidth: 1,
       borderColor: 'transparent',
     },
     effortDotActive: {
-      backgroundColor: UI_ACCENT,
-      borderColor: UI_ACCENT,
+      backgroundColor: theme.accent,
+      borderColor: theme.accent,
     },
     effortText: {
       color: theme.textSecondary,
       fontWeight: FONT_WEIGHT.bold,
+      fontFamily: FONT_FAMILY.bold,
     },
     effortTextActive: {
-      color: UI_ACCENT_TEXT,
+      color: theme.accentText,
     },
     saveButton: {
-      backgroundColor: UI_ACCENT,
+      backgroundColor: theme.accent,
       borderRadius: 14,
       paddingVertical: 16,
       alignItems: 'center',
@@ -295,8 +292,9 @@ function createStyles(theme: Theme) {
       opacity: 0.6,
     },
     saveButtonText: {
-      color: UI_ACCENT_TEXT,
+      color: theme.accentText,
       fontWeight: FONT_WEIGHT.bold,
+      fontFamily: FONT_FAMILY.bold,
       fontSize: FONT_SIZE.base,
     },
     deleteButton: {
@@ -310,6 +308,7 @@ function createStyles(theme: Theme) {
     deleteButtonText: {
       color: theme.danger,
       fontWeight: FONT_WEIGHT.bold,
+      fontFamily: FONT_FAMILY.bold,
       fontSize: FONT_SIZE.base,
     },
   });

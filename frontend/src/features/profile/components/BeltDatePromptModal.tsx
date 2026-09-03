@@ -11,13 +11,8 @@ import {
 import DateTimePicker, {
   DateTimePickerAndroid,
 } from '@react-native-community/datetimepicker';
-import {
-  getTheme,
-  Theme,
-  UI_ACCENT,
-  UI_ACCENT_TEXT,
-} from '../../../theme/colors';
-import { FONT_SIZE, FONT_WEIGHT } from '../../../theme/typography';
+import { getTheme, Theme } from '../../../theme/colors';
+import { FONT_SIZE, FONT_WEIGHT, FONT_FAMILY } from '../../../theme/typography';
 import { formatDisplayDate, toLocalDateString } from '../../../lib/dateFormat';
 
 interface Props {
@@ -64,7 +59,7 @@ function BeltDatePromptModal({
               mode="date"
               display="spinner"
               themeVariant={theme.scheme}
-              accentColor={UI_ACCENT}
+              accentColor={theme.accent}
               maximumDate={new Date()}
               onChange={(_event, selected) => {
                 if (selected) onChangeDate(toLocalDateString(selected));
@@ -125,6 +120,7 @@ function createStyles(theme: Theme) {
       color: theme.textPrimary,
       fontSize: FONT_SIZE.lg,
       fontWeight: FONT_WEIGHT.bold,
+      fontFamily: FONT_FAMILY.bold,
       marginBottom: 12,
       textAlign: 'center',
     },
@@ -141,15 +137,16 @@ function createStyles(theme: Theme) {
       fontSize: FONT_SIZE.base,
     },
     confirmButton: {
-      backgroundColor: UI_ACCENT,
+      backgroundColor: theme.accent,
       borderRadius: 14,
       paddingVertical: 16,
       alignItems: 'center',
       marginTop: 16,
     },
     confirmButtonText: {
-      color: UI_ACCENT_TEXT,
+      color: theme.accentText,
       fontWeight: FONT_WEIGHT.bold,
+      fontFamily: FONT_FAMILY.bold,
       fontSize: FONT_SIZE.base,
     },
     skipButton: {
@@ -160,6 +157,7 @@ function createStyles(theme: Theme) {
     skipButtonText: {
       color: theme.textSecondary,
       fontWeight: FONT_WEIGHT.semibold,
+      fontFamily: FONT_FAMILY.semibold,
       fontSize: FONT_SIZE.body,
     },
   });

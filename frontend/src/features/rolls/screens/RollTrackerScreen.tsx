@@ -11,8 +11,8 @@ import {
 import { DrawerActions, useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Menu, Swords, Trash2, Users } from 'lucide-react-native';
-import { getTheme, Theme, UI_ACCENT } from '../../../theme/colors';
-import { FONT_SIZE, FONT_WEIGHT } from '../../../theme/typography';
+import { getTheme, Theme } from '../../../theme/colors';
+import { FONT_SIZE, FONT_WEIGHT, FONT_FAMILY } from '../../../theme/typography';
 import FloatingAddButton from '../../../components/FloatingAddButton';
 import ErrorState from '../../../components/ErrorState';
 import EmptyState from '../../../components/EmptyState';
@@ -89,13 +89,13 @@ function RollTrackerScreen() {
           style={styles.partnersButton}
           onPress={() => navigation.navigate('PartnerHistory')}
         >
-          <Users color={UI_ACCENT} size={18} />
+          <Users color={theme.accent} size={18} />
         </Pressable>
       </View>
 
       {isLoading && items.length === 0 ? (
         <View style={styles.centered}>
-          <ActivityIndicator color={UI_ACCENT} />
+          <ActivityIndicator color={theme.accent} />
         </View>
       ) : isError ? (
         <ErrorState />
@@ -156,12 +156,13 @@ function createStyles(theme: Theme) {
       color: theme.textPrimary,
       fontSize: FONT_SIZE.title,
       fontWeight: FONT_WEIGHT.extrabold,
+      fontFamily: FONT_FAMILY.extrabold,
     },
     partnersButton: {
       padding: 8,
       borderRadius: 10,
       borderWidth: 1,
-      borderColor: UI_ACCENT,
+      borderColor: theme.accent,
     },
     centered: {
       flex: 1,
@@ -188,6 +189,7 @@ function createStyles(theme: Theme) {
       color: theme.textPrimary,
       fontSize: FONT_SIZE.base,
       fontWeight: FONT_WEIGHT.bold,
+      fontFamily: FONT_FAMILY.bold,
       marginBottom: 4,
     },
     tapRow: {
@@ -202,6 +204,7 @@ function createStyles(theme: Theme) {
       color: theme.danger,
       fontSize: FONT_SIZE.body,
       fontWeight: FONT_WEIGHT.bold,
+      fontFamily: FONT_FAMILY.bold,
     },
     row: {
       flexDirection: 'row',
@@ -222,6 +225,7 @@ function createStyles(theme: Theme) {
       color: theme.textPrimary,
       fontSize: FONT_SIZE.base,
       fontWeight: FONT_WEIGHT.semibold,
+      fontFamily: FONT_FAMILY.semibold,
     },
     rowMeta: {
       color: theme.textSecondary,

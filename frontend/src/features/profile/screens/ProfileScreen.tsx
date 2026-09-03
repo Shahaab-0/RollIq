@@ -16,15 +16,8 @@ import {
 import { DrawerActions, useNavigation } from '@react-navigation/native';
 import { Menu } from 'lucide-react-native';
 import { API_BASE_URL } from '@env';
-import {
-  BELT_COLORS,
-  getTheme,
-  Theme,
-  UI_ACCENT,
-  UI_ACCENT_MUTED,
-  UI_ACCENT_TEXT,
-} from '../../../theme/colors';
-import { FONT_SIZE, FONT_WEIGHT } from '../../../theme/typography';
+import { BELT_COLORS, getTheme, Theme } from '../../../theme/colors';
+import { FONT_SIZE, FONT_WEIGHT, FONT_FAMILY } from '../../../theme/typography';
 import { useAppSelector } from '../../../redux/hooks';
 import { useDeleteAccount, useSignOut } from '../../auth/hooks/useAuth';
 import { useProfile, useUpdateProfile } from '../hooks/useProfile';
@@ -163,7 +156,7 @@ function ProfileScreen() {
   if (isLoading && !profile) {
     return (
       <View style={[styles.screen, styles.centered]}>
-        <ActivityIndicator color={UI_ACCENT} />
+        <ActivityIndicator color={theme.accent} />
       </View>
     );
   }
@@ -375,6 +368,7 @@ function createStyles(theme: Theme) {
       color: theme.textPrimary,
       fontSize: FONT_SIZE.title,
       fontWeight: FONT_WEIGHT.extrabold,
+      fontFamily: FONT_FAMILY.extrabold,
     },
     email: {
       color: theme.textSecondary,
@@ -385,6 +379,7 @@ function createStyles(theme: Theme) {
       color: theme.textSecondary,
       fontSize: FONT_SIZE.label,
       fontWeight: FONT_WEIGHT.semibold,
+      fontFamily: FONT_FAMILY.semibold,
       marginTop: 12,
       marginBottom: 4,
     },
@@ -407,13 +402,13 @@ function createStyles(theme: Theme) {
       paddingHorizontal: 14,
       paddingVertical: 10,
       borderRadius: 20,
-      backgroundColor: UI_ACCENT_MUTED,
+      backgroundColor: theme.accentMuted,
       borderWidth: 1,
       borderColor: 'transparent',
     },
     chipActive: {
-      backgroundColor: UI_ACCENT,
-      borderColor: UI_ACCENT,
+      backgroundColor: theme.accent,
+      borderColor: theme.accent,
     },
     hintText: {
       color: theme.textSecondary,
@@ -423,9 +418,10 @@ function createStyles(theme: Theme) {
       color: theme.textSecondary,
       fontSize: FONT_SIZE.label,
       fontWeight: FONT_WEIGHT.semibold,
+      fontFamily: FONT_FAMILY.semibold,
     },
     chipTextActive: {
-      color: UI_ACCENT_TEXT,
+      color: theme.accentText,
     },
     stripeDot: {
       width: 40,
@@ -433,16 +429,16 @@ function createStyles(theme: Theme) {
       borderRadius: 20,
       alignItems: 'center',
       justifyContent: 'center',
-      backgroundColor: UI_ACCENT_MUTED,
+      backgroundColor: theme.accentMuted,
       borderWidth: 1,
       borderColor: 'transparent',
     },
     stripeDotActive: {
-      backgroundColor: UI_ACCENT,
-      borderColor: UI_ACCENT,
+      backgroundColor: theme.accent,
+      borderColor: theme.accent,
     },
     saveButton: {
-      backgroundColor: UI_ACCENT,
+      backgroundColor: theme.accent,
       borderRadius: 14,
       paddingVertical: 16,
       alignItems: 'center',
@@ -452,21 +448,23 @@ function createStyles(theme: Theme) {
       opacity: 0.6,
     },
     saveButtonText: {
-      color: UI_ACCENT_TEXT,
+      color: theme.accentText,
       fontWeight: FONT_WEIGHT.bold,
+      fontFamily: FONT_FAMILY.bold,
       fontSize: FONT_SIZE.base,
     },
     signOutButton: {
       borderWidth: 1.5,
-      borderColor: UI_ACCENT,
+      borderColor: theme.accent,
       borderRadius: 14,
       paddingVertical: 16,
       alignItems: 'center',
       marginTop: 12,
     },
     signOutButtonText: {
-      color: UI_ACCENT,
+      color: theme.accent,
       fontWeight: FONT_WEIGHT.bold,
+      fontFamily: FONT_FAMILY.bold,
       fontSize: FONT_SIZE.base,
     },
     legalRow: {
@@ -494,6 +492,7 @@ function createStyles(theme: Theme) {
       color: theme.danger,
       fontSize: FONT_SIZE.label,
       fontWeight: FONT_WEIGHT.semibold,
+      fontFamily: FONT_FAMILY.semibold,
     },
   });
 }

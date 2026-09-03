@@ -9,7 +9,7 @@ import {
 import { NavigationContainer } from '@react-navigation/native';
 import { useAppSelector } from '../redux/hooks';
 import { useAuthListener } from '../features/auth/hooks/useAuthListener';
-import { getTheme, Theme, UI_ACCENT } from '../theme/colors';
+import { getTheme, Theme } from '../theme/colors';
 import AuthStack from './AuthStack';
 import AppDrawer from './AppDrawer';
 
@@ -28,7 +28,7 @@ function RootNavigator() {
       />
       {status !== 'ready' ? (
         <View style={styles.loading}>
-          <ActivityIndicator color={UI_ACCENT} />
+          <ActivityIndicator color={theme.accent} />
         </View>
       ) : (
         <NavigationContainer>

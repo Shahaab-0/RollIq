@@ -9,13 +9,8 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Plus, Trash2 } from 'lucide-react-native';
-import {
-  getTheme,
-  Theme,
-  UI_ACCENT,
-  UI_ACCENT_TEXT,
-} from '../../../theme/colors';
-import { FONT_SIZE, FONT_WEIGHT } from '../../../theme/typography';
+import { getTheme, Theme } from '../../../theme/colors';
+import { FONT_SIZE, FONT_WEIGHT, FONT_FAMILY } from '../../../theme/typography';
 import { formatDisplayTime } from '../../../lib/dateFormat';
 import { useDeleteScheduleEntry, useGymSchedule } from '../hooks/useGyms';
 import { WEEKDAY_LABELS } from '../types';
@@ -51,7 +46,7 @@ function GymScheduleCard({ gymId, canManage }: Readonly<Props>) {
             style={styles.addButton}
             onPress={() => navigation.navigate('GymScheduleForm', { gymId })}
           >
-            <Plus color={UI_ACCENT_TEXT} size={14} strokeWidth={2.5} />
+            <Plus color={theme.accentText} size={14} strokeWidth={2.5} />
             <Text style={styles.addButtonText}>Add Slot</Text>
           </Pressable>
         ) : null}
@@ -115,20 +110,22 @@ function createStyles(theme: Theme) {
       color: theme.textPrimary,
       fontSize: FONT_SIZE.base,
       fontWeight: FONT_WEIGHT.bold,
+      fontFamily: FONT_FAMILY.bold,
     },
     addButton: {
       flexDirection: 'row',
       alignItems: 'center',
       gap: 4,
-      backgroundColor: UI_ACCENT,
+      backgroundColor: theme.accent,
       borderRadius: 10,
       paddingHorizontal: 12,
       paddingVertical: 8,
     },
     addButtonText: {
-      color: UI_ACCENT_TEXT,
+      color: theme.accentText,
       fontSize: FONT_SIZE.tiny,
       fontWeight: FONT_WEIGHT.semibold,
+      fontFamily: FONT_FAMILY.semibold,
     },
     dayRow: {
       flexDirection: 'row',
@@ -142,6 +139,7 @@ function createStyles(theme: Theme) {
       color: theme.textSecondary,
       fontSize: FONT_SIZE.label,
       fontWeight: FONT_WEIGHT.semibold,
+      fontFamily: FONT_FAMILY.semibold,
     },
     dayContent: {
       flex: 1,
@@ -164,6 +162,7 @@ function createStyles(theme: Theme) {
       color: theme.textPrimary,
       fontSize: FONT_SIZE.label,
       fontWeight: FONT_WEIGHT.semibold,
+      fontFamily: FONT_FAMILY.semibold,
     },
     slotTopic: {
       color: theme.textSecondary,

@@ -11,13 +11,8 @@ import {
 } from 'react-native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { ChevronLeft } from 'lucide-react-native';
-import {
-  getTheme,
-  Theme,
-  UI_ACCENT,
-  UI_ACCENT_TEXT,
-} from '../../../theme/colors';
-import { FONT_SIZE, FONT_WEIGHT } from '../../../theme/typography';
+import { getTheme, Theme } from '../../../theme/colors';
+import { FONT_SIZE, FONT_WEIGHT, FONT_FAMILY } from '../../../theme/typography';
 import { useForgotPassword } from '../hooks/useAuth';
 import type { AuthStackParamList } from '../../../navigation/types';
 
@@ -111,6 +106,7 @@ function createStyles(theme: Theme) {
       color: theme.textPrimary,
       fontSize: FONT_SIZE.display,
       fontWeight: FONT_WEIGHT.extrabold,
+      fontFamily: FONT_FAMILY.extrabold,
     },
     subtitle: {
       color: theme.textSecondary,
@@ -128,7 +124,7 @@ function createStyles(theme: Theme) {
       fontSize: FONT_SIZE.base,
     },
     button: {
-      backgroundColor: UI_ACCENT,
+      backgroundColor: theme.accent,
       borderRadius: 14,
       paddingVertical: 16,
       alignItems: 'center',
@@ -138,8 +134,9 @@ function createStyles(theme: Theme) {
       opacity: 0.6,
     },
     buttonText: {
-      color: UI_ACCENT_TEXT,
+      color: theme.accentText,
       fontWeight: FONT_WEIGHT.bold,
+      fontFamily: FONT_FAMILY.bold,
       fontSize: FONT_SIZE.base,
     },
     linkButton: {

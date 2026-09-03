@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { StyleSheet, Text, useColorScheme, View } from 'react-native';
 import { getTheme } from '../theme/colors';
-import { FONT_SIZE, FONT_WEIGHT } from '../theme/typography';
+import { FONT_SIZE, FONT_WEIGHT, FONT_FAMILY } from '../theme/typography';
 
 // Temporary stand-in for a feature screen that hasn't been built out yet.
 function PlaceholderScreen({ title }: Readonly<{ title: string }>) {
@@ -28,6 +28,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: FONT_SIZE.xxl,
     fontWeight: FONT_WEIGHT.bold,
+    fontFamily: FONT_FAMILY.bold,
   },
   subtitle: {
     fontSize: FONT_SIZE.body,

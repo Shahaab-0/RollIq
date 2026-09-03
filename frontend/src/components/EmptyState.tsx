@@ -7,14 +7,8 @@ import {
   View,
 } from 'react-native';
 import type { LucideIcon } from 'lucide-react-native';
-import {
-  getTheme,
-  Theme,
-  UI_ACCENT,
-  UI_ACCENT_MUTED,
-  UI_ACCENT_TEXT,
-} from '../theme/colors';
-import { FONT_SIZE, FONT_WEIGHT } from '../theme/typography';
+import { getTheme, Theme } from '../theme/colors';
+import { FONT_SIZE, FONT_WEIGHT, FONT_FAMILY } from '../theme/typography';
 
 interface Props {
   icon: LucideIcon;
@@ -43,7 +37,7 @@ function EmptyState({
   return (
     <View style={styles.container}>
       <View style={styles.iconBadge}>
-        <Icon color={UI_ACCENT} size={32} strokeWidth={2} />
+        <Icon color={theme.accent} size={32} strokeWidth={2} />
       </View>
       <Text style={styles.title}>{title}</Text>
       <Text style={styles.description}>{description}</Text>
@@ -70,7 +64,7 @@ function createStyles(theme: Theme) {
       width: 72,
       height: 72,
       borderRadius: 36,
-      backgroundColor: UI_ACCENT_MUTED,
+      backgroundColor: theme.accentMuted,
       alignItems: 'center',
       justifyContent: 'center',
       marginBottom: 14,
@@ -79,6 +73,7 @@ function createStyles(theme: Theme) {
       color: theme.textPrimary,
       fontSize: FONT_SIZE.lg,
       fontWeight: FONT_WEIGHT.bold,
+      fontFamily: FONT_FAMILY.bold,
       textAlign: 'center',
     },
     description: {
@@ -88,15 +83,16 @@ function createStyles(theme: Theme) {
       lineHeight: 20,
     },
     actionButton: {
-      backgroundColor: UI_ACCENT,
+      backgroundColor: theme.accent,
       borderRadius: 14,
       paddingVertical: 14,
       paddingHorizontal: 28,
       marginTop: 20,
     },
     actionButtonText: {
-      color: UI_ACCENT_TEXT,
+      color: theme.accentText,
       fontWeight: FONT_WEIGHT.bold,
+      fontFamily: FONT_FAMILY.bold,
       fontSize: FONT_SIZE.base,
     },
   });

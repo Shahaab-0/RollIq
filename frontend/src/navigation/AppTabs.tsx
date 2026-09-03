@@ -13,7 +13,7 @@ import HomeStack from './HomeStack';
 import LogStack from './LogStack';
 import TechniquesStack from './TechniquesStack';
 import CompetitionsStack from './CompetitionsStack';
-import { getTheme, UI_ACCENT } from '../theme/colors';
+import { getTheme } from '../theme/colors';
 import type { AppTabsParamList } from './types';
 
 const Tab = createBottomTabNavigator<AppTabsParamList>();
@@ -43,7 +43,7 @@ function AppTabs() {
     <Tab.Navigator
       screenOptions={({ route }) => ({
         headerShown: false,
-        tabBarActiveTintColor: UI_ACCENT,
+        tabBarActiveTintColor: theme.accent,
         tabBarInactiveTintColor: theme.textSecondary,
         tabBarStyle: {
           backgroundColor: theme.surface,

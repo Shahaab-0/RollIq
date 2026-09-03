@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { StyleSheet, Text, useColorScheme, View } from 'react-native';
 import { CircleAlert } from 'lucide-react-native';
 import { getTheme, Theme } from '../theme/colors';
-import { FONT_SIZE, FONT_WEIGHT } from '../theme/typography';
+import { FONT_SIZE, FONT_WEIGHT, FONT_FAMILY } from '../theme/typography';
 
 interface Props {
   message?: string;
@@ -41,6 +41,7 @@ function createStyles(theme: Theme) {
       color: theme.textSecondary,
       fontSize: FONT_SIZE.body,
       fontWeight: FONT_WEIGHT.semibold,
+      fontFamily: FONT_FAMILY.semibold,
       textAlign: 'center',
     },
   });
