@@ -53,7 +53,7 @@ export default function InstructionalsPage() {
   return (
     <div className="flex w-full max-w-5xl flex-col gap-5">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-extrabold text-text-primary">Instructionals</h1>
+        <h1 className="text-2xl font-extrabold tracking-tight text-text-primary">Instructionals</h1>
         <Link href="/instructionals/new">
           <Button className="flex items-center gap-2">
             <Plus size={16} strokeWidth={2.5} />
@@ -122,7 +122,7 @@ export default function InstructionalsPage() {
       ) : filtered.length === 0 ? (
         <p className="text-sm text-text-secondary">No instructionals match your filters.</p>
       ) : (
-        <div className="flex flex-col gap-2.5">
+        <div className="grid grid-cols-1 items-start gap-4 xl:grid-cols-2">
           {filtered.map(item => (
             <InstructionalCard key={item.id} instructional={item} />
           ))}

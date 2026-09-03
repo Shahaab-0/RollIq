@@ -19,7 +19,7 @@ export default function GymDetailView({ gymId }: Readonly<{ gymId: string }>) {
 
   return (
     <div className="flex w-full max-w-5xl flex-col gap-5">
-      <h1 className="text-2xl font-extrabold text-text-primary">{gym?.name ?? 'Gym'}</h1>
+      <h1 className="text-2xl font-extrabold tracking-tight text-text-primary">{gym?.name ?? 'Gym'}</h1>
       {gym?.description ? <p className="-mt-3 text-sm text-text-secondary">{gym.description}</p> : null}
 
       <Link

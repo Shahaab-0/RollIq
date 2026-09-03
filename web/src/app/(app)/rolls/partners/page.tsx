@@ -22,7 +22,7 @@ export default function PartnerHistoryPage() {
         <Link href="/rolls" className="text-text-secondary hover:text-text-primary">
           <ChevronLeft size={22} />
         </Link>
-        <h1 className="text-2xl font-extrabold text-text-primary">Partner History</h1>
+        <h1 className="text-2xl font-extrabold tracking-tight text-text-primary">Partner History</h1>
       </div>
 
       {isLoading ? (

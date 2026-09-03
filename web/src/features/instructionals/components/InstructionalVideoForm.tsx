@@ -36,7 +36,7 @@ export default function InstructionalVideoForm({ instructionalId }: Readonly<{ i
 
   return (
     <div className="flex w-full max-w-2xl flex-col gap-4">
-      <h1 className="text-2xl font-extrabold text-text-primary">Add Video</h1>
+      <h1 className="text-2xl font-extrabold tracking-tight text-text-primary">Add Video</h1>
 
       <div>
         <label className="mb-1 block text-xs font-semibold text-text-secondary">Title</label>

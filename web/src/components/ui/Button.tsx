@@ -16,7 +16,7 @@ export default function Button({ variant = 'primary', className = '', disabled, 
   return (
     <button
       disabled={disabled}
-      className={`rounded-xl px-4 py-3 text-sm font-bold transition disabled:opacity-60 disabled:cursor-not-allowed ${VARIANT_CLASSES[variant]} ${className}`}
+      className={`rounded-xl px-4 py-3 text-sm font-bold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:opacity-60 disabled:cursor-not-allowed ${VARIANT_CLASSES[variant]} ${className}`}
       {...props}
     />
   );

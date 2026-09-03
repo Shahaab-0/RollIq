@@ -96,7 +96,7 @@ export default function InjuryForm({ injuryId }: Readonly<{ injuryId?: string }>
 
   return (
     <div className="flex w-full max-w-2xl flex-col gap-4">
-      <h1 className="text-2xl font-extrabold text-text-primary">{existing ? 'Edit Injury' : 'Log Injury'}</h1>
+      <h1 className="text-2xl font-extrabold tracking-tight text-text-primary">{existing ? 'Edit Injury' : 'Log Injury'}</h1>
 
       <div>
         <label className="mb-1 block text-xs font-semibold text-text-secondary">Body part</label>

@@ -41,7 +41,7 @@ export default function GymClassDetailView({ gymId, classId }: Readonly<{ gymId:
     <div className="flex w-full max-w-3xl flex-col gap-5">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-extrabold text-text-primary">{entry?.title ?? 'Class'}</h1>
+          <h1 className="text-2xl font-extrabold tracking-tight text-text-primary">{entry?.title ?? 'Class'}</h1>
           {entry ? <p className="text-sm text-text-secondary">{formatDisplayDate(entry.class_date)}</p> : null}
         </div>
         {canManage ? (

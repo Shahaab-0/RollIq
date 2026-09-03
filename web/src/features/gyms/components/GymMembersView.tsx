@@ -12,7 +12,7 @@ export default function GymMembersView({ gymId }: Readonly<{ gymId: string }>) {
 
   return (
     <div className="flex w-full max-w-3xl flex-col gap-5">
-      <h1 className="text-2xl font-extrabold text-text-primary">Members</h1>
+      <h1 className="text-2xl font-extrabold tracking-tight text-text-primary">Members</h1>
 
       {isLoading ? (
         <p className="text-sm text-text-secondary">Loading…</p>

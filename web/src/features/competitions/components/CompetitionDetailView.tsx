@@ -1,11 +1,13 @@
 'use client';
 
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { Pencil, Plus, Trash2 } from 'lucide-react';
 import { formatDisplayDate } from '@/lib/dateFormat';
 import { useCompetitionMatches, useCompetitions, useDeleteMatch } from '../hooks/useCompetitions';
 import type { MatchResult } from '../types';
 import Button from '@/components/ui/Button';
+import { Table, Thead, Tbody, Tr, Th, Td, TableRowActions } from '@/components/ui/Table';
 
 function resultClass(result: MatchResult): string {
   if (result === 'win') return 'bg-success';
@@ -18,6 +20,7 @@ function resultLabel(result: MatchResult): string {
 }
 
 export default function CompetitionDetailView({ competitionId }: Readonly<{ competitionId: string }>) {
+  const router = useRouter();
   const { data: competitions = [] } = useCompetitions();
   const { data: matches = [], isLoading } = useCompetitionMatches(competitionId);
   const deleteMatch = useDeleteMatch(competitionId);
@@ -25,9 +28,9 @@ export default function CompetitionDetailView({ competitionId }: Readonly<{ comp
   const competition = competitions.find(c => c.id === competitionId);
 
   return (
-    <div className="flex w-full max-w-3xl flex-col gap-5">
+    <div className="flex w-full max-w-4xl flex-col gap-5">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-extrabold text-text-primary">{competition?.name ?? 'Competition'}</h1>
+        <h1 className="text-2xl font-extrabold tracking-tight text-text-primary">{competition?.name ?? 'Competition'}</h1>
         <Link href={`/competitions/${competitionId}/edit`} className="text-accent">
           <Pencil size={20} />
         </Link>
@@ -62,26 +65,45 @@ export default function CompetitionDetailView({ competitionId }: Readonly<{ comp
       ) : matches.length === 0 ? (
         <p className="text-sm text-text-secondary">No matches yet — log one.</p>
       ) : (
-        <div className="flex flex-col gap-2.5">
-          {matches.map(match => (
-            <div key={match.id} className="flex items-center gap-3 rounded-2xl border border-border bg-surface p-4">
-              <span className={`h-2.5 w-2.5 shrink-0 rounded-full ${resultClass(match.result)}`} />
-              <Link href={`/competitions/${competitionId}/matches/${match.id}`} className="flex-1">
-                <p className="text-sm font-semibold text-text-primary">{match.opponent_name}</p>
-                <p className="text-xs text-text-secondary">
-                  {resultLabel(match.result)}
-                  {match.method ? ` · ${match.method}` : ''}
-                </p>
-              </Link>
-              <button
-                onClick={() => deleteMatch.mutate(match.id)}
-                className="rounded-lg border border-danger p-2 text-danger hover:bg-danger/10"
+        <Table>
+          <Thead>
+            <Tr>
+              <Th aria-hidden />
+              <Th>Opponent</Th>
+              <Th>Result</Th>
+              <Th>Method</Th>
+              <Th aria-hidden />
+            </Tr>
+          </Thead>
+          <Tbody>
+            {matches.map(match => (
+              <Tr
+                key={match.id}
+                onClick={() => router.push(`/competitions/${competitionId}/matches/${match.id}`)}
               >
-                <Trash2 size={16} />
-              </button>
-            </div>
-          ))}
-        </div>
+                <Td className="w-4">
+                  <span className={`block h-2.5 w-2.5 rounded-full ${resultClass(match.result)}`} />
+                </Td>
+                <Td className="font-semibold">{match.opponent_name}</Td>
+                <Td className="text-text-secondary">{resultLabel(match.result)}</Td>
+                <Td className="text-text-secondary">{match.method || '—'}</Td>
+                <Td>
+                  <TableRowActions>
+                    <button
+                      onClick={e => {
+                        e.stopPropagation();
+                        deleteMatch.mutate(match.id);
+                      }}
+                      className="rounded-lg border border-danger p-1.5 text-danger hover:bg-danger/10"
+                    >
+                      <Trash2 size={15} />
+                    </button>
+                  </TableRowActions>
+                </Td>
+              </Tr>
+            ))}
+          </Tbody>
+        </Table>
       )}
     </div>
   );

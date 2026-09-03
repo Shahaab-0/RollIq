@@ -115,7 +115,7 @@ export default function SessionForm({ sessionId }: Readonly<{ sessionId?: string
 
   return (
     <div className="flex w-full max-w-2xl flex-col gap-4">
-      <h1 className="text-2xl font-extrabold text-text-primary">
+      <h1 className="text-2xl font-extrabold tracking-tight text-text-primary">
         {existing ? 'Edit Session' : 'Log Session'}
       </h1>
 

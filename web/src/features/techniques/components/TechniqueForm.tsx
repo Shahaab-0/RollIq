@@ -89,7 +89,7 @@ export default function TechniqueForm({ techniqueId }: Readonly<{ techniqueId?: 
 
   return (
     <div className="flex w-full max-w-2xl flex-col gap-4">
-      <h1 className="text-2xl font-extrabold text-text-primary">
+      <h1 className="text-2xl font-extrabold tracking-tight text-text-primary">
         {existing ? 'Edit Technique' : 'New Technique'}
       </h1>
 

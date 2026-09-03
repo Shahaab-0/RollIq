@@ -1,43 +1,38 @@
 'use client';
 
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { BookOpen, PlayCircle, Plus, Repeat, Trash2 } from 'lucide-react';
 import { useDeleteTechnique, useIncrementDrillCount, useTechniques } from '@/features/techniques/hooks/useTechniques';
 import { POSITION_PRESETS } from '@/features/techniques/types';
 import type { Technique } from '@/features/techniques/types';
 import EmptyState from '@/components/EmptyState';
 import Button from '@/components/ui/Button';
+import { Table, Thead, Tbody, Tr, Th, Td, TableRowActions } from '@/components/ui/Table';
 
-function groupByPosition(items: Technique[]) {
-  const map = new Map<string, Technique[]>();
-  for (const t of items) {
-    const key = t.position || 'Uncategorized';
-    const group = map.get(key) ?? [];
-    group.push(t);
-    map.set(key, group);
-  }
-  const keys = Array.from(map.keys()).sort((a, b) => {
-    const ai = POSITION_PRESETS.indexOf(a);
-    const bi = POSITION_PRESETS.indexOf(b);
-    if (ai !== -1 && bi !== -1) return ai - bi;
+function sortByPosition(items: Technique[]): Technique[] {
+  return [...items].sort((a, b) => {
+    const ai = POSITION_PRESETS.indexOf(a.position);
+    const bi = POSITION_PRESETS.indexOf(b.position);
+    if (ai !== -1 && bi !== -1) return ai - bi || a.name.localeCompare(b.name);
     if (ai !== -1) return -1;
     if (bi !== -1) return 1;
-    return a.localeCompare(b);
+    return a.position.localeCompare(b.position) || a.name.localeCompare(b.name);
   });
-  return keys.map(position => ({ position, techniques: map.get(position)! }));
 }
 
 export default function TechniquesPage() {
+  const router = useRouter();
   const { data: items = [], isLoading } = useTechniques();
   const deleteTechnique = useDeleteTechnique();
   const incrementDrillCount = useIncrementDrillCount();
 
-  const groups = groupByPosition(items);
+  const sorted = sortByPosition(items);
 
   return (
     <div className="flex w-full max-w-5xl flex-col gap-5">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-extrabold text-text-primary">Technique Journal</h1>
+        <h1 className="text-2xl font-extrabold tracking-tight text-text-primary">Technique Journal</h1>
         <Link href="/techniques/new">
           <Button className="flex items-center gap-2">
             <Plus size={16} strokeWidth={2.5} />
@@ -55,52 +50,58 @@ export default function TechniquesPage() {
           description="Add a technique to start building your journal."
         />
       ) : (
-        <div className="flex flex-col gap-4">
-          {groups.map(group => (
-            <div key={group.position}>
-              <p className="mb-2 text-xs font-bold uppercase tracking-wide text-text-secondary">
-                {group.position} ({group.techniques.length})
-              </p>
-              <div className="flex flex-col gap-2.5">
-                {group.techniques.map(item => (
-                  <div
-                    key={item.id}
-                    className="flex items-center justify-between rounded-2xl border border-border bg-surface p-4"
-                  >
-                    <Link href={`/techniques/${item.id}`} className="flex-1">
-                      <p className="text-sm font-semibold text-text-primary">{item.name}</p>
-                      <p className="text-xs text-text-secondary">{item.drill_count} drills logged</p>
-                    </Link>
-                    <div className="flex gap-2">
-                      {item.resource_url ? (
-                        <a
-                          href={item.resource_url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="rounded-lg border border-accent p-2 text-accent hover:bg-accent-muted"
-                        >
-                          <PlayCircle size={16} />
-                        </a>
-                      ) : null}
-                      <button
-                        onClick={() => incrementDrillCount.mutate(item.id)}
-                        className="rounded-lg border border-accent p-2 text-accent hover:bg-accent-muted"
+        <Table>
+          <Thead>
+            <Tr>
+              <Th>Name</Th>
+              <Th>Position</Th>
+              <Th>Drills</Th>
+              <Th aria-hidden />
+            </Tr>
+          </Thead>
+          <Tbody>
+            {sorted.map(item => (
+              <Tr key={item.id} onClick={() => router.push(`/techniques/${item.id}`)}>
+                <Td className="font-semibold">{item.name}</Td>
+                <Td className="text-text-secondary">{item.position}</Td>
+                <Td className="text-text-secondary">{item.drill_count}</Td>
+                <Td>
+                  <TableRowActions>
+                    {item.resource_url ? (
+                      <a
+                        href={item.resource_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={e => e.stopPropagation()}
+                        className="rounded-lg border border-accent p-1.5 text-accent hover:bg-accent-muted"
                       >
-                        <Repeat size={16} />
-                      </button>
-                      <button
-                        onClick={() => deleteTechnique.mutate(item.id)}
-                        className="rounded-lg border border-danger p-2 text-danger hover:bg-danger/10"
-                      >
-                        <Trash2 size={16} />
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
+                        <PlayCircle size={15} />
+                      </a>
+                    ) : null}
+                    <button
+                      onClick={e => {
+                        e.stopPropagation();
+                        incrementDrillCount.mutate(item.id);
+                      }}
+                      className="rounded-lg border border-accent p-1.5 text-accent hover:bg-accent-muted"
+                    >
+                      <Repeat size={15} />
+                    </button>
+                    <button
+                      onClick={e => {
+                        e.stopPropagation();
+                        deleteTechnique.mutate(item.id);
+                      }}
+                      className="rounded-lg border border-danger p-1.5 text-danger hover:bg-danger/10"
+                    >
+                      <Trash2 size={15} />
+                    </button>
+                  </TableRowActions>
+                </Td>
+              </Tr>
+            ))}
+          </Tbody>
+        </Table>
       )}
     </div>
   );
